@@ -1,0 +1,5 @@
+{
+  "name": "Sistema de Controle do CPHL (SCCPHL)",
+  "description": "Uma aplicação web completa para o Sistema de Controle do CPHL, permitindo a gestão de dados de criminalidade, sinistralidade, resultados policiais, transportes e logística, com diferentes perfis de acesso e relatórios.",
+  "requestFramePermissions": []
+}
