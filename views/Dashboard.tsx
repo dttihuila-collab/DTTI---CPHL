@@ -12,7 +12,9 @@ import TransportesDetailsView from './dashboard/TransportesDetailsView';
 import LogisticaDetailsView from './dashboard/LogisticaDetailsView';
 import GenericDetailsTable from './dashboard/GenericDetailsTable';
 
-const categories: { name: DashboardCategory, icon: React.ReactElement }[] = [
+// FIX: Removed explicit type annotation to allow TypeScript to infer a more specific type for the 'icon' property.
+// The generic 'React.ReactElement' type was too broad, causing type errors when using 'React.cloneElement'.
+const categories = [
     { name: 'Criminalidade', icon: <CrimeIcon /> },
     { name: 'Sinistralidade Rodoviária', icon: <RoadIcon /> },
     { name: 'Enfrentamento Policial', icon: <PoliceIcon /> },
