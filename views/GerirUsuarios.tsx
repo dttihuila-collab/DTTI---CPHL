@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { User, Role, View } from '../types';
 import { api } from '../services/api';
 import { PERMISSION_VIEWS } from '../constants';
@@ -7,16 +7,28 @@ import { Label, Input, Select, Button, FormError } from '../components/common/Fo
 import { AddIcon, EditIcon, DeleteIcon } from '../components/icons/Icon';
 import { useToast } from '../contexts/ToastContext';
 import { DataTable, ColumnDef } from '../components/common/DataTable';
+import { AuthContext } from '../contexts/AuthContext';
 
 const GerirUsuarios: React.FC = React.memo(() => {
+    const { user } = useContext(AuthContext);
     const [users, setUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [currentUser, setCurrentUser] = useState<Partial<User> | null>(null);
-    const [formErrors, setFormErrors] = useState<{ password?: string }>({});
+    const [currentUser, setCurrentUser] = useState<Partial<User> & { password?: string } | null>(null);
+    const [formErrors, setFormErrors] = useState<{ name?: string, password?: string }>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { addToast } = useToast();
+
+    // Authorization Guard
+    if (user?.role !== Role.Admin) {
+        return (
+            <div className="text-center p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-200">Acesso Negado</h2>
+                <p className="mt-2 text-gray-500 dark:text-gray-400">Não tem permissão para aceder a esta página.</p>
+            </div>
+        );
+    }
 
     const loadUsers = useCallback(async () => {
         setIsLoading(true);
@@ -56,37 +68,24 @@ const GerirUsuarios: React.FC = React.memo(() => {
         setCurrentUser(null);
     };
     
-    const validateField = (name: 'password', value: string) => {
-        const newErrors = { ...formErrors };
-        
-        if (name === 'password') {
-            if (!currentUser?.id && (!value || value.trim() === '')) {
-                newErrors.password = "A senha é obrigatória para novos usuários.";
-            } else {
-                 delete newErrors.password;
-            }
-        }
-        
-        setFormErrors(newErrors);
-    };
-
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        const { name, value } = e.target as { name: 'password', value: string };
-        validateField(name, value);
-    };
-
     const handleSave = async () => {
-        // Validate all fields on save
-        validateField('password', currentUser?.password || '');
+        if (!currentUser) return;
+
+        const finalErrors: { name?: string; password?: string } = {};
+        if (!currentUser.name || currentUser.name.trim() === '') {
+            finalErrors.name = "O nome de usuário é obrigatório.";
+        }
+        if (!currentUser.id && (!currentUser.password || currentUser.password.trim() === '')) {
+            finalErrors.password = "A senha é obrigatória para novos usuários.";
+        }
+    
+        setFormErrors(finalErrors);
         
-        // Re-check errors state after validation
-        if (formErrors.password || (!currentUser.id && !currentUser.password)) {
-             addToast('Por favor, corrija os erros no formulário.', 'error');
+        if (Object.keys(finalErrors).length > 0) {
+            addToast('Por favor, corrija os erros no formulário.', 'error');
             return;
         }
         
-        if (!currentUser) return;
-
         setIsSubmitting(true);
         try {
             const userToSave = { ...currentUser };
@@ -95,10 +94,10 @@ const GerirUsuarios: React.FC = React.memo(() => {
             }
 
             if (currentUser.id) {
-                await api.updateUser(userToSave as User);
+                await api.updateUser(userToSave as User & { password?: string });
                 addToast('Usuário atualizado com sucesso!', 'success');
             } else {
-                await api.addUser(userToSave as Omit<User, 'id'>);
+                await api.addUser(userToSave as Omit<User, 'id'> & { password?: string });
                 addToast('Usuário adicionado com sucesso!', 'success');
             }
             await loadUsers();
@@ -183,10 +182,14 @@ const GerirUsuarios: React.FC = React.memo(() => {
 
             <Modal isOpen={isModalOpen} onClose={closeModal} title={currentUser?.id ? 'Editar Usuário' : 'Adicionar Usuário'}>
                 <div className="space-y-4">
-                    <div><Label htmlFor="name">Nome</Label><Input id="name" name="name" type="text" value={currentUser?.name || ''} onChange={handleFormChange} required /></div>
+                    <div>
+                        <Label htmlFor="name">Nome</Label>
+                        <Input id="name" name="name" type="text" value={currentUser?.name || ''} onChange={handleFormChange} required error={formErrors.name} />
+                        <FormError message={formErrors.name} />
+                    </div>
                     <div>
                         <Label htmlFor="password">Senha</Label>
-                        <Input id="password" name="password" type="password" value={currentUser?.password || ''} onChange={handleFormChange} onBlur={handleBlur} error={formErrors.password} placeholder={currentUser?.id ? 'Deixar em branco para não alterar' : ''}/>
+                        <Input id="password" name="password" type="password" value={currentUser?.password || ''} onChange={handleFormChange} error={formErrors.password} placeholder={currentUser?.id ? 'Deixar em branco para não alterar' : ''}/>
                         <FormError message={formErrors.password} />
                     </div>
                     <div><Label htmlFor="role">Perfil</Label><Select id="role" name="role" value={currentUser?.role || ''} onChange={handleFormChange}>{Object.values(Role).map(role => (<option key={role} value={role}>{role}</option>))}</Select></div>

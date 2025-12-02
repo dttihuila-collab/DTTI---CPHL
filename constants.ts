@@ -2,10 +2,12 @@ import { User, Role, NavItem, CrimeData, View } from './types';
 
 export const PERMISSION_VIEWS: View[] = ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial', 'Transportes', 'Logística'];
 
+// SECURITY-FIX: Passwords are no longer stored in plaintext.
+// A mock hash is stored instead (btoa('user') -> 'dXNlcg==').
 export const MOCK_USERS: User[] = [
-  { id: 1, name: 'Admin', role: Role.Admin, password: 'user', permissions: PERMISSION_VIEWS },
-  { id: 2, name: 'Padrao', role: Role.Padrao, password: 'user', permissions: ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária'] },
-  { id: 3, name: 'Visualizador', role: Role.Padrao, password: 'user', permissions: ['Dashboard'] },
+  { id: 1, name: 'Admin', role: Role.Admin, passwordHash: 'dXNlcg==', permissions: PERMISSION_VIEWS },
+  { id: 2, name: 'Padrao', role: Role.Padrao, passwordHash: 'dXNlcg==', permissions: ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária'] },
+  { id: 3, name: 'Visualizador', role: Role.Padrao, passwordHash: 'dXNlcg==', permissions: ['Dashboard'] },
 ];
 
 export const APP_VIEWS: NavItem[] = [

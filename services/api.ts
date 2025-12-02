@@ -5,14 +5,37 @@ import { loadDatabase, saveDatabase } from '../database';
 // Simulate a network delay
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
+// --- Security Enhancement: Password Hashing Simulation ---
+
+const hashPassword = (password: string): string => {
+    // In a real application, use a strong hashing algorithm like bcrypt.
+    // Using base64 for demonstration purposes ONLY to show the pattern. It's not secure.
+    try {
+        return btoa(password);
+    } catch (e) {
+        console.error("Failed to hash password:", e);
+        return password; // Fallback for environments where btoa might not be available
+    }
+};
+
+const comparePassword = (password: string, hash: string): boolean => {
+    // In a real application, bcrypt's compare function would handle this securely.
+    try {
+        return btoa(password) === hash;
+    } catch (e) {
+        return password === hash; // Fallback
+    }
+};
+
 export const api = {
     // === AUTH ===
     login: async (username: string, password: string): Promise<User | null> => {
         await delay(300);
         const db = loadDatabase();
-        const foundUser = db.users.find(u => u.name === username && u.password === password);
-        if (foundUser) {
-            const { password, ...userToReturn } = foundUser;
+        const foundUser = db.users.find(u => u.name === username);
+        
+        if (foundUser && foundUser.passwordHash && comparePassword(password, foundUser.passwordHash)) {
+            const { passwordHash, ...userToReturn } = foundUser;
             return userToReturn as User;
         }
         return null;
@@ -22,33 +45,52 @@ export const api = {
     getUsers: async (): Promise<User[]> => {
         await delay(200);
         const db = loadDatabase();
+        // Ensure password hashes are never sent to the client code.
         return db.users.map(u => {
-            const { password, ...user } = u;
+            const { passwordHash, ...user } = u;
             return user as User;
         });
     },
 
-    addUser: async (user: Omit<User, 'id'>): Promise<User> => {
+    addUser: async (user: Omit<User, 'id'> & { password?: string }): Promise<User> => {
         await delay(400);
         const db = loadDatabase();
         const newId = Math.max(0, ...db.users.map(u => u.id || 0)) + 1;
-        const newUser = { ...user, id: newId };
+        
+        const { password, ...userData } = user;
+        
+        const newUser = { 
+            ...userData, 
+            id: newId,
+            passwordHash: password ? hashPassword(password) : undefined
+        };
+
         db.users.push(newUser);
         saveDatabase(db);
-        const { password, ...userToReturn } = newUser;
+        
+        const { passwordHash, ...userToReturn } = newUser;
         return userToReturn as User;
     },
 
-    updateUser: async (updatedUser: User): Promise<User | null> => {
+    updateUser: async (updatedUser: User & { password?: string }): Promise<User | null> => {
         await delay(400);
         const db = loadDatabase();
         const userIndex = db.users.findIndex(u => u.id === updatedUser.id);
         if (userIndex > -1) {
             const originalUser = db.users[userIndex];
-            const password = updatedUser.password && updatedUser.password.trim() !== '' ? updatedUser.password : originalUser.password;
-            db.users[userIndex] = { ...updatedUser, password };
+            const { password, ...userData } = updatedUser;
+            
+            const userWithHash = { ...userData, passwordHash: originalUser.passwordHash };
+
+            // If a new password is provided, hash it. Otherwise, keep the old hash.
+            if (password && password.trim() !== '') {
+                userWithHash.passwordHash = hashPassword(password);
+            }
+
+            db.users[userIndex] = userWithHash;
             saveDatabase(db);
-            const { password: _, ...userToReturn } = db.users[userIndex];
+            
+            const { passwordHash, ...userToReturn } = db.users[userIndex];
             return userToReturn as User;
         }
         return null;

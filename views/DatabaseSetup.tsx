@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { AuthContext } from '../contexts/AuthContext';
+import { Role } from '../types';
 
 const CodeBlock: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     <div className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 rounded-md my-4 font-mono text-sm overflow-x-auto border dark:border-gray-700">
@@ -7,6 +9,18 @@ const CodeBlock: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 const DatabaseSetup: React.FC = React.memo(() => {
+    const { user } = useContext(AuthContext);
+
+    // Authorization Guard
+    if (user?.role !== Role.Admin) {
+        return (
+            <div className="text-center p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-200">Acesso Negado</h2>
+                <p className="mt-2 text-gray-500 dark:text-gray-400">Não tem permissão para aceder a esta página.</p>
+            </div>
+        );
+    }
+
     return (
         <div className="max-w-4xl mx-auto">
             <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg">
