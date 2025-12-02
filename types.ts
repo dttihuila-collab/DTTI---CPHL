@@ -1,4 +1,3 @@
-
 export enum Role {
   Admin = 'Administrador',
   Padrao = 'Padrão',
@@ -35,3 +34,12 @@ export type CrimeData = {
 };
 
 export type DashboardCategory = 'Criminalidade' | 'Sinistralidade Rodoviária' | 'Resultados Policiais' | 'Transportes' | 'Logística';
+
+// FIX: Added ApiKey type to be used for database record keys, fixing reference errors to 'db'.
+export type ApiKey = 'criminalidade' | 'sinistralidade' | 'resultados' | 'transportes' | 'logistica';
+
+export interface DataRecord {
+  id: number;
+  createdAt: string;
+  [key: string]: any;
+}

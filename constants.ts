@@ -53,3 +53,26 @@ export const CRIMES_POR_FAMILIA: CrimeData = {
     'Crimes Contra Mercado e Economia': ['Corrupção', 'Exploração e Trafico Ilegal Minerais', 'Especulação', 'Outros'],
     'Outros': ['Não especificado']
 };
+
+export const TODOS_OS_CRIMES: string[] = [...new Set(Object.values(CRIMES_POR_FAMILIA).flat())].sort();
+
+export const TIPOS_ACIDENTE: string[] = [
+    "Colisão",
+    "Atropelamento",
+    "Despiste",
+    "Capotamento",
+    "Abalroamento",
+    "Choque com obstáculo fixo",
+    "Incêndio de veículo",
+    "Outro"
+];
+
+export const TIPOS_VEICULO: string[] = ["Ligeiro", "Pesado", "Motociclo", "Outro"];
+export const ESTADO_MEIOS: string[] = ["Operacional", "Em Manutenção", "Inoperacional"];
+export const TIPOS_EQUIPAMENTO_COMUNICACAO: string[] = ["Rádio HT", "Rádio de Viatura", "Telefone Satélite", "Outro"];
+export const ITENS_ESCRITORIO: string[] = ["Resma de Papel A4", "Toner de Impressora", "Canetas", "Cadernos", "Outro"];
+
+export const TIPOS_ARMAMENTO: string[] = ["Pistola", "AKM", "G3", "Outro"];
+export const CALIBRES: string[] = ["9mm", "7.62mm", "5.56mm", "Outro"];
+export const TIPOS_VIVERES: string[] = ["Não Perecível", "Perecível", "Água", "Outro"];
+export const TIPOS_VESTUARIO: string[] = ["Farda de Gala", "Farda de Trabalho", "Botas", "Cobertura (Boné/Boina)", "Outro"];

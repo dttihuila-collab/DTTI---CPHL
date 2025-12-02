@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { DashboardCategory } from '../types';
+// FIX: Imported ApiKey type to resolve reference error.
+import { DashboardCategory, ApiKey } from '../types';
 import { CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, ChevronDownIcon } from '../components/icons/Icon';
 import { api } from '../services/api';
 
@@ -32,6 +32,19 @@ const pieChartData = [
   { name: 'Grupo D', value: 200 },
 ];
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+// FIX: Replaced `keyof Omit<typeof db, 'users'>` with `ApiKey` to fix "Cannot find name 'db'" error.
+const categoryToApiKey = (category: DashboardCategory): ApiKey => {
+    switch (category) {
+        case 'Criminalidade': return 'criminalidade';
+        case 'Sinistralidade Rodoviária': return 'sinistralidade';
+        case 'Resultados Policiais': return 'resultados';
+        case 'Transportes': return 'transportes';
+        case 'Logística': return 'logistica';
+        default: return 'criminalidade';
+    }
+}
+
 
 const Dashboard: React.FC = () => {
     const [activeFilter, setActiveFilter] = useState('Mês');
