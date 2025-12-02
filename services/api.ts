@@ -1,106 +1,92 @@
-
 import { User, ApiKey, DataRecord } from '../types';
-import { loadDatabase, saveDatabase } from '../database';
 
-// Simulate a network delay
-const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+const handleResponse = async (response: Response) => {
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({ message: 'Ocorreu um erro desconhecido.' }));
+        throw new Error(error.message || `HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+};
 
 export const api = {
     // === AUTH ===
     login: async (username: string, password: string): Promise<User | null> => {
-        await delay(300);
-        const db = loadDatabase();
-        const foundUser = db.users.find(u => u.name === username && u.password === password);
-        if (foundUser) {
-            const { password, ...userToReturn } = foundUser;
-            return userToReturn as User;
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+        });
+        if (response.ok) {
+            return response.json();
         }
-        return null;
+        return null; // Login failed
     },
 
     // === USER MANAGEMENT ===
     getUsers: async (): Promise<User[]> => {
-        await delay(200);
-        const db = loadDatabase();
-        return db.users.map(u => {
-            const { password, ...user } = u;
-            return user as User;
-        });
+        const response = await fetch('/api/users');
+        return handleResponse(response);
     },
 
     addUser: async (user: Omit<User, 'id'>): Promise<User> => {
-        await delay(400);
-        const db = loadDatabase();
-        const newId = Math.max(0, ...db.users.map(u => u.id || 0)) + 1;
-        const newUser = { ...user, id: newId };
-        db.users.push(newUser);
-        saveDatabase(db);
-        const { password, ...userToReturn } = newUser;
-        return userToReturn as User;
+        const response = await fetch('/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user),
+        });
+        return handleResponse(response);
     },
 
     updateUser: async (updatedUser: User): Promise<User | null> => {
-        await delay(400);
-        const db = loadDatabase();
-        const userIndex = db.users.findIndex(u => u.id === updatedUser.id);
-        if (userIndex > -1) {
-            const originalUser = db.users[userIndex];
-            const password = updatedUser.password && updatedUser.password.trim() !== '' ? updatedUser.password : originalUser.password;
-            db.users[userIndex] = { ...updatedUser, password };
-            saveDatabase(db);
-            const { password: _, ...userToReturn } = db.users[userIndex];
-            return userToReturn as User;
-        }
-        return null;
+         const response = await fetch(`/api/users?id=${updatedUser.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedUser),
+        });
+        return handleResponse(response);
     },
 
     deleteUser: async (userId: number): Promise<boolean> => {
-        await delay(500);
-        const db = loadDatabase();
-        const initialLength = db.users.length;
-        db.users = db.users.filter(u => u.id !== userId);
-        saveDatabase(db);
-        return db.users.length < initialLength;
+        const response = await fetch(`/api/users?id=${userId}`, {
+            method: 'DELETE',
+        });
+        if (response.ok) {
+            return true;
+        }
+        throw new Error('Falha ao eliminar o usuário.');
     },
 
     // === GENERIC RECORD MANAGEMENT ===
     getRecords: async (key: ApiKey): Promise<DataRecord[]> => {
-        await delay(250);
-        const db = loadDatabase();
-        return db[key] || [];
+        const response = await fetch(`/api/records/${key}`);
+        return handleResponse(response);
     },
 
     addRecord: async (key: ApiKey, data: any): Promise<DataRecord> => {
-        await delay(350);
-        const db = loadDatabase();
-        const newRecord = { 
-            ...data, 
-            id: new Date().getTime(),
-            createdAt: new Date().toISOString() 
-        };
-        db[key].push(newRecord);
-        saveDatabase(db);
-        return newRecord;
+        const response = await fetch(`/api/records/${key}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        return handleResponse(response);
     },
 
     updateRecord: async (key: ApiKey, updatedRecord: DataRecord): Promise<DataRecord | null> => {
-        await delay(300);
-        const db = loadDatabase();
-        const recordIndex = db[key].findIndex((r: DataRecord) => r.id === updatedRecord.id);
-        if (recordIndex > -1) {
-            db[key][recordIndex] = updatedRecord;
-            saveDatabase(db);
-            return updatedRecord;
-        }
-        return null;
+        const response = await fetch(`/api/records/${key}?id=${updatedRecord.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedRecord),
+        });
+        return handleResponse(response);
     },
     
     deleteRecord: async (key: ApiKey, recordId: number): Promise<boolean> => {
-        await delay(400);
-        const db = loadDatabase();
-        const initialLength = db[key].length;
-        db[key] = db[key].filter((r: DataRecord) => r.id !== recordId);
-        saveDatabase(db);
-        return db[key].length < initialLength;
+        const response = await fetch(`/api/records/${key}?id=${recordId}`, {
+            method: 'DELETE',
+        });
+        if (response.ok) {
+            return true;
+        }
+        throw new Error('Falha ao eliminar o registo.');
     }
 };
