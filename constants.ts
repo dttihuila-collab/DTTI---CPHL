@@ -29,7 +29,8 @@ export const MUNICIPIOS_HUILA: string[] = [
 export const UNIDADES_ESQUADRAS: string[] = [
     "Comando Municipal", "1ª Esquadra", "2ª Esquadra", "3ª Esquadra", 
     "4ª Esquadra", "5ª Esquadra", "6ª Esquadra", "7ª Esquadra", 
-    "8ª Esquadra", "9ª Esquadra", "10ª Esquadra", "11ª Esquadra", "12ª Esquadra"
+    "8ª Esquadra", "9ª Esquadra", "10ª Esquadra", "11ª Esquadra", "12ª Esquadra",
+    "Outra"
 ];
 
 export const PERIODOS: string[] = ["Iº", "IIº", "IIIº"];
@@ -68,7 +69,7 @@ export const TIPOS_ACIDENTE: string[] = [
 ];
 
 export const TIPOS_VEICULO: string[] = ["Ligeiro", "Pesado", "Motociclo", "Outro"];
-export const ESTADO_MEIOS: string[] = ["Operacional", "Em Manutenção", "Inoperacional"];
+export const ESTADO_MEIOS: string[] = ["Operacional", "Em Manutenção", "Inoperacional", "Outro"];
 export const TIPOS_EQUIPAMENTO_COMUNICACAO: string[] = ["Rádio HT", "Rádio de Viatura", "Telefone Satélite", "Outro"];
 export const ITENS_ESCRITORIO: string[] = ["Resma de Papel A4", "Toner de Impressora", "Canetas", "Cadernos", "Outro"];
 
