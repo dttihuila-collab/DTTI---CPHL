@@ -1,7 +1,8 @@
+
 import React, { useState, useMemo } from 'react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { DataRecord, CrimeFamily } from '../../types';
-import { Input, Label } from '../../components/common/FormElements';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { DataRecord } from '../../types';
+import { Input, Label, Button } from '../../components/common/FormElements';
 import { useTheme } from '../../contexts/ThemeContext';
 
 const COLORS = ['#3b82f6', '#16a34a', '#f97316', '#ef4444', '#8b5cf6', '#fde047'];
@@ -15,7 +16,7 @@ const countByKey = (records: DataRecord[], key: string): { name: string; value: 
         return acc;
     }, {} as Record<string, number>);
 
-    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+    return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
 };
 
 type CrimeSubCategory = 'Crimes Contra o Património' | 'Crimes Contra Pessoa' | 'Outros';
@@ -24,6 +25,7 @@ const CriminalidadeDetailsView: React.FC<{ records: DataRecord[] }> = ({ records
     const { theme } = useTheme();
     const [activeSubCategory, setActiveSubCategory] = useState<CrimeSubCategory>('Crimes Contra o Património');
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCrime, setSelectedCrime] = useState<string | null>(null);
 
     const recordsByFamily = useMemo(() => {
         const families: Record<string, DataRecord[]> = {
@@ -44,60 +46,88 @@ const CriminalidadeDetailsView: React.FC<{ records: DataRecord[] }> = ({ records
     }, [records]);
 
     const filteredRecords = useMemo(() => {
-        const recordsToFilter = recordsByFamily[activeSubCategory] || [];
+        let recordsToFilter = recordsByFamily[activeSubCategory] || [];
+        
+        if (selectedCrime) {
+             recordsToFilter = recordsToFilter.filter(r => r.crime === selectedCrime);
+        }
+
         if (!searchTerm) return recordsToFilter;
         const lowercasedFilter = searchTerm.toLowerCase();
         return recordsToFilter.filter(r =>
             Object.values(r).some(val => String(val).toLowerCase().includes(lowercasedFilter))
         );
-    }, [recordsByFamily, activeSubCategory, searchTerm]);
+    }, [recordsByFamily, activeSubCategory, searchTerm, selectedCrime]);
+    
+    const chartDataCrimeType = useMemo(() => countByKey(recordsByFamily[activeSubCategory] || [], 'crime'), [recordsByFamily, activeSubCategory]);
+    const chartDataMunicipality = useMemo(() => countByKey(recordsByFamily[activeSubCategory] || [], 'municipio'), [recordsByFamily, activeSubCategory]);
 
-    const chartData = useMemo(() => countByKey(filteredRecords, 'crime'), [filteredRecords]);
+    const handlePieClick = (data: any) => {
+        setSelectedCrime(prev => prev === data.name ? null : data.name);
+    }
 
     const renderContent = () => {
         return (
-            <fieldset className="border dark:border-gray-700 p-4 rounded-md animate-fade-in">
-                <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Análise de {activeSubCategory}</legend>
-                {filteredRecords.length === 0 ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Nenhum registo encontrado.</p> : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-                        <div className="h-64 md:col-span-1">
-                            <h4 className="text-md font-semibold text-center text-gray-700 dark:text-gray-300 mb-2">Distribuição por Crime</h4>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie data={chartData} dataKey="value" nameKey="name" cx="40%" cy="50%" outerRadius={80} fill="#8884d8">
-                                        {chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
-                                    </Pie>
-                                    <Tooltip contentStyle={{ backgroundColor: theme === 'dark' ? '#334155' : '#fff', border: 'none', borderRadius: '0.5rem' }} itemStyle={{ color: theme === 'dark' ? '#cbd5e1' : '#000' }} />
-                                    <Legend layout="vertical" verticalAlign="middle" align="right" formatter={(value) => <span className="text-gray-800 dark:text-gray-300">{value}</span>}/>
-                                </PieChart>
-                            </ResponsiveContainer>
+            <div className="space-y-6">
+                 {filteredRecords.length === 0 ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Nenhum registo encontrado para os filtros selecionados.</p> : (
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                            <div className="h-72">
+                                <h4 className="text-md font-semibold text-center text-gray-700 dark:text-gray-300 mb-2">Distribuição por Crime</h4>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie data={chartDataCrimeType} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} fill="#8884d8" labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                                            if (percent < 0.05) return null;
+                                            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                                            const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
+                                            const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
+                                            return <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central">{(percent * 100).toFixed(0)}%</text>;
+                                        }}>
+                                            {chartDataCrimeType.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} onClick={() => handlePieClick(entry)} className="cursor-pointer" />)}
+                                        </Pie>
+                                        <Tooltip contentStyle={{ backgroundColor: theme === 'dark' ? '#334155' : '#fff', border: 'none', borderRadius: '0.5rem' }} itemStyle={{ color: theme === 'dark' ? '#cbd5e1' : '#000' }} />
+                                        <Legend formatter={(value) => <span className="text-gray-800 dark:text-gray-300">{value}</span>}/>
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+                             <div className="h-72">
+                                <h4 className="text-md font-semibold text-center text-gray-700 dark:text-gray-300 mb-2">Crimes por Município</h4>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={chartDataMunicipality} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke={theme === 'dark' ? '#4a5568' : '#e2e8f0'} />
+                                        <XAxis type="number" stroke={theme === 'dark' ? '#a0aec0' : '#4a5568'} />
+                                        <YAxis type="category" dataKey="name" width={80} stroke={theme === 'dark' ? '#a0aec0' : '#4a5568'} />
+                                        <Tooltip cursor={{fill: 'rgba(128,128,128,0.1)'}} contentStyle={{ backgroundColor: theme === 'dark' ? '#334155' : '#fff', border: 'none', borderRadius: '0.5rem' }} itemStyle={{ color: theme === 'dark' ? '#cbd5e1' : '#000' }} />
+                                        <Bar dataKey="value" name="Nº Crimes" fill="#3b82f6" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
                         <div className="md:col-span-2 overflow-x-auto">
-                            <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-2">Últimos Registos</h4>
+                            <div className="flex justify-between items-center mb-2">
+                                <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">
+                                    {selectedCrime ? `Registos de "${selectedCrime}"` : 'Últimos Registos'}
+                                </h4>
+                                {selectedCrime && <Button variant="secondary" onClick={() => setSelectedCrime(null)}>Limpar Filtro</Button>}
+                            </div>
                             <table className="w-full text-sm dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
                                     <tr>
-                                        <th className="px-4 py-2">Data</th>
-                                        <th className="px-4 py-2">Município</th>
-                                        <th className="px-4 py-2">Crime</th>
-                                        <th className="px-4 py-2">Vítima</th>
+                                        <th className="px-4 py-2">Data</th><th className="px-4 py-2">Município</th><th className="px-4 py-2">Crime</th><th className="px-4 py-2">Vítima</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredRecords.slice(0, 5).map(r => (
+                                    {filteredRecords.slice(0, 10).map(r => (
                                         <tr key={r.id} className="border-b dark:border-gray-700">
-                                            <td className="px-4 py-2">{new Date(r.data).toLocaleDateString()}</td>
-                                            <td className="px-4 py-2">{r.municipio}</td>
-                                            <td className="px-4 py-2">{r.crime}</td>
-                                            <td className="px-4 py-2">{r.vitimaNome}</td>
+                                            <td className="px-4 py-2">{new Date(r.data).toLocaleDateString()}</td><td className="px-4 py-2">{r.municipio}</td><td className="px-4 py-2">{r.crime}</td><td className="px-4 py-2">{r.vitimaNome}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </>
                 )}
-            </fieldset>
+            </div>
         );
     }
 
@@ -112,7 +142,7 @@ const CriminalidadeDetailsView: React.FC<{ records: DataRecord[] }> = ({ records
                     return (
                         <button
                             key={cat}
-                            onClick={() => setActiveSubCategory(cat)}
+                            onClick={() => { setActiveSubCategory(cat); setSelectedCrime(null); }}
                             className={`p-4 rounded-lg text-left transition-all duration-300 transform hover:scale-105 ${isActive ? 'bg-custom-blue-600 text-white shadow-lg' : 'bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
                         >
                             <h4 className={`font-semibold ${isActive ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`}>{cat}</h4>

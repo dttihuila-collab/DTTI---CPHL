@@ -1,15 +1,16 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { User, Role, View } from '../types';
 import { api } from '../services/api';
 import { PERMISSION_VIEWS } from '../constants';
 import Modal from '../components/Modal';
-import { Label, Input, Select, Button } from '../components/common/FormElements';
+import { Label, Input, Select, Button, FormError } from '../components/common/FormElements';
 import { AddIcon, EditIcon, DeleteIcon } from '../components/icons/Icon';
 import { useToast } from '../contexts/ToastContext';
+import { DataTable, ColumnDef } from '../components/common/DataTable';
 
 const GerirUsuarios: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState<Partial<User> | null>(null);
@@ -18,9 +19,16 @@ const GerirUsuarios: React.FC = () => {
     const { addToast } = useToast();
 
     const loadUsers = useCallback(async () => {
-        const userList = await api.getUsers();
-        setUsers(userList);
-    }, []);
+        setIsLoading(true);
+        try {
+            const userList = await api.getUsers();
+            setUsers(userList);
+        } catch (error) {
+            addToast('Falha ao carregar usuários.', 'error');
+        } finally {
+            setIsLoading(false);
+        }
+    }, [addToast]);
 
     useEffect(() => {
         loadUsers();
@@ -48,29 +56,47 @@ const GerirUsuarios: React.FC = () => {
         setCurrentUser(null);
     };
     
-    const validateForm = () => {
-        if (!currentUser) return false;
+    const validateField = (name: 'email' | 'password', value: string) => {
+        const newErrors = { ...formErrors };
         
-        const errors: { email?: string; password?: string } = {};
-        
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!currentUser.email || !emailRegex.test(currentUser.email)) {
-            errors.email = "Por favor, insira um formato de email válido.";
+        if (name === 'email') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!value || !emailRegex.test(value)) {
+                newErrors.email = "Por favor, insira um formato de email válido.";
+            } else {
+                delete newErrors.email;
+            }
         }
 
-        if (!currentUser.id && (!currentUser.password || currentUser.password.trim() === '')) {
-            errors.password = "A senha é obrigatória para novos usuários.";
+        if (name === 'password') {
+            if (!currentUser?.id && (!value || value.trim() === '')) {
+                newErrors.password = "A senha é obrigatória para novos usuários.";
+            } else {
+                 delete newErrors.password;
+            }
         }
-
-        setFormErrors(errors);
-        return Object.keys(errors).length === 0;
+        
+        setFormErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        const { name, value } = e.target as { name: 'email' | 'password', value: string };
+        validateField(name, value);
+    };
 
     const handleSave = async () => {
-        if (!currentUser || !validateForm()) {
+        // Validate all fields on save
+        validateField('email', currentUser?.email || '');
+        validateField('password', currentUser?.password || '');
+        
+        // Re-check errors state after validation
+        if (formErrors.email || formErrors.password || !currentUser?.email || (!currentUser.id && !currentUser.password)) {
+             addToast('Por favor, corrija os erros no formulário.', 'error');
             return;
         }
+        
+        if (!currentUser) return;
 
         setIsSubmitting(true);
         try {
@@ -119,8 +145,10 @@ const GerirUsuarios: React.FC = () => {
                 updatedUser.permissions = PERMISSION_VIEWS;
             }
             setCurrentUser(updatedUser);
-             if (formErrors[name as keyof typeof formErrors]) {
-                setFormErrors(prev => ({ ...prev, [name]: undefined }));
+            if (formErrors[name as keyof typeof formErrors]) {
+                const newErrors = { ...formErrors };
+                delete newErrors[name as keyof typeof formErrors];
+                setFormErrors(newErrors);
             }
         }
     };
@@ -135,6 +163,18 @@ const GerirUsuarios: React.FC = () => {
         }
     };
 
+    const columns: ColumnDef<User>[] = [
+        { accessorKey: 'name', header: 'Nome' },
+        { accessorKey: 'email', header: 'Email' },
+        { accessorKey: 'role', header: 'Perfil' },
+    ];
+    
+    const renderRowActions = (user: User) => (
+        <>
+            <button onClick={() => openModal(user)} className="text-custom-blue-600 hover:text-custom-blue-800 dark:text-custom-blue-400 dark:hover:text-custom-blue-300"><EditIcon /></button>
+            <button onClick={() => openDeleteModal(user)} className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"><DeleteIcon /></button>
+        </>
+    );
 
     return (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
@@ -145,37 +185,27 @@ const GerirUsuarios: React.FC = () => {
                     <span className="ml-2">Adicionar Usuário</span>
                 </Button>
             </div>
-            <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">Nome</th>
-                            <th scope="col" className="px-6 py-3">Email</th>
-                            <th scope="col" className="px-6 py-3">Perfil</th>
-                            <th scope="col" className="px-6 py-3 text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map(user => (
-                            <tr key={user.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <td className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">{user.name}</td>
-                                <td className="px-6 py-4">{user.email}</td>
-                                <td className="px-6 py-4">{user.role}</td>
-                                <td className="px-6 py-4 text-right space-x-2">
-                                    <button onClick={() => openModal(user)} className="text-custom-blue-600 hover:text-custom-blue-800 dark:text-custom-blue-400 dark:hover:text-custom-blue-300"><EditIcon /></button>
-                                    <button onClick={() => openDeleteModal(user)} className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"><DeleteIcon /></button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            
+            <DataTable 
+                columns={columns}
+                data={users}
+                isLoading={isLoading}
+                renderRowActions={renderRowActions}
+            />
 
             <Modal isOpen={isModalOpen} onClose={closeModal} title={currentUser?.id ? 'Editar Usuário' : 'Adicionar Usuário'}>
                 <div className="space-y-4">
                     <div><Label htmlFor="name">Nome</Label><Input id="name" name="name" type="text" value={currentUser?.name || ''} onChange={handleFormChange} required /></div>
-                    <div><Label htmlFor="email">Email</Label><Input id="email" name="email" type="email" value={currentUser?.email || ''} onChange={handleFormChange} required/><p className="text-red-500 text-xs mt-1">{formErrors.email}</p></div>
-                    <div><Label htmlFor="password">Senha</Label><Input id="password" name="password" type="password" value={currentUser?.password || ''} onChange={handleFormChange} placeholder={currentUser?.id ? 'Deixar em branco para não alterar' : ''}/><p className="text-red-500 text-xs mt-1">{formErrors.password}</p></div>
+                    <div>
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" name="email" type="email" value={currentUser?.email || ''} onChange={handleFormChange} onBlur={handleBlur} error={formErrors.email} required/>
+                        <FormError message={formErrors.email} />
+                    </div>
+                    <div>
+                        <Label htmlFor="password">Senha</Label>
+                        <Input id="password" name="password" type="password" value={currentUser?.password || ''} onChange={handleFormChange} onBlur={handleBlur} error={formErrors.password} placeholder={currentUser?.id ? 'Deixar em branco para não alterar' : ''}/>
+                        <FormError message={formErrors.password} />
+                    </div>
                     <div><Label htmlFor="role">Perfil</Label><Select id="role" name="role" value={currentUser?.role || ''} onChange={handleFormChange}>{Object.values(Role).map(role => (<option key={role} value={role}>{role}</option>))}</Select></div>
                     {currentUser?.role === Role.Admin && (<div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-md text-center"><p className="text-sm text-gray-600 dark:text-gray-300">Administradores têm acesso a todos os formulários.</p></div>)}
                     {currentUser?.role === Role.Padrao && (

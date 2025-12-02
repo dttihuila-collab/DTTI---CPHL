@@ -19,7 +19,8 @@ const categories: { name: DashboardCategory, icon: React.ReactElement }[] = [
     { name: 'Logística', icon: <LogisticsIcon /> },
 ];
 
-const timeFilters = ['Dia', 'Semana', 'Mês', 'Ano'];
+type TimeFilter = 'Dia' | 'Semana' | 'Mês' | 'Ano';
+const timeFilters: TimeFilter[] = ['Dia', 'Semana', 'Mês', 'Ano'];
 
 const categoryToApiKey = (category: DashboardCategory): ApiKey => {
     switch (category) {
@@ -31,6 +32,18 @@ const categoryToApiKey = (category: DashboardCategory): ApiKey => {
         default: return 'criminalidade';
     }
 }
+
+const DetailsSkeleton = () => (
+    <div className="animate-pulse p-4">
+        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-6"></div>
+        <div className="space-y-4">
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
+        </div>
+    </div>
+);
 
 const DashboardDetails: React.FC<{ category: DashboardCategory }> = ({ category }) => {
     const [records, setRecords] = useState<any[]>([]);
@@ -56,7 +69,7 @@ const DashboardDetails: React.FC<{ category: DashboardCategory }> = ({ category 
     }, [category, refreshKey]);
     
     if (isLoading) {
-        return <div className="text-center p-8 text-gray-600 dark:text-gray-400">A carregar detalhes...</div>;
+        return <DetailsSkeleton />;
     }
 
     if (records.length === 0) {
@@ -81,7 +94,7 @@ const DashboardDetails: React.FC<{ category: DashboardCategory }> = ({ category 
 
 
 const Dashboard: React.FC = () => {
-    const [activeFilter, setActiveFilter] = useState('Mês');
+    const [activeFilter, setActiveFilter] = useState<TimeFilter>('Mês');
     const [expandedCategory, setExpandedCategory] = useState<DashboardCategory | null>(null);
     const [totals, setTotals] = useState<{[key in DashboardCategory]: number}>({
         'Criminalidade': 0,
@@ -94,25 +107,50 @@ const Dashboard: React.FC = () => {
     
     useEffect(() => {
         const fetchTotals = async () => {
-            const [criminalidadeCount, sinistralidadeCount, resultadosCount, transportesCount, logisticaCount] = await Promise.all([
-                api.getRecords('criminalidade').then(r => r.length),
-                api.getRecords('sinistralidade').then(r => r.length),
-                api.getRecords('resultados').then(r => r.length),
-                api.getRecords('transportes').then(r => r.length),
-                api.getRecords('logistica').then(r => r.length)
+            const now = new Date();
+            let startDate = new Date();
+
+            switch(activeFilter) {
+                case 'Dia':
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'Semana':
+                    startDate.setDate(now.getDate() - 7);
+                    break;
+                case 'Mês':
+                    startDate.setMonth(now.getMonth() - 1);
+                    break;
+                case 'Ano':
+                    startDate.setFullYear(now.getFullYear() - 1);
+                    break;
+            }
+
+            const filterRecordsByDate = (records: any[]) => {
+                return records.filter(r => {
+                    const recordDate = new Date(r.createdAt || r.data);
+                    return recordDate >= startDate && recordDate <= now;
+                });
+            };
+
+            const [criminalidade, sinistralidade, resultados, transportes, logistica] = await Promise.all([
+                api.getRecords('criminalidade'),
+                api.getRecords('sinistralidade'),
+                api.getRecords('resultados'),
+                api.getRecords('transportes'),
+                api.getRecords('logistica')
             ]);
 
             setTotals({
-                'Criminalidade': criminalidadeCount,
-                'Sinistralidade Rodoviária': sinistralidadeCount,
-                'Resultados Policiais': resultadosCount,
-                'Transportes': transportesCount,
-                'Logística': logisticaCount,
+                'Criminalidade': filterRecordsByDate(criminalidade).length,
+                'Sinistralidade Rodoviária': filterRecordsByDate(sinistralidade).length,
+                'Resultados Policiais': filterRecordsByDate(resultados).length,
+                'Transportes': filterRecordsByDate(transportes).length,
+                'Logística': filterRecordsByDate(logistica).length,
             });
         };
         
         fetchTotals();
-    }, [refreshKey]);
+    }, [refreshKey, activeFilter]);
 
     const handleCardClick = (category: DashboardCategory) => {
         setExpandedCategory(prev => prev === category ? null : category);
@@ -206,6 +244,7 @@ const Dashboard: React.FC = () => {
                             </div>
                              <div className="mt-4">
                                 <p className="text-4xl font-bold text-gray-800 dark:text-gray-100">{totals[name].toLocaleString()}</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Total no período</p>
                              </div>
                         </div>
                     );
