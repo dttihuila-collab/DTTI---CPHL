@@ -1,9 +1,8 @@
-
 import React, { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { Role, View, User } from '../types';
 import { APP_VIEWS } from '../constants';
-import { DashboardIcon, CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, UsersIcon, ReportsIcon, LogoutIcon, ChevronLeftIcon, ChevronRightIcon } from './icons/Icon';
+import { DashboardIcon, CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, UsersIcon, ReportsIcon, LogoutIcon, ChevronLeftIcon, ChevronRightIcon, DatabaseIcon } from './icons/Icon';
 
 interface SidebarProps {
   user: User;
@@ -22,6 +21,7 @@ const iconMap: { [key in View]?: React.ReactElement } = {
     'Logística': <LogisticsIcon />,
     'Gerir Usuários': <UsersIcon />,
     'Relatórios': <ReportsIcon />,
+    'Database Setup': <DatabaseIcon />,
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ user, isCollapsed, setCurrentView, currentView, onToggleSidebar }) => {

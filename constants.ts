@@ -1,4 +1,3 @@
-
 import { User, Role, NavItem, CrimeData, View } from './types';
 
 export const PERMISSION_VIEWS: View[] = ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Policiais', 'Transportes', 'Logística'];
@@ -18,6 +17,7 @@ export const APP_VIEWS: NavItem[] = [
   { name: 'Logística', roles: [Role.Admin, Role.Padrao] },
   { name: 'Gerir Usuários', roles: [Role.Admin] },
   { name: 'Relatórios', roles: [Role.Admin, Role.Padrao] },
+  { name: 'Database Setup', roles: [Role.Admin] },
 ];
 
 export const MUNICIPIOS_HUILA: string[] = [

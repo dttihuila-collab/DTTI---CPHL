@@ -1,4 +1,3 @@
-
 export enum Role {
   Admin = 'Administrador',
   Padrao = 'Padrão',
@@ -21,7 +20,8 @@ export type View =
   | 'Transportes'
   | 'Logística'
   | 'Gerir Usuários'
-  | 'Relatórios';
+  | 'Relatórios'
+  | 'Database Setup';
 
 export interface NavItem {
   name: View;

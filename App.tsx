@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useMemo } from 'react';
 import { User, View, Role } from './types';
 import Login from './views/Login';
@@ -12,6 +11,7 @@ import TransportesForm from './views/forms/TransportesForm';
 import LogisticaForm from './views/forms/LogisticaForm';
 import GerirUsuarios from './views/GerirUsuarios';
 import Relatorios from './views/Relatorios';
+import DatabaseSetup from './views/DatabaseSetup';
 import { api } from './services/api';
 import { AuthContext } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
@@ -75,6 +75,8 @@ const AppContent: React.FC = () => {
         return <GerirUsuarios />;
       case 'Relatórios':
         return <Relatorios />;
+      case 'Database Setup':
+        return <DatabaseSetup />;
       default:
         return <Dashboard />;
     }
