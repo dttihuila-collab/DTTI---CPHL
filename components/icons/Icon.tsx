@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const Icon: React.FC<{ path: string, className?: string }> = ({ path, className = "w-6 h-6" }) => (
@@ -25,3 +26,6 @@ export const ChevronDownIcon = () => <Icon path="M7.41 8.59L12 13.17l4.59-4.58L1
 export const ChevronUpIcon = () => <Icon path="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />;
 export const ChevronLeftIcon = () => <Icon path="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />;
 export const ChevronRightIcon = () => <Icon path="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />;
+export const SuccessIcon = () => <Icon path="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />;
+export const ErrorIcon = () => <Icon path="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />;
+export const InfoIcon = () => <Icon path="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />;

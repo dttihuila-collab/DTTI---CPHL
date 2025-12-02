@@ -1,6 +1,6 @@
 
 import React, { useState, useContext } from 'react';
-import { AuthContext } from '../App';
+import { AuthContext } from '../contexts/AuthContext';
 import { SecurityIcon } from '../components/icons/Icon';
 import { Input, Button, Label } from '../components/common/FormElements';
 

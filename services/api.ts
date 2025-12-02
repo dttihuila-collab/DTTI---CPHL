@@ -1,5 +1,5 @@
-// FIX: Imported ApiKey type to resolve reference error.
-import { User, ApiKey } from '../types';
+
+import { User, ApiKey, DataRecord } from '../types';
 import { loadDatabase, saveDatabase } from '../database';
 
 // Simulate a network delay
@@ -22,7 +22,6 @@ export const api = {
     getUsers: async (): Promise<User[]> => {
         await delay(200);
         const db = loadDatabase();
-        // Return users without their passwords
         return db.users.map(u => {
             const { password, ...user } = u;
             return user as User;
@@ -46,12 +45,9 @@ export const api = {
         const userIndex = db.users.findIndex(u => u.id === updatedUser.id);
         if (userIndex > -1) {
             const originalUser = db.users[userIndex];
-            // Preserve original password if not provided in the update
             const password = updatedUser.password && updatedUser.password.trim() !== '' ? updatedUser.password : originalUser.password;
-            
             db.users[userIndex] = { ...updatedUser, password };
             saveDatabase(db);
-            
             const { password: _, ...userToReturn } = db.users[userIndex];
             return userToReturn as User;
         }
@@ -68,15 +64,13 @@ export const api = {
     },
 
     // === GENERIC RECORD MANAGEMENT ===
-    // FIX: Replaced `keyof Omit<typeof db, 'users'>` with `ApiKey` to fix "Cannot find name 'db'" error.
-    getRecords: async (key: ApiKey): Promise<any[]> => {
+    getRecords: async (key: ApiKey): Promise<DataRecord[]> => {
         await delay(250);
         const db = loadDatabase();
         return db[key] || [];
     },
 
-    // FIX: Replaced `keyof Omit<typeof db, 'users'>` with `ApiKey` to fix "Cannot find name 'db'" error.
-    addRecord: async (key: ApiKey, data: any): Promise<any> => {
+    addRecord: async (key: ApiKey, data: any): Promise<DataRecord> => {
         await delay(350);
         const db = loadDatabase();
         const newRecord = { 
@@ -87,5 +81,26 @@ export const api = {
         db[key].push(newRecord);
         saveDatabase(db);
         return newRecord;
+    },
+
+    updateRecord: async (key: ApiKey, updatedRecord: DataRecord): Promise<DataRecord | null> => {
+        await delay(300);
+        const db = loadDatabase();
+        const recordIndex = db[key].findIndex((r: DataRecord) => r.id === updatedRecord.id);
+        if (recordIndex > -1) {
+            db[key][recordIndex] = updatedRecord;
+            saveDatabase(db);
+            return updatedRecord;
+        }
+        return null;
+    },
+    
+    deleteRecord: async (key: ApiKey, recordId: number): Promise<boolean> => {
+        await delay(400);
+        const db = loadDatabase();
+        const initialLength = db[key].length;
+        db[key] = db[key].filter((r: DataRecord) => r.id !== recordId);
+        saveDatabase(db);
+        return db[key].length < initialLength;
     }
 };

@@ -1,6 +1,6 @@
 
 import React, { useContext } from 'react';
-import { AuthContext } from '../App';
+import { AuthContext } from '../contexts/AuthContext';
 import { Role, View, User } from '../types';
 import { APP_VIEWS } from '../constants';
 import { DashboardIcon, CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, UsersIcon, ReportsIcon, LogoutIcon, ChevronLeftIcon, ChevronRightIcon } from './icons/Icon';

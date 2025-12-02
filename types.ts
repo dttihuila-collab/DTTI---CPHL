@@ -1,3 +1,4 @@
+
 export enum Role {
   Admin = 'Administrador',
   Padrao = 'Padrão',
@@ -35,11 +36,40 @@ export type CrimeData = {
 
 export type DashboardCategory = 'Criminalidade' | 'Sinistralidade Rodoviária' | 'Resultados Policiais' | 'Transportes' | 'Logística';
 
-// FIX: Added ApiKey type to be used for database record keys, fixing reference errors to 'db'.
 export type ApiKey = 'criminalidade' | 'sinistralidade' | 'resultados' | 'transportes' | 'logistica';
 
 export interface DataRecord {
   id: number;
   createdAt: string;
   [key: string]: any;
+}
+
+// Specific Record Types
+export interface CriminalidadeRecord extends DataRecord {
+  familiaDeletiva: CrimeFamily;
+  crime: string;
+  municipio: string;
+  vitimaNome: string;
+  acusadoNome: string;
+}
+
+export interface SinistralidadeRecord extends DataRecord {
+    categoria: 'Acidentes' | 'Vítimas' | 'Outros';
+    tipoAcidente?: string;
+    vitimaEstado?: 'Fatal' | 'Grave' | 'Ligeiro' | 'Ileso';
+}
+
+export interface ResultadosRecord extends DataRecord {
+    categoria: 'Operações' | 'Patrulhamentos' | 'Detidos' | 'Outros';
+}
+
+export interface TransportesRecord extends DataRecord {
+    categoria: 'Municípios' | 'Membros' | 'Manutenções' | 'Outros';
+}
+
+export interface LogisticaRecord extends DataRecord {
+    categoriaLogistica: 'Armamento' | 'Viveres' | 'Vestuario';
+    agenteNome: string;
+    tipoArmamento?: string;
+    numSerieArma?: string;
 }

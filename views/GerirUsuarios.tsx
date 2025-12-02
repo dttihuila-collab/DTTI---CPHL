@@ -6,6 +6,7 @@ import { PERMISSION_VIEWS } from '../constants';
 import Modal from '../components/Modal';
 import { Label, Input, Select, Button } from '../components/common/FormElements';
 import { AddIcon, EditIcon, DeleteIcon } from '../components/icons/Icon';
+import { useToast } from '../contexts/ToastContext';
 
 const GerirUsuarios: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
@@ -13,6 +14,8 @@ const GerirUsuarios: React.FC = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState<Partial<User> | null>(null);
     const [formErrors, setFormErrors] = useState<{ email?: string; password?: string }>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { addToast } = useToast();
 
     const loadUsers = useCallback(async () => {
         const userList = await api.getUsers();
@@ -65,41 +68,53 @@ const GerirUsuarios: React.FC = () => {
 
 
     const handleSave = async () => {
-        if (currentUser) {
-            if (!validateForm()) {
-                return;
-            }
-            
+        if (!currentUser || !validateForm()) {
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
             const userToSave = { ...currentUser };
             if (userToSave.role === Role.Admin) {
                 userToSave.permissions = PERMISSION_VIEWS;
             }
 
             if (currentUser.id) {
-                // Edit
                 await api.updateUser(userToSave as User);
+                addToast('Usuário atualizado com sucesso!', 'success');
             } else {
-                // Add
                 await api.addUser(userToSave as Omit<User, 'id'>);
+                addToast('Usuário adicionado com sucesso!', 'success');
             }
             await loadUsers();
             closeModal();
+        } catch (error) {
+            addToast('Ocorreu um erro ao salvar o usuário.', 'error');
+        } finally {
+            setIsSubmitting(false);
         }
     };
     
     const handleDelete = async () => {
         if(currentUser && currentUser.id) {
-            await api.deleteUser(currentUser.id);
-            await loadUsers();
+            setIsSubmitting(true);
+            try {
+                await api.deleteUser(currentUser.id);
+                addToast('Usuário eliminado com sucesso!', 'success');
+                await loadUsers();
+            } catch (error) {
+                addToast('Ocorreu um erro ao eliminar o usuário.', 'error');
+            } finally {
+                setIsSubmitting(false);
+                closeDeleteModal();
+            }
         }
-        closeDeleteModal();
     };
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         if(currentUser) {
             const { name, value } = e.target;
             const updatedUser = { ...currentUser, [name]: value };
-            // If role is changed to Admin, reset permissions
             if (name === 'role' && value === Role.Admin) {
                 updatedUser.permissions = PERMISSION_VIEWS;
             }
@@ -156,85 +171,39 @@ const GerirUsuarios: React.FC = () => {
                 </table>
             </div>
 
-            {/* Add/Edit Modal */}
             <Modal isOpen={isModalOpen} onClose={closeModal} title={currentUser?.id ? 'Editar Usuário' : 'Adicionar Usuário'}>
                 <div className="space-y-4">
-                    <div>
-                        <Label htmlFor="name">Nome</Label>
-                        <Input id="name" name="name" type="text" value={currentUser?.name || ''} onChange={handleFormChange} required />
-                    </div>
-                    <div>
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="email" value={currentUser?.email || ''} onChange={handleFormChange} required/>
-                        {formErrors.email && <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>}
-                    </div>
-                    <div>
-                        <Label htmlFor="password">Senha</Label>
-                        <Input 
-                            id="password" 
-                            name="password" 
-                            type="password" 
-                            value={currentUser?.password || ''} 
-                            onChange={handleFormChange} 
-                            placeholder={currentUser?.id ? 'Deixar em branco para não alterar' : ''}
-                        />
-                         {formErrors.password && <p className="text-red-500 text-xs mt-1">{formErrors.password}</p>}
-                    </div>
-                    <div>
-                        <Label htmlFor="role">Perfil</Label>
-                        <Select id="role" name="role" value={currentUser?.role || ''} onChange={handleFormChange}>
-                            {Object.values(Role).map(role => (
-                                <option key={role} value={role}>{role}</option>
-                            ))}
-                        </Select>
-                    </div>
-
-                    {currentUser?.role === Role.Admin && (
-                        <div className="p-3 bg-gray-100 rounded-md text-center">
-                            <p className="text-sm text-gray-600">
-                                Administradores têm acesso a todos os formulários.
-                            </p>
-                        </div>
-                    )}
-
+                    <div><Label htmlFor="name">Nome</Label><Input id="name" name="name" type="text" value={currentUser?.name || ''} onChange={handleFormChange} required /></div>
+                    <div><Label htmlFor="email">Email</Label><Input id="email" name="email" type="email" value={currentUser?.email || ''} onChange={handleFormChange} required/><p className="text-red-500 text-xs mt-1">{formErrors.email}</p></div>
+                    <div><Label htmlFor="password">Senha</Label><Input id="password" name="password" type="password" value={currentUser?.password || ''} onChange={handleFormChange} placeholder={currentUser?.id ? 'Deixar em branco para não alterar' : ''}/><p className="text-red-500 text-xs mt-1">{formErrors.password}</p></div>
+                    <div><Label htmlFor="role">Perfil</Label><Select id="role" name="role" value={currentUser?.role || ''} onChange={handleFormChange}>{Object.values(Role).map(role => (<option key={role} value={role}>{role}</option>))}</Select></div>
+                    {currentUser?.role === Role.Admin && (<div className="p-3 bg-gray-100 rounded-md text-center"><p className="text-sm text-gray-600">Administradores têm acesso a todos os formulários.</p></div>)}
                     {currentUser?.role === Role.Padrao && (
                         <fieldset className="border p-4 rounded-md">
                              <legend className="text-sm font-medium text-gray-900 px-1">Permissões de Formulário</legend>
                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
                                 {PERMISSION_VIEWS.map(permission => (
                                     <div key={permission} className="flex items-center">
-                                        <input
-                                            id={`perm-${permission}`}
-                                            type="checkbox"
-                                            checked={currentUser.permissions?.includes(permission) || false}
-                                            onChange={() => handlePermissionChange(permission)}
-                                            className="h-4 w-4 text-custom-blue-600 border-gray-300 rounded focus:ring-custom-blue-500"
-                                        />
-                                        <label htmlFor={`perm-${permission}`} className="ml-2 block text-sm text-gray-900">
-                                            {permission}
-                                        </label>
+                                        <input id={`perm-${permission}`} type="checkbox" checked={currentUser.permissions?.includes(permission) || false} onChange={() => handlePermissionChange(permission)} className="h-4 w-4 text-custom-blue-600 border-gray-300 rounded focus:ring-custom-blue-500" />
+                                        <label htmlFor={`perm-${permission}`} className="ml-2 block text-sm text-gray-900">{permission}</label>
                                     </div>
                                 ))}
                             </div>
-                            <p className="text-xs text-gray-500 mt-3">
-                                Para acesso de apenas visualização, selecione somente 'Dashboard'.
-                            </p>
+                            <p className="text-xs text-gray-500 mt-3">Para acesso de apenas visualização, selecione somente 'Dashboard'.</p>
                         </fieldset>
                     )}
-
                     <div className="flex justify-end space-x-2 pt-4">
                         <Button variant="secondary" onClick={closeModal}>Cancelar</Button>
-                        <Button onClick={handleSave}>Salvar</Button>
+                        <Button onClick={handleSave} isLoading={isSubmitting}>Salvar</Button>
                     </div>
                 </div>
             </Modal>
 
-            {/* Delete Confirmation Modal */}
             <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} title="Confirmar Eliminação">
                 <p>Tem a certeza que deseja eliminar o usuário <strong>{currentUser?.name}</strong>? Esta ação não pode ser desfeita.</p>
                 <div className="flex justify-end space-x-2 pt-6">
                     <Button variant="secondary" onClick={closeDeleteModal}>Cancelar</Button>
-                    <Button variant="danger" onClick={handleDelete}>Eliminar</Button>
+                    <Button variant="danger" onClick={handleDelete} isLoading={isSubmitting}>Eliminar</Button>
                 </div>
             </Modal>
         </div>

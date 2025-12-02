@@ -1,3 +1,4 @@
+
 import React, { ReactNode } from 'react';
 import { Button } from '../../components/common/FormElements';
 
@@ -6,9 +7,10 @@ interface FormWrapperProps {
     description: string;
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
     children: ReactNode;
+    isSubmitting?: boolean;
 }
 
-const FormWrapper: React.FC<FormWrapperProps> = ({ title, description, onSubmit, children }) => {
+const FormWrapper: React.FC<FormWrapperProps> = ({ title, description, onSubmit, children, isSubmitting = false }) => {
     return (
         <div className="max-w-4xl mx-auto">
             <div className="bg-white shadow-md rounded-lg">
@@ -21,7 +23,7 @@ const FormWrapper: React.FC<FormWrapperProps> = ({ title, description, onSubmit,
                         {children}
                     </div>
                     <div className="px-6 py-4 bg-gray-50 text-right rounded-b-lg">
-                        <Button type="submit">
+                        <Button type="submit" isLoading={isSubmitting}>
                             Inserir
                         </Button>
                     </div>

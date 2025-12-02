@@ -13,20 +13,14 @@ import LogisticaForm from './views/forms/LogisticaForm';
 import GerirUsuarios from './views/GerirUsuarios';
 import Relatorios from './views/Relatorios';
 import { api } from './services/api';
-
-export const AuthContext = React.createContext<{
-  user: User | null;
-  login: (username: string, password: string) => Promise<boolean>;
-  logout: () => void;
-}>({
-  user: null,
-  login: async () => false,
-  logout: () => {},
-});
+import { AuthContext } from './contexts/AuthContext';
+import { ToastProvider } from './contexts/ToastContext';
+import ToastContainer from './components/ToastContainer';
+import { DataRefreshProvider } from './contexts/DataRefreshContext';
 
 const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Policiais', 'Transportes', 'Logística'];
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [currentView, setCurrentView] = useState<View>('Dashboard');
@@ -56,7 +50,6 @@ const App: React.FC = () => {
       if (user.permissions?.includes(view)) {
         setCurrentView(view);
       } else {
-        // If user tries to access a form they don't have permission for, default to Dashboard
         setCurrentView('Dashboard');
       }
     } else {
@@ -113,6 +106,18 @@ const App: React.FC = () => {
         </div>
       </div>
     </AuthContext.Provider>
+  );
+}
+
+
+const App: React.FC = () => {
+  return (
+    <DataRefreshProvider>
+      <ToastProvider>
+        <AppContent />
+        <ToastContainer />
+      </ToastProvider>
+    </DataRefreshProvider>
   );
 };
 
