@@ -56,11 +56,11 @@ const DashboardDetails: React.FC<{ category: DashboardCategory }> = ({ category 
     }, [category, refreshKey]);
     
     if (isLoading) {
-        return <div className="text-center p-8 text-gray-600">A carregar detalhes...</div>;
+        return <div className="text-center p-8 text-gray-600 dark:text-gray-400">A carregar detalhes...</div>;
     }
 
     if (records.length === 0) {
-        return <div className="text-center p-8 text-gray-600">Nenhum dado registado para esta categoria.</div>;
+        return <div className="text-center p-8 text-gray-600 dark:text-gray-400">Nenhum dado registado para esta categoria.</div>;
     }
 
     switch (category) {
@@ -123,8 +123,8 @@ const Dashboard: React.FC = () => {
     const renderDetails = (category: DashboardCategory | null) => {
         if (!category) return null;
         return (
-             <div className="mt-6 bg-white p-6 rounded-lg shadow-md animate-fade-in-down">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800">{category} - Detalhes</h3>
+             <div className="mt-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md animate-fade-in-down">
+                <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">{category} - Detalhes</h3>
                 <DashboardDetails category={category} />
             </div>
         );
@@ -133,13 +133,13 @@ const Dashboard: React.FC = () => {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold text-gray-800">Dashboard</h2>
-                <div className="flex items-center space-x-2 bg-white p-1 rounded-lg shadow-sm">
+                <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Dashboard</h2>
+                <div className="flex items-center space-x-2 bg-white dark:bg-gray-800 p-1 rounded-lg shadow-sm">
                     {timeFilters.map(filter => (
                         <button
                             key={filter}
                             onClick={() => setActiveFilter(filter)}
-                            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeFilter === filter ? 'bg-custom-blue-600 text-white shadow' : 'text-gray-600 hover:bg-custom-blue-50'}`}
+                            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeFilter === filter ? 'bg-custom-blue-600 text-white shadow' : 'text-gray-600 hover:bg-custom-blue-50 dark:text-gray-300 dark:hover:bg-gray-700'}`}
                         >
                             {filter}
                         </button>
@@ -158,27 +158,27 @@ const Dashboard: React.FC = () => {
                                 onClick={() => handleCardClick(name)}
                                 className={`p-3 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-all duration-300 border-2 ${
                                     isSelected 
-                                    ? 'border-custom-blue-500 bg-custom-blue-100' 
-                                    : 'bg-white border-transparent'
+                                    ? 'border-custom-blue-500 bg-custom-blue-100 dark:bg-custom-blue-900/50' 
+                                    : 'bg-white dark:bg-gray-800 border-transparent'
                                 }`}
                             >
                                 <div className="flex flex-col items-center justify-center space-y-1 h-full text-center">
                                     <div className={`p-2 rounded-full transition-colors ${
                                         isSelected 
-                                        ? 'bg-white text-custom-blue-600' 
-                                        : 'bg-custom-blue-100 text-custom-blue-600'
+                                        ? 'bg-white text-custom-blue-600 dark:bg-custom-blue-500 dark:text-white' 
+                                        : 'bg-custom-blue-100 text-custom-blue-600 dark:bg-gray-700 dark:text-custom-blue-400'
                                     }`}>
                                         {React.cloneElement(icon, { className: 'w-5 h-5' })}
                                     </div>
                                     <p className={`text-xs font-medium transition-colors ${
                                         isSelected 
-                                        ? 'text-custom-blue-800' 
-                                        : 'text-gray-600'
+                                        ? 'text-custom-blue-800 dark:text-custom-blue-300' 
+                                        : 'text-gray-600 dark:text-gray-400'
                                     }`}>{name}</p>
                                     <p className={`text-xl font-bold transition-colors ${
                                         isSelected
-                                        ? 'text-custom-blue-900'
-                                        : 'text-gray-800'
+                                        ? 'text-custom-blue-900 dark:text-white'
+                                        : 'text-gray-800 dark:text-gray-200'
                                     }`}>
                                         {totals[name].toLocaleString()}
                                     </p>
@@ -191,21 +191,21 @@ const Dashboard: React.FC = () => {
                         <div
                             key={name}
                             onClick={() => handleCardClick(name)}
-                            className="p-4 bg-white rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow border-2 border-transparent flex flex-col justify-between h-full"
+                            className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow border-2 border-transparent flex flex-col justify-between h-full"
                         >
                            <div className="flex items-start justify-between">
                                 <div className="flex items-center space-x-3">
-                                    <div className="p-3 bg-custom-blue-100 rounded-full text-custom-blue-600">
+                                    <div className="p-3 bg-custom-blue-100 dark:bg-gray-700 rounded-full text-custom-blue-600 dark:text-custom-blue-400">
                                         {React.cloneElement(icon, { className: 'w-6 h-6' })}
                                     </div>
-                                    <p className="font-semibold text-gray-600">{name}</p>
+                                    <p className="font-semibold text-gray-600 dark:text-gray-300">{name}</p>
                                 </div>
-                                <div className="text-gray-400">
+                                <div className="text-gray-400 dark:text-gray-500">
                                     <ChevronDownIcon />
                                 </div>
                             </div>
                              <div className="mt-4">
-                                <p className="text-4xl font-bold text-gray-800">{totals[name].toLocaleString()}</p>
+                                <p className="text-4xl font-bold text-gray-800 dark:text-gray-100">{totals[name].toLocaleString()}</p>
                              </div>
                         </div>
                     );

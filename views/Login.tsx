@@ -20,15 +20,15 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-custom-blue-50 flex flex-col justify-center items-center p-4">
-            <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 space-y-6">
+        <div className="min-h-screen bg-custom-blue-50 dark:bg-gray-900 flex flex-col justify-center items-center p-4">
+            <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-6">
                 <div className="flex flex-col items-center text-center">
                     <div className="p-3 bg-custom-blue-100 rounded-full mb-4">
                         <SecurityIcon className="w-8 h-8 text-custom-blue-600" />
                     </div>
-                    <h1 className="text-4xl font-bold text-custom-blue-700">SCCPHL</h1>
-                    <p className="text-gray-600 mt-2">Sistema de Controle do CPHL</p>
-                    <p className="text-gray-500 text-sm">Faça login para aceder ao painel</p>
+                    <h1 className="text-4xl font-bold text-custom-blue-700 dark:text-custom-blue-400">SCCPHL</h1>
+                    <p className="text-gray-600 dark:text-gray-300 mt-2">Sistema de Controle do CPHL</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">Faça login para aceder ao painel</p>
                 </div>
 
                 <form className="space-y-6" onSubmit={handleLogin}>
@@ -64,8 +64,8 @@ const Login: React.FC = () => {
                     </Button>
                 </form>
 
-                <div className="border-t pt-4 mt-6 text-center">
-                    <p className="text-xs text-gray-400">
+                <div className="border-t dark:border-gray-700 pt-4 mt-6 text-center">
+                    <p className="text-xs text-gray-400 dark:text-gray-500">
                         DTTI - Departamento de Telecomunicações e Tecnologias de Informação
                     </p>
                 </div>

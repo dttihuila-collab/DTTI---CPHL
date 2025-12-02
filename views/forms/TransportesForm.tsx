@@ -39,8 +39,8 @@ const TransportesForm: React.FC = () => {
 
     const MunicipiosTab = () => (
         <div className="space-y-6 animate-fade-in">
-            <fieldset className="border p-4 rounded-md">
-                <legend className="text-lg font-medium text-gray-900 px-2">Registo de Combustível</legend>
+            <fieldset className="border dark:border-gray-600 p-4 rounded-md">
+                <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Registo de Combustível</legend>
                 <div className="grid grid-cols-2 gap-6 mt-4">
                     <div>
                         <Label htmlFor="combustivel">Combustível</Label>
@@ -50,8 +50,8 @@ const TransportesForm: React.FC = () => {
                 </div>
             </fieldset>
             
-            <fieldset className="border p-4 rounded-md">
-                <legend className="text-lg font-medium text-gray-900 px-2">Distribuição por Município</legend>
+            <fieldset className="border dark:border-gray-600 p-4 rounded-md">
+                <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Distribuição por Município</legend>
                 <div className="grid grid-cols-3 gap-6 mt-4">
                     <div><Label htmlFor="municipio">Município</Label><Select id="municipio" name="municipio" required><option value="">Selecione o Município</option>{MUNICIPIOS_HUILA.map(m => <option key={m} value={m}>{m}</option>)}</Select></div>
                     <div><Label htmlFor="quantidadeRecebida">Quantidade Recebida</Label><Input id="quantidadeRecebida" name="quantidadeRecebida" type="number" required /></div>
@@ -62,8 +62,8 @@ const TransportesForm: React.FC = () => {
     );
     
     const MembrosTab = () => (
-        <fieldset className="border p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 px-2">Registo de Pessoal</legend>
+        <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Registo de Pessoal</legend>
             <div className="grid grid-cols-4 gap-6 mt-4">
                 <div><Label htmlFor="nome">Nome</Label><Input id="nome" name="nome" type="text" required /></div>
                 <div><Label htmlFor="patente">Patente</Label><Input id="patente" name="patente" type="text" /></div>
@@ -74,8 +74,8 @@ const TransportesForm: React.FC = () => {
     );
 
     const ManutencoesTab = () => (
-         <fieldset className="border p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 px-2">Registo de Manutenção de Veículos</legend>
+         <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Registo de Manutenção de Veículos</legend>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
                 <div><Label htmlFor="veiculoMatricula">Veículo (Matrícula)</Label><Input id="veiculoMatricula" name="veiculoMatricula" type="text" required/></div>
                 <div>
@@ -89,8 +89,8 @@ const TransportesForm: React.FC = () => {
     );
 
     const OutrosTab = () => (
-         <fieldset className="border p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 px-2">Observações Gerais</legend>
+         <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Observações Gerais</legend>
              <div className="mt-4">
                 <Label htmlFor="obsGerais" className="sr-only">Observações Gerais</Label>
                 <Textarea id="obsGerais" name="obsGerais" placeholder="Adicione aqui outras informações relevantes..." />
@@ -105,7 +105,7 @@ const TransportesForm: React.FC = () => {
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
         >
-            <div className="border-b border-gray-200 mb-6">
+            <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
                 <nav className="-mb-px flex space-x-4" aria-label="Tabs">
                     {menuItems.map(item => (
                         <button
@@ -114,8 +114,8 @@ const TransportesForm: React.FC = () => {
                             onClick={() => setActiveMenu(item)}
                             className={`${
                                 activeMenu === item
-                                    ? 'border-custom-blue-500 text-custom-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                    ? 'border-custom-blue-500 text-custom-blue-600 dark:text-custom-blue-400'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500'
                             } whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm focus:outline-none`}
                         >
                             {item}

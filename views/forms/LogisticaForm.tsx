@@ -45,8 +45,8 @@ const LogisticaForm: React.FC = () => {
             setShowOutro(prev => ({ ...prev, [name]: value === 'Outro' || value === 'Outra' }));
         };
         return (
-            <fieldset className="border p-4 rounded-md animate-fade-in">
-                <legend className="text-lg font-medium text-gray-900 px-2">Registo de Armamento</legend>
+            <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+                <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Registo de Armamento</legend>
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="md:col-span-2"><Label htmlFor="agenteNome">Nome</Label><Input id="agenteNome" name="agenteNome" type="text" /></div>
                     <div><Label htmlFor="agenteNIP">NIP</Label><Input id="agenteNIP" name="agenteNIP" type="text" /></div>
@@ -54,7 +54,7 @@ const LogisticaForm: React.FC = () => {
                     <div className="md:col-span-4"><Label htmlFor="agenteFuncao">Função</Label><Input id="agenteFuncao" name="agenteFuncao" type="text" /></div>
                 </div>
                 <div className="mt-6">
-                    <h4 className="text-md font-medium text-gray-700 mb-2">Dados da Arma</h4>
+                    <h4 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Dados da Arma</h4>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div><Label htmlFor="tipoArmamento">Tipo de Armamento</Label><Select id="tipoArmamento" name="tipoArmamento" onChange={handleSelectChange}>{TIPOS_ARMAMENTO.map(t => <option key={t} value={t}>{t}</option>)}</Select>{showOutro.tipoArmamento && <Input name="outroTipoArmamento" type="text" placeholder="Especifique" className="mt-2" />}</div>
                         <div><Label htmlFor="numSerieArma">Número de Série</Label><Input id="numSerieArma" name="numSerieArma" type="text" /></div>
@@ -69,15 +69,15 @@ const LogisticaForm: React.FC = () => {
     };
 
     const ViveresTab = () => (
-        <fieldset className="border p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 px-2">Registo de Viveres</legend>
+        <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Registo de Viveres</legend>
             <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="md:col-span-2"><Label htmlFor="agenteNome">Nome do Responsável</Label><Input id="agenteNome" name="agenteNome" type="text" /></div>
                 <div><Label htmlFor="agenteNIP">NIP</Label><Input id="agenteNIP" name="agenteNIP" type="text" /></div>
                 <div><Label htmlFor="agentePatente">Patente</Label><Input id="agentePatente" name="agentePatente" type="text" /></div>
             </div>
             <div className="mt-6">
-                <h4 className="text-md font-medium text-gray-700 mb-2">Detalhes dos Viveres</h4>
+                <h4 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Detalhes dos Viveres</h4>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div><Label htmlFor="tipoViveres">Tipo</Label><Select id="tipoViveres" name="tipoViveres">{TIPOS_VIVERES.map(t => <option key={t} value={t}>{t}</option>)}</Select></div>
                     <div className="md:col-span-2"><Label htmlFor="descViveres">Descrição</Label><Input id="descViveres" name="descViveres" type="text" /></div>
@@ -90,15 +90,15 @@ const LogisticaForm: React.FC = () => {
     );
 
     const VestuarioTab = () => (
-        <fieldset className="border p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 px-2">Registo de Vestuário</legend>
+        <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Registo de Vestuário</legend>
             <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="md:col-span-2"><Label htmlFor="agenteNome">Nome do Responsável</Label><Input id="agenteNome" name="agenteNome" type="text" /></div>
                 <div><Label htmlFor="agenteNIP">NIP</Label><Input id="agenteNIP" name="agenteNIP" type="text" /></div>
                 <div><Label htmlFor="agentePatente">Patente</Label><Input id="agentePatente" name="agentePatente" type="text" /></div>
             </div>
             <div className="mt-6">
-                <h4 className="text-md font-medium text-gray-700 mb-2">Detalhes da Peça</h4>
+                <h4 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Detalhes da Peça</h4>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div><Label htmlFor="tipoVestuario">Tipo</Label><Select id="tipoVestuario" name="tipoVestuario">{TIPOS_VESTUARIO.map(t => <option key={t} value={t}>{t}</option>)}</Select></div>
                     <div><Label htmlFor="tamanhoVestuario">Tamanho</Label><Input id="tamanhoVestuario" name="tamanhoVestuario" type="text" /></div>
@@ -118,7 +118,7 @@ const LogisticaForm: React.FC = () => {
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
         >
-            <div className="border-b border-gray-200 mb-6">
+            <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
                 <nav className="-mb-px flex space-x-4" aria-label="Tabs">
                     {menuItems.map(item => (
                         <button
@@ -127,8 +127,8 @@ const LogisticaForm: React.FC = () => {
                             onClick={() => setActiveMenu(item)}
                             className={`${
                                 activeMenu === item
-                                    ? 'border-custom-blue-500 text-custom-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                    ? 'border-custom-blue-500 text-custom-blue-600 dark:text-custom-blue-400'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500'
                             } whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm focus:outline-none`}
                         >
                             {item}

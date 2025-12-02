@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { DataRecord } from '../../types';
 import { Input, Label } from '../../components/common/FormElements';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const COLORS = ['#3b82f6', '#16a34a', '#f97316', '#ef4444', '#8b5cf6', '#fde047'];
 
@@ -20,6 +21,7 @@ const countByKey = (records: DataRecord[], key: string): { name: string; value: 
 type LogisticaSubCategory = 'Armamento' | 'Viveres' | 'Vestuario';
 
 const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }) => {
+    const { theme } = useTheme();
     const [activeSubCategory, setActiveSubCategory] = useState<LogisticaSubCategory>('Armamento');
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -61,26 +63,26 @@ const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }) 
         switch (activeSubCategory) {
             case 'Armamento':
                 return (
-                    <fieldset className="border p-4 rounded-md animate-fade-in">
-                        <legend className="text-lg font-medium text-gray-900 px-2">Análise de Armamento</legend>
-                        {filteredArmamento.length === 0 ? <p className="text-center text-gray-500 py-4">Nenhum registo encontrado.</p> : (
+                    <fieldset className="border dark:border-gray-700 p-4 rounded-md animate-fade-in">
+                        <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Análise de Armamento</legend>
+                        {filteredArmamento.length === 0 ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Nenhum registo encontrado.</p> : (
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
                                 <div className="h-64 md:col-span-1">
-                                    <h4 className="text-md font-semibold text-center text-gray-700 mb-2">Distribuição por Tipo</h4>
+                                    <h4 className="text-md font-semibold text-center text-gray-700 dark:text-gray-300 mb-2">Distribuição por Tipo</h4>
                                     <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
                                             <Pie data={armamentoByType} dataKey="value" nameKey="name" cx="40%" cy="50%" outerRadius={80} fill="#8884d8">
                                                 {armamentoByType.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
                                             </Pie>
-                                            <Tooltip />
-                                            <Legend layout="vertical" verticalAlign="middle" align="right" />
+                                            <Tooltip contentStyle={{ backgroundColor: theme === 'dark' ? '#334155' : '#fff', border: 'none', borderRadius: '0.5rem' }} itemStyle={{ color: theme === 'dark' ? '#cbd5e1' : '#000' }} />
+                                            <Legend layout="vertical" verticalAlign="middle" align="right" formatter={(value) => <span className="text-gray-800 dark:text-gray-300">{value}</span>}/>
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className="md:col-span-2 overflow-x-auto">
-                                    <h4 className="text-md font-semibold text-gray-700 mb-2">Últimos Registos de Armamento</h4>
-                                    <table className="w-full text-sm">
-                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-2">Últimos Registos de Armamento</h4>
+                                    <table className="w-full text-sm dark:text-gray-400">
+                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
                                             <tr>
                                                 <th className="px-4 py-2">Agente</th>
                                                 <th className="px-4 py-2">Tipo</th>
@@ -90,7 +92,7 @@ const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }) 
                                         </thead>
                                         <tbody>
                                             {filteredArmamento.slice(0, 5).map(r => (
-                                                <tr key={r.id} className="border-b">
+                                                <tr key={r.id} className="border-b dark:border-gray-700">
                                                     <td className="px-4 py-2">{r.agenteNome}</td>
                                                     <td className="px-4 py-2">{r.tipoArmamento}</td>
                                                     <td className="px-4 py-2">{r.numSerieArma}</td>
@@ -106,12 +108,12 @@ const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }) 
                 );
             case 'Viveres':
                 return (
-                    <fieldset className="border p-4 rounded-md animate-fade-in">
-                        <legend className="text-lg font-medium text-gray-900 px-2">Controlo de Viveres</legend>
-                        {filteredViveres.length === 0 ? <p className="text-center text-gray-500 py-4">Nenhum registo encontrado.</p> : (
+                    <fieldset className="border dark:border-gray-700 p-4 rounded-md animate-fade-in">
+                        <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Controlo de Viveres</legend>
+                        {filteredViveres.length === 0 ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Nenhum registo encontrado.</p> : (
                             <div className="overflow-x-auto mt-4">
-                                <table className="w-full text-sm">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                                <table className="w-full text-sm dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
                                         <tr>
                                             <th className="px-4 py-2">Descrição</th>
                                             <th className="px-4 py-2">Quantidade</th>
@@ -121,7 +123,7 @@ const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }) 
                                     </thead>
                                     <tbody>
                                         {filteredViveres.map(r => (
-                                            <tr key={r.id} className="border-b">
+                                            <tr key={r.id} className="border-b dark:border-gray-700">
                                                 <td className="px-4 py-2">{r.descViveres}</td>
                                                 <td className="px-4 py-2">{r.qtdViveres}</td>
                                                 <td className="px-4 py-2">{r.validadeViveres}</td>
@@ -136,12 +138,12 @@ const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }) 
                 );
             case 'Vestuario':
                 return (
-                    <fieldset className="border p-4 rounded-md animate-fade-in">
-                        <legend className="text-lg font-medium text-gray-900 px-2">Controlo de Vestuário</legend>
-                        {filteredVestuario.length === 0 ? <p className="text-center text-gray-500 py-4">Nenhum registo encontrado.</p> : (
+                    <fieldset className="border dark:border-gray-700 p-4 rounded-md animate-fade-in">
+                        <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Controlo de Vestuário</legend>
+                        {filteredVestuario.length === 0 ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Nenhum registo encontrado.</p> : (
                             <div className="overflow-x-auto mt-4">
-                                <table className="w-full text-sm">
-                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                                <table className="w-full text-sm dark:text-gray-400">
+                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
                                         <tr>
                                             <th className="px-4 py-2">Tipo</th>
                                             <th className="px-4 py-2">Estado</th>
@@ -151,7 +153,7 @@ const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }) 
                                     </thead>
                                     <tbody>
                                         {filteredVestuario.map(r => (
-                                            <tr key={r.id} className="border-b">
+                                            <tr key={r.id} className="border-b dark:border-gray-700">
                                                 <td className="px-4 py-2">{r.tipoVestuario}</td>
                                                 <td className="px-4 py-2">{r.estadoVestuario}</td>
                                                 <td className="px-4 py-2">{r.tamanhoVestuario}</td>
@@ -179,10 +181,10 @@ const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }) 
                         <button
                             key={cat}
                             onClick={() => setActiveSubCategory(cat)}
-                            className={`p-4 rounded-lg text-left transition-all duration-300 transform hover:scale-105 ${isActive ? 'bg-custom-blue-600 text-white shadow-lg' : 'bg-gray-100 hover:bg-gray-200'}`}
+                            className={`p-4 rounded-lg text-left transition-all duration-300 transform hover:scale-105 ${isActive ? 'bg-custom-blue-600 text-white shadow-lg' : 'bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
                         >
-                            <h4 className={`font-semibold ${isActive ? 'text-white' : 'text-gray-600'}`}>Total {cat}</h4>
-                            <p className={`text-3xl font-bold ${isActive ? 'text-white' : 'text-gray-800'}`}>{total}</p>
+                            <h4 className={`font-semibold ${isActive ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`}>Total {cat}</h4>
+                            <p className={`text-3xl font-bold ${isActive ? 'text-white' : 'text-gray-800 dark:text-gray-100'}`}>{total}</p>
                         </button>
                     );
                 })}

@@ -148,9 +148,9 @@ const Relatorios: React.FC = () => {
 
     if (availableTabs.length === 0) {
         return (
-            <div className="text-center p-8 bg-white rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold text-gray-700">Acesso Restrito</h2>
-                <p className="mt-2 text-gray-500">Não tem permissão para visualizar relatórios.</p>
+            <div className="text-center p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-200">Acesso Restrito</h2>
+                <p className="mt-2 text-gray-500 dark:text-gray-400">Não tem permissão para visualizar relatórios.</p>
             </div>
         );
     }
@@ -158,30 +158,30 @@ const Relatorios: React.FC = () => {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold text-gray-800">Relatórios</h2>
+                <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Relatórios</h2>
                 <Button onClick={exportToCsv}>Exportar Dados</Button>
             </div>
             
-            <div className="bg-white rounded-lg shadow-md">
-                <div className="border-b border-gray-200"><nav className="-mb-px flex space-x-4 px-6 overflow-x-auto" aria-label="Tabs">{availableTabs.map(tab => (<button key={tab} onClick={() => setActiveTab(tab)} className={`${activeTab === tab ? 'border-custom-blue-500 text-custom-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}>{tab}</button>))}</nav></div>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <div className="border-b border-gray-200 dark:border-gray-700"><nav className="-mb-px flex space-x-4 px-6 overflow-x-auto" aria-label="Tabs">{availableTabs.map(tab => (<button key={tab} onClick={() => setActiveTab(tab)} className={`${activeTab === tab ? 'border-custom-blue-500 text-custom-blue-600 dark:text-custom-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-600'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}>{tab}</button>))}</nav></div>
                 <div className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"><div className="md:col-span-1"><Label htmlFor="search">Pesquisar</Label><Input id="search" type="text" placeholder="Pesquisar..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} /></div><div><Label htmlFor="dateFrom">De</Label><Input id="dateFrom" type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} /></div><div><Label htmlFor="dateTo">Até</Label><Input id="dateTo" type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} /></div></div>
-                    {isLoading ? <p>A carregar...</p> : (
+                    {isLoading ? <p className="text-gray-600 dark:text-gray-400">A carregar...</p> : (
                         <>
                             <div className="overflow-x-auto">
-                                <table className="w-full text-sm text-left text-gray-500">
-                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50"><tr>{paginatedRecords.length > 0 && [...Object.keys(paginatedRecords[0]), 'Ações'].map(key => (<th key={key} scope="col" className="px-6 py-3">{key}</th>))}</tr></thead>
-                                    <tbody>{paginatedRecords.map(record => (<tr key={record.id} className="bg-white border-b hover:bg-gray-50">{Object.entries(record).map(([key, value]) => (<td key={key} className="px-6 py-4 whitespace-nowrap">{String(value)}</td>))}<td className="px-6 py-4 whitespace-nowrap space-x-2"><button onClick={() => alert('Funcionalidade de edição em desenvolvimento.')} className="text-custom-blue-600 hover:text-custom-blue-800"><EditIcon /></button><button onClick={() => openDeleteModal(record)} className="text-red-600 hover:text-red-800"><DeleteIcon /></button></td></tr>))}</tbody>
+                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300"><tr>{paginatedRecords.length > 0 && [...Object.keys(paginatedRecords[0]), 'Ações'].map(key => (<th key={key} scope="col" className="px-6 py-3">{key}</th>))}</tr></thead>
+                                    <tbody>{paginatedRecords.map(record => (<tr key={record.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">{Object.entries(record).map(([key, value]) => (<td key={key} className="px-6 py-4 whitespace-nowrap">{String(value)}</td>))}<td className="px-6 py-4 whitespace-nowrap space-x-2"><button onClick={() => alert('Funcionalidade de edição em desenvolvimento.')} className="text-custom-blue-600 hover:text-custom-blue-800 dark:text-custom-blue-400 dark:hover:text-custom-blue-300"><EditIcon /></button><button onClick={() => openDeleteModal(record)} className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"><DeleteIcon /></button></td></tr>))}</tbody>
                                 </table>
                             </div>
-                            {filteredRecords.length === 0 && <div className="text-center py-8 text-gray-500">Nenhum registo encontrado.</div>}
-                            {totalPages > 1 && (<div className="flex justify-between items-center mt-4"><span className="text-sm text-gray-700">Página {currentPage} de {totalPages}</span><div className="inline-flex rounded-md shadow-sm"><button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50"><ChevronLeftIcon /></button><button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="-ml-px px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50"><ChevronRightIcon /></button></div></div>)}
+                            {filteredRecords.length === 0 && <div className="text-center py-8 text-gray-500 dark:text-gray-400">Nenhum registo encontrado.</div>}
+                            {totalPages > 1 && (<div className="flex justify-between items-center mt-4"><span className="text-sm text-gray-700 dark:text-gray-300">Página {currentPage} de {totalPages}</span><div className="inline-flex rounded-md shadow-sm"><button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"><ChevronLeftIcon /></button><button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="-ml-px px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"><ChevronRightIcon /></button></div></div>)}
                         </>
                     )}
                 </div>
             </div>
             <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} title="Confirmar Eliminação">
-                <p>Tem a certeza que deseja eliminar este registo? Esta ação não pode ser desfeita.</p>
+                <p className="text-gray-700 dark:text-gray-300">Tem a certeza que deseja eliminar este registo? Esta ação não pode ser desfeita.</p>
                 <div className="flex justify-end space-x-2 pt-6">
                     <Button variant="secondary" onClick={closeDeleteModal}>Cancelar</Button>
                     <Button variant="danger" onClick={handleDelete}>Eliminar</Button>

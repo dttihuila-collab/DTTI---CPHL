@@ -17,6 +17,7 @@ import { AuthContext } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
 import ToastContainer from './components/ToastContainer';
 import { DataRefreshProvider } from './contexts/DataRefreshContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Policiais', 'Transportes', 'Logística'];
 
@@ -92,7 +93,7 @@ const AppContent: React.FC = () => {
 
   return (
     <AuthContext.Provider value={authContextValue}>
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
         <Sidebar
           user={user}
           isCollapsed={isSidebarCollapsed}
@@ -102,7 +103,7 @@ const AppContent: React.FC = () => {
         />
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header user={user} />
-          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 md:p-6 lg:p-8">
+          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
             {renderView()}
           </main>
         </div>
@@ -114,12 +115,14 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <DataRefreshProvider>
-      <ToastProvider>
-        <AppContent />
-        <ToastContainer />
-      </ToastProvider>
-    </DataRefreshProvider>
+    <ThemeProvider>
+      <DataRefreshProvider>
+        <ToastProvider>
+          <AppContent />
+          <ToastContainer />
+        </ToastProvider>
+      </DataRefreshProvider>
+    </ThemeProvider>
   );
 };
 

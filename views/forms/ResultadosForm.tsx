@@ -38,8 +38,8 @@ const ResultadosForm: React.FC = () => {
     };
 
     const OperacoesTab = () => (
-        <fieldset className="border p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 px-2">Detalhes da Operação</legend>
+        <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Detalhes da Operação</legend>
             <div className="space-y-6 mt-4">
                 <div className="grid grid-cols-3 gap-6">
                     <div><Label htmlFor="data">Data</Label><Input id="data" name="data" type="datetime-local" required /></div>
@@ -56,8 +56,8 @@ const ResultadosForm: React.FC = () => {
     );
     
     const PatrulhamentosTab = () => (
-         <fieldset className="border p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 px-2">Detalhes do Patrulhamento</legend>
+         <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Detalhes do Patrulhamento</legend>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                  <div>
                     <Label htmlFor="tipoPatrulhamento">Tipo de Patrulhamento</Label>
@@ -78,8 +78,8 @@ const ResultadosForm: React.FC = () => {
     );
 
     const DetidosTab = () => (
-        <fieldset className="border p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 px-2">Informação do Detido</legend>
+        <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Informação do Detido</legend>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
                 <div><Label htmlFor="detidoNome">Nome do Detido</Label><Input id="detidoNome" name="detidoNome" type="text" /></div>
                 <div><Label htmlFor="detidoIdade">Idade</Label><Input id="detidoIdade" name="detidoIdade" type="number" /></div>
@@ -89,8 +89,8 @@ const ResultadosForm: React.FC = () => {
     );
 
     const OutrosTab = () => (
-        <fieldset className="border p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 px-2">Outras Informações</legend>
+        <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Outras Informações</legend>
             <div className="mt-4">
                 <Label htmlFor="observacoesGerais" className="sr-only">Observações Gerais</Label>
                 <Textarea id="observacoesGerais" name="observacoesGerais" placeholder="Adicione aqui outras informações relevantes, como apreensões, etc." />
@@ -105,7 +105,7 @@ const ResultadosForm: React.FC = () => {
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
         >
-            <div className="border-b border-gray-200 mb-6">
+            <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
                 <nav className="-mb-px flex space-x-4" aria-label="Tabs">
                     {menuItems.map(item => (
                         <button
@@ -114,8 +114,8 @@ const ResultadosForm: React.FC = () => {
                             onClick={() => setActiveMenu(item)}
                             className={`${
                                 activeMenu === item
-                                    ? 'border-custom-blue-500 text-custom-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                    ? 'border-custom-blue-500 text-custom-blue-600 dark:text-custom-blue-400'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500'
                             } whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm focus:outline-none`}
                         >
                             {item}

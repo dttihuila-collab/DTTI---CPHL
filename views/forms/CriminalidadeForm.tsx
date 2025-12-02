@@ -86,8 +86,8 @@ const CriminalidadeForm: React.FC = () => {
 
     const OcorrenciaTab = () => (
         <div className="space-y-6 animate-fade-in">
-            <fieldset className="border p-4 rounded-md">
-                <legend className="text-lg font-medium text-gray-900 px-2">Localização e Tempo</legend>
+            <fieldset className="border dark:border-gray-600 p-4 rounded-md">
+                <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Localização e Tempo</legend>
                 <div className="grid grid-cols-3 gap-6 mt-4">
                     <div><Label htmlFor="data">Data</Label><Input id="data" name="data" type="datetime-local" onChange={handleChange} required /><p className="text-red-500 text-xs mt-1">{errors.data}</p></div>
                     <div><Label htmlFor="periodo">Período</Label><Select id="periodo" name="periodo"><option value="">Selecione o Período</option>{PERIODOS.map(p => <option key={p} value={p}>{p}</option>)}</Select></div>
@@ -100,8 +100,8 @@ const CriminalidadeForm: React.FC = () => {
                     <div><Label htmlFor="pontoReferencia">Ponto de Referência</Label><Input id="pontoReferencia" name="pontoReferencia" type="text" /></div>
                 </div>
             </fieldset>
-            <fieldset className="border p-4 rounded-md">
-                <legend className="text-lg font-medium text-gray-900 px-2">Dados da Vítima</legend>
+            <fieldset className="border dark:border-gray-600 p-4 rounded-md">
+                <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Dados da Vítima</legend>
                 <div className="grid grid-cols-4 gap-6 mt-4">
                     <div><Label htmlFor="vitimaNome">Nome</Label><Input id="vitimaNome" name="vitimaNome" type="text" /></div>
                     <div><Label htmlFor="vitimaNacionalidade">Nacionalidade</Label><Input id="vitimaNacionalidade" name="vitimaNacionalidade" type="text" /></div>
@@ -109,8 +109,8 @@ const CriminalidadeForm: React.FC = () => {
                     <div><Label htmlFor="vitimaEstadoCivil">Estado Civil</Label><Input id="vitimaEstadoCivil" name="vitimaEstadoCivil" type="text" /></div>
                 </div>
             </fieldset>
-            <fieldset className="border p-4 rounded-md">
-                <legend className="text-lg font-medium text-gray-900 px-2">Dados do Acusado</legend>
+            <fieldset className="border dark:border-gray-600 p-4 rounded-md">
+                <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Dados do Acusado</legend>
                 <div className="grid grid-cols-3 gap-6 mt-4">
                     <div><Label htmlFor="acusadoNome">Nome</Label><Input id="acusadoNome" name="acusadoNome" type="text" /></div>
                     <div><Label htmlFor="acusadoNacionalidade">Nacionalidade</Label><Input id="acusadoNacionalidade" name="acusadoNacionalidade" type="text" /></div>
@@ -124,8 +124,8 @@ const CriminalidadeForm: React.FC = () => {
     );
 
     const CrimesTab = () => (
-        <fieldset className="border p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 px-2">Dados das Ocorrências</legend>
+        <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Dados das Ocorrências</legend>
             <div className="grid grid-cols-3 gap-6 mt-4">
                 <div className="lg:col-span-1">
                     <Label htmlFor="familiaDeletiva">Família Deletiva</Label>
@@ -155,8 +155,8 @@ const CriminalidadeForm: React.FC = () => {
     );
     
     const OutrosTab = () => (
-         <fieldset className="border p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 px-2">Descrição da Ocorrência</legend>
+         <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Descrição da Ocorrência</legend>
             <div className="mt-4">
                 <Label htmlFor="descricaoOcorrencia" className="sr-only">Descrição da Ocorrência</Label>
                 <Textarea id="descricaoOcorrencia" name="descricaoOcorrencia" placeholder="Descreva detalhadamente a ocorrência..." />
@@ -171,7 +171,7 @@ const CriminalidadeForm: React.FC = () => {
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
         >
-            <div className="border-b border-gray-200 mb-6">
+            <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
                 <nav className="-mb-px flex space-x-4" aria-label="Tabs">
                     {menuItems.map(item => (
                         <button
@@ -180,8 +180,8 @@ const CriminalidadeForm: React.FC = () => {
                             onClick={() => setActiveMenu(item)}
                             className={`${
                                 activeMenu === item
-                                    ? 'border-custom-blue-500 text-custom-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                    ? 'border-custom-blue-500 text-custom-blue-600 dark:text-custom-blue-400'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500'
                             } whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm focus:outline-none`}
                         >
                             {item}

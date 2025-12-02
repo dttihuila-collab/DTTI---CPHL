@@ -48,10 +48,10 @@ const Sidebar: React.FC<SidebarProps> = ({ user, isCollapsed, setCurrentView, cu
   const transitionClass = "transition-all duration-300 ease-in-out";
 
   return (
-    <div className={`bg-white text-gray-700 flex flex-col transition-all duration-300 ease-in-out shadow-lg ${isCollapsed ? 'w-20' : 'w-64'}`}>
-      <div className={`flex items-center p-4 h-16 border-b ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
-        <h1 className={`text-2xl font-bold text-custom-blue-700 whitespace-nowrap overflow-hidden ${transitionClass} ${isCollapsed ? 'w-0' : 'w-auto'}`}>SCCPHL</h1>
-        <button onClick={onToggleSidebar} className="p-1 rounded-full text-gray-600 hover:bg-gray-100 focus:outline-none">
+    <div className={`bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 flex flex-col transition-all duration-300 ease-in-out shadow-lg ${isCollapsed ? 'w-20' : 'w-64'}`}>
+      <div className={`flex items-center p-4 h-16 border-b dark:border-gray-700 ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+        <h1 className={`text-2xl font-bold text-custom-blue-700 dark:text-custom-blue-400 whitespace-nowrap overflow-hidden ${transitionClass} ${isCollapsed ? 'w-0' : 'w-auto'}`}>SCCPHL</h1>
+        <button onClick={onToggleSidebar} className="p-1 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
             {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </button>
       </div>
@@ -60,17 +60,17 @@ const Sidebar: React.FC<SidebarProps> = ({ user, isCollapsed, setCurrentView, cu
           <button
             key={item.name}
             onClick={() => setCurrentView(item.name)}
-            className={`${baseButtonClass} ${isCollapsed ? 'justify-center' : ''} ${currentView === item.name ? 'bg-custom-blue-100 text-custom-blue-700' : 'hover:bg-custom-blue-50 hover:text-custom-blue-600'}`}
+            className={`${baseButtonClass} ${isCollapsed ? 'justify-center' : ''} ${currentView === item.name ? 'bg-custom-blue-100 text-custom-blue-700 dark:bg-custom-blue-900 dark:text-custom-blue-300' : 'hover:bg-custom-blue-50 hover:text-custom-blue-600 dark:hover:bg-gray-700 dark:hover:text-gray-200'}`}
           >
             {iconMap[item.name]}
             <span className={`${textClass} ${transitionClass}`}>{item.name}</span>
           </button>
         ))}
       </nav>
-      <div className="px-4 py-4 border-t">
+      <div className="px-4 py-4 border-t dark:border-gray-700">
         <button
           onClick={logout}
-          className={`${baseButtonClass} ${isCollapsed ? 'justify-center' : ''} bg-red-50 hover:bg-red-100 text-red-600`}
+          className={`${baseButtonClass} ${isCollapsed ? 'justify-center' : ''} bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400`}
         >
           <LogoutIcon />
           <span className={`${textClass} ${transitionClass}`}>Sair</span>
