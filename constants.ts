@@ -3,9 +3,9 @@ import { User, Role, NavItem, CrimeData, View } from './types';
 export const PERMISSION_VIEWS: View[] = ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial', 'Transportes', 'Logística'];
 
 export const MOCK_USERS: User[] = [
-  { id: 1, name: 'Admin', email: 'admin@sccphl.com', role: Role.Admin, password: 'user', permissions: PERMISSION_VIEWS },
-  { id: 2, name: 'Padrao', email: 'standard@sccphl.com', role: Role.Padrao, password: 'user', permissions: ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária'] },
-  { id: 3, name: 'Visualizador', email: 'viewer@sccphl.com', role: Role.Padrao, password: 'user', permissions: ['Dashboard'] },
+  { id: 1, name: 'Admin', role: Role.Admin, password: 'user', permissions: PERMISSION_VIEWS },
+  { id: 2, name: 'Padrao', role: Role.Padrao, password: 'user', permissions: ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária'] },
+  { id: 3, name: 'Visualizador', role: Role.Padrao, password: 'user', permissions: ['Dashboard'] },
 ];
 
 export const APP_VIEWS: NavItem[] = [

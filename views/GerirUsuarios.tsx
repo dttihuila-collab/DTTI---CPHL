@@ -14,7 +14,7 @@ const GerirUsuarios: React.FC = React.memo(() => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState<Partial<User> | null>(null);
-    const [formErrors, setFormErrors] = useState<{ email?: string; password?: string }>({});
+    const [formErrors, setFormErrors] = useState<{ password?: string }>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { addToast } = useToast();
 
@@ -35,7 +35,7 @@ const GerirUsuarios: React.FC = React.memo(() => {
     }, [loadUsers]);
 
     const openModal = (user: User | null = null) => {
-        setCurrentUser(user ? { ...user, password: '' } : { name: '', email: '', role: Role.Padrao, password: '', permissions: ['Dashboard'] });
+        setCurrentUser(user ? { ...user, password: '' } : { name: '', role: Role.Padrao, password: '', permissions: ['Dashboard'] });
         setFormErrors({});
         setIsModalOpen(true);
     };
@@ -56,18 +56,9 @@ const GerirUsuarios: React.FC = React.memo(() => {
         setCurrentUser(null);
     };
     
-    const validateField = (name: 'email' | 'password', value: string) => {
+    const validateField = (name: 'password', value: string) => {
         const newErrors = { ...formErrors };
         
-        if (name === 'email') {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!value || !emailRegex.test(value)) {
-                newErrors.email = "Por favor, insira um formato de email válido.";
-            } else {
-                delete newErrors.email;
-            }
-        }
-
         if (name === 'password') {
             if (!currentUser?.id && (!value || value.trim() === '')) {
                 newErrors.password = "A senha é obrigatória para novos usuários.";
@@ -77,21 +68,19 @@ const GerirUsuarios: React.FC = React.memo(() => {
         }
         
         setFormErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
     };
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        const { name, value } = e.target as { name: 'email' | 'password', value: string };
+        const { name, value } = e.target as { name: 'password', value: string };
         validateField(name, value);
     };
 
     const handleSave = async () => {
         // Validate all fields on save
-        validateField('email', currentUser?.email || '');
         validateField('password', currentUser?.password || '');
         
         // Re-check errors state after validation
-        if (formErrors.email || formErrors.password || !currentUser?.email || (!currentUser.id && !currentUser.password)) {
+        if (formErrors.password || (!currentUser.id && !currentUser.password)) {
              addToast('Por favor, corrija os erros no formulário.', 'error');
             return;
         }
@@ -165,7 +154,6 @@ const GerirUsuarios: React.FC = React.memo(() => {
 
     const columns: ColumnDef<User>[] = [
         { accessorKey: 'name', header: 'Nome' },
-        { accessorKey: 'email', header: 'Email' },
         { accessorKey: 'role', header: 'Perfil' },
     ];
     
@@ -196,11 +184,6 @@ const GerirUsuarios: React.FC = React.memo(() => {
             <Modal isOpen={isModalOpen} onClose={closeModal} title={currentUser?.id ? 'Editar Usuário' : 'Adicionar Usuário'}>
                 <div className="space-y-4">
                     <div><Label htmlFor="name">Nome</Label><Input id="name" name="name" type="text" value={currentUser?.name || ''} onChange={handleFormChange} required /></div>
-                    <div>
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="email" value={currentUser?.email || ''} onChange={handleFormChange} onBlur={handleBlur} error={formErrors.email} required/>
-                        <FormError message={formErrors.email} />
-                    </div>
                     <div>
                         <Label htmlFor="password">Senha</Label>
                         <Input id="password" name="password" type="password" value={currentUser?.password || ''} onChange={handleFormChange} onBlur={handleBlur} error={formErrors.password} placeholder={currentUser?.id ? 'Deixar em branco para não alterar' : ''}/>

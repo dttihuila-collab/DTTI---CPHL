@@ -14,13 +14,14 @@ import GenericDetailsTable from './dashboard/GenericDetailsTable';
 
 // FIX: Removed explicit type annotation to allow TypeScript to infer a more specific type for the 'icon' property.
 // The generic 'React.ReactElement' type was too broad, causing type errors when using 'React.cloneElement'.
+// FIX: Added 'as const' to infer the 'name' property as a specific string literal type, compatible with 'DashboardCategory'.
 const categories = [
     { name: 'Criminalidade', icon: <CrimeIcon /> },
     { name: 'Sinistralidade Rodoviária', icon: <RoadIcon /> },
     { name: 'Enfrentamento Policial', icon: <PoliceIcon /> },
     { name: 'Transportes', icon: <TransportIcon /> },
     { name: 'Logística', icon: <LogisticsIcon /> },
-];
+] as const;
 
 type TimeFilter = 'Dia' | 'Semana' | 'Mês' | 'Ano';
 const timeFilters: TimeFilter[] = ['Dia', 'Semana', 'Mês', 'Ano'];

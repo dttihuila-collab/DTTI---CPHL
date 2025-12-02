@@ -8,7 +8,7 @@ export interface User {
   // which is necessary for components like DataTable that rely on a stable ID.
   id: number;
   name: string;
-  email: string;
+  email?: string;
   role: Role;
   password?: string;
   permissions?: View[];
