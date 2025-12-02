@@ -1,5 +1,3 @@
-
-
 import React, { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { DataRecord } from '../../types';
@@ -60,18 +58,20 @@ const SinistralidadeDetailsView: React.FC<{ records: DataRecord[] }> = React.mem
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
-                                <div className="overflow-x-auto">
+                                <div>
                                     <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-2">Últimos Acidentes</h4>
-                                    <table className="w-full text-sm dark:text-gray-400">
-                                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                            <tr><th className="px-4 py-2">Data</th><th className="px-4 py-2">Município</th><th className="px-4 py-2">Tipo</th></tr>
-                                        </thead>
-                                        <tbody>
-                                            {filteredRecords.slice(0, 5).map(r => (
-                                                <tr key={r.id} className="border-b dark:border-gray-700"><td className="px-4 py-2">{new Date(r.data).toLocaleDateString()}</td><td className="px-4 py-2">{r.municipio}</td><td className="px-4 py-2">{r.tipoAcidente}</td></tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                    <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                        <table className="w-full text-sm">
+                                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
+                                                <tr><th className="px-6 py-3 text-left">Data</th><th className="px-6 py-3 text-left">Município</th><th className="px-6 py-3 text-left">Tipo</th></tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                                                {filteredRecords.slice(0, 5).map(r => (
+                                                    <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-600"><td className="px-6 py-4 whitespace-nowrap">{new Date(r.data).toLocaleDateString()}</td><td className="px-6 py-4 whitespace-nowrap">{r.municipio}</td><td className="px-6 py-4 whitespace-nowrap">{r.tipoAcidente}</td></tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -97,18 +97,20 @@ const SinistralidadeDetailsView: React.FC<{ records: DataRecord[] }> = React.mem
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
-                                <div className="overflow-x-auto">
+                                <div>
                                      <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-2">Últimas Vítimas</h4>
-                                    <table className="w-full text-sm dark:text-gray-400">
-                                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                            <tr><th className="px-4 py-2">Nome</th><th className="px-4 py-2">Idade</th><th className="px-4 py-2">Estado</th></tr>
-                                        </thead>
-                                        <tbody>
-                                            {filteredRecords.slice(0, 5).map(r => (
-                                                <tr key={r.id} className="border-b dark:border-gray-700"><td className="px-4 py-2">{r.vitimaNome}</td><td className="px-4 py-2">{r.vitimaIdade}</td><td className="px-4 py-2">{r.vitimaEstado}</td></tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                    <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                        <table className="w-full text-sm">
+                                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
+                                                <tr><th className="px-6 py-3 text-left">Nome</th><th className="px-6 py-3 text-left">Idade</th><th className="px-6 py-3 text-left">Estado</th></tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                                                {filteredRecords.slice(0, 5).map(r => (
+                                                    <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-600"><td className="px-6 py-4 whitespace-nowrap">{r.vitimaNome}</td><td className="px-6 py-4 whitespace-nowrap">{r.vitimaIdade}</td><td className="px-6 py-4 whitespace-nowrap">{r.vitimaEstado}</td></tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -127,7 +129,7 @@ const SinistralidadeDetailsView: React.FC<{ records: DataRecord[] }> = React.mem
                     const total = cat === 'Acidentes' ? acidentesRecords.length : vitimasRecords.length;
                     return (
                         <button key={cat} onClick={() => setActiveSubCategory(cat)} className={`p-4 rounded-lg text-left transition-all duration-300 transform hover:scale-105 ${isActive ? 'bg-custom-blue-600 text-white shadow-lg' : 'bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700'}`}>
-                            <h4 className={`font-semibold ${isActive ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`}>Total {cat}</h4>
+                            <h4 className={`font-semibold ${isActive ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`}>Total de {cat}</h4>
                             <p className={`text-3xl font-bold ${isActive ? 'text-white' : 'text-gray-800 dark:text-gray-100'}`}>{total}</p>
                         </button>
                     );

@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import FormWrapper from './FormWrapper';
 import { Label, Input, Select, Textarea } from '../../components/common/FormElements';
@@ -32,7 +30,7 @@ const ResultadosForm: React.FC = React.memo(() => {
             data.categoria = activeMenu;
             await api.addRecord('resultados', data);
 
-            addToast(`Dados de resultados (${activeMenu}) submetidos com sucesso!`, 'success');
+            addToast(`Dados de resultados operacionais (${activeMenu}) submetidos com sucesso!`, 'success');
             triggerRefresh();
             form.reset();
             setActiveMenu('Operações');
@@ -107,8 +105,8 @@ const ResultadosForm: React.FC = React.memo(() => {
 
     return (
         <FormWrapper
-            title="Registo de Enfrentamento Policial"
-            description="Preencha os detalhes abaixo para registar novos resultados de enfrentamento policial."
+            title="Registo de Resultados Operacionais"
+            description="Preencha os detalhes abaixo para registar novos resultados operacionais."
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
         >

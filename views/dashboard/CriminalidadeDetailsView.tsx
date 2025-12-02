@@ -1,5 +1,3 @@
-
-
 import React, { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { DataRecord } from '../../types';
@@ -35,9 +33,9 @@ const CriminalidadeDetailsView: React.FC<{ records: DataRecord[] }> = React.memo
             'Outros': [],
         };
         records.forEach(r => {
-            if (r.familiaDeletiva === 'Crimes Contra Pessoa') {
+            if (r.familiaCriminal === 'Crimes Contra Pessoa') {
                 families['Crimes Contra Pessoa'].push(r);
-            } else if (r.familiaDeletiva === 'Crimes Contra o Património') {
+            } else if (r.familiaCriminal === 'Crimes Contra o Património') {
                 families['Crimes Contra o Património'].push(r);
             } else {
                 families['Outros'].push(r);
@@ -99,32 +97,34 @@ const CriminalidadeDetailsView: React.FC<{ records: DataRecord[] }> = React.memo
                                         <XAxis type="number" stroke={theme === 'dark' ? '#a0aec0' : '#4a5568'} />
                                         <YAxis type="category" dataKey="name" width={80} stroke={theme === 'dark' ? '#a0aec0' : '#4a5568'} />
                                         <Tooltip cursor={{fill: 'rgba(128,128,128,0.1)'}} contentStyle={{ backgroundColor: theme === 'dark' ? '#334155' : '#fff', border: 'none', borderRadius: '0.5rem' }} itemStyle={{ color: theme === 'dark' ? '#cbd5e1' : '#000' }} />
-                                        <Bar dataKey="value" name="Nº Crimes" fill="#3b82f6" />
+                                        <Bar dataKey="value" name="N.º de Crimes" fill="#3b82f6" />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </div>
                         </div>
-                        <div className="md:col-span-2 overflow-x-auto">
+                        <div className="md:col-span-2">
                             <div className="flex justify-between items-center mb-2">
                                 <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">
                                     {selectedCrime ? `Registos de "${selectedCrime}"` : 'Últimos Registos'}
                                 </h4>
                                 {selectedCrime && <Button variant="secondary" onClick={() => setSelectedCrime(null)}>Limpar Filtro</Button>}
                             </div>
-                            <table className="w-full text-sm dark:text-gray-400">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                    <tr>
-                                        <th className="px-4 py-2">Data</th><th className="px-4 py-2">Município</th><th className="px-4 py-2">Crime</th><th className="px-4 py-2">Vítima</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredRecords.slice(0, 10).map(r => (
-                                        <tr key={r.id} className="border-b dark:border-gray-700">
-                                            <td className="px-4 py-2">{new Date(r.data).toLocaleDateString()}</td><td className="px-4 py-2">{r.municipio}</td><td className="px-4 py-2">{r.crime}</td><td className="px-4 py-2">{r.vitimaNome}</td>
+                            <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table className="w-full text-sm">
+                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left">Data</th><th className="px-6 py-3 text-left">Município</th><th className="px-6 py-3 text-left">Crime</th><th className="px-6 py-3 text-left">Vítima</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                                        {filteredRecords.slice(0, 10).map(r => (
+                                            <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
+                                                <td className="px-6 py-4 whitespace-nowrap">{new Date(r.data).toLocaleDateString()}</td><td className="px-6 py-4 whitespace-nowrap">{r.municipio}</td><td className="px-6 py-4 whitespace-nowrap">{r.crime}</td><td className="px-6 py-4 whitespace-nowrap">{r.vitimaNome}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </>
                 )}

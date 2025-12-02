@@ -36,7 +36,7 @@ const GerirUsuarios: React.FC = React.memo(() => {
             const userList = await api.getUsers();
             setUsers(userList);
         } catch (error) {
-            addToast('Falha ao carregar usuários.', 'error');
+            addToast('Falha ao carregar utilizadores.', 'error');
         } finally {
             setIsLoading(false);
         }
@@ -73,10 +73,10 @@ const GerirUsuarios: React.FC = React.memo(() => {
 
         const finalErrors: { name?: string; password?: string } = {};
         if (!currentUser.name || currentUser.name.trim() === '') {
-            finalErrors.name = "O nome de usuário é obrigatório.";
+            finalErrors.name = "O nome de utilizador é obrigatório.";
         }
         if (!currentUser.id && (!currentUser.password || currentUser.password.trim() === '')) {
-            finalErrors.password = "A senha é obrigatória para novos usuários.";
+            finalErrors.password = "A palavra-passe é obrigatória para novos utilizadores.";
         }
     
         setFormErrors(finalErrors);
@@ -95,15 +95,15 @@ const GerirUsuarios: React.FC = React.memo(() => {
 
             if (currentUser.id) {
                 await api.updateUser(userToSave as User & { password?: string });
-                addToast('Usuário atualizado com sucesso!', 'success');
+                addToast('Utilizador atualizado com sucesso!', 'success');
             } else {
                 await api.addUser(userToSave as Omit<User, 'id'> & { password?: string });
-                addToast('Usuário adicionado com sucesso!', 'success');
+                addToast('Utilizador adicionado com sucesso!', 'success');
             }
             await loadUsers();
             closeModal();
         } catch (error) {
-            addToast('Ocorreu um erro ao salvar o usuário.', 'error');
+            addToast('Ocorreu um erro ao guardar o utilizador.', 'error');
         } finally {
             setIsSubmitting(false);
         }
@@ -114,10 +114,10 @@ const GerirUsuarios: React.FC = React.memo(() => {
             setIsSubmitting(true);
             try {
                 await api.deleteUser(currentUser.id);
-                addToast('Usuário eliminado com sucesso!', 'success');
+                addToast('Utilizador eliminado com sucesso!', 'success');
                 await loadUsers();
             } catch (error) {
-                addToast('Ocorreu um erro ao eliminar o usuário.', 'error');
+                addToast('Ocorreu um erro ao eliminar o utilizador.', 'error');
             } finally {
                 setIsSubmitting(false);
                 closeDeleteModal();
@@ -152,7 +152,7 @@ const GerirUsuarios: React.FC = React.memo(() => {
     };
 
     const columns: ColumnDef<User>[] = [
-        { accessorKey: 'name', header: 'Nome' },
+        { accessorKey: 'name', header: 'Nome de Utilizador' },
         { accessorKey: 'role', header: 'Perfil' },
     ];
     
@@ -166,10 +166,10 @@ const GerirUsuarios: React.FC = React.memo(() => {
     return (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Gerir Usuários</h2>
+                <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Gerir Utilizadores</h2>
                 <Button onClick={() => openModal()}>
                     <AddIcon />
-                    <span className="ml-2">Adicionar Usuário</span>
+                    <span className="ml-2">Adicionar Utilizador</span>
                 </Button>
             </div>
             
@@ -180,20 +180,20 @@ const GerirUsuarios: React.FC = React.memo(() => {
                 renderRowActions={renderRowActions}
             />
 
-            <Modal isOpen={isModalOpen} onClose={closeModal} title={currentUser?.id ? 'Editar Usuário' : 'Adicionar Usuário'}>
+            <Modal isOpen={isModalOpen} onClose={closeModal} title={currentUser?.id ? 'Editar Utilizador' : 'Adicionar Utilizador'}>
                 <div className="space-y-4">
                     <div>
-                        <Label htmlFor="name">Nome</Label>
+                        <Label htmlFor="name">Nome de Utilizador</Label>
                         <Input id="name" name="name" type="text" value={currentUser?.name || ''} onChange={handleFormChange} required error={formErrors.name} />
                         <FormError message={formErrors.name} />
                     </div>
                     <div>
-                        <Label htmlFor="password">Senha</Label>
+                        <Label htmlFor="password">Palavra-passe</Label>
                         <Input id="password" name="password" type="password" value={currentUser?.password || ''} onChange={handleFormChange} error={formErrors.password} placeholder={currentUser?.id ? 'Deixar em branco para não alterar' : ''}/>
                         <FormError message={formErrors.password} />
                     </div>
                     <div><Label htmlFor="role">Perfil</Label><Select id="role" name="role" value={currentUser?.role || ''} onChange={handleFormChange}>{Object.values(Role).map(role => (<option key={role} value={role}>{role}</option>))}</Select></div>
-                    {currentUser?.role === Role.Admin && (<div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-md text-center"><p className="text-sm text-gray-600 dark:text-gray-300">Administradores têm acesso a todos os formulários.</p></div>)}
+                    {currentUser?.role === Role.Admin && (<div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-md text-center"><p className="text-sm text-gray-600 dark:text-gray-300">Os administradores têm acesso a todos os formulários.</p></div>)}
                     {currentUser?.role === Role.Padrao && (
                         <fieldset className="border dark:border-gray-600 p-4 rounded-md">
                              <legend className="text-sm font-medium text-gray-900 dark:text-gray-200 px-1">Permissões de Formulário</legend>
@@ -210,13 +210,13 @@ const GerirUsuarios: React.FC = React.memo(() => {
                     )}
                     <div className="flex justify-end space-x-2 pt-4">
                         <Button variant="secondary" onClick={closeModal}>Cancelar</Button>
-                        <Button onClick={handleSave} isLoading={isSubmitting}>Salvar</Button>
+                        <Button onClick={handleSave} isLoading={isSubmitting}>Guardar</Button>
                     </div>
                 </div>
             </Modal>
 
             <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} title="Confirmar Eliminação">
-                <p className="text-gray-700 dark:text-gray-300">Tem a certeza que deseja eliminar o usuário <strong>{currentUser?.name}</strong>? Esta ação não pode ser desfeita.</p>
+                <p className="text-gray-700 dark:text-gray-300">Tem a certeza de que deseja eliminar o utilizador <strong>{currentUser?.name}</strong>? Esta ação não pode ser desfeita.</p>
                 <div className="flex justify-end space-x-2 pt-6">
                     <Button variant="secondary" onClick={closeDeleteModal}>Cancelar</Button>
                     <Button variant="danger" onClick={handleDelete} isLoading={isSubmitting}>Eliminar</Button>

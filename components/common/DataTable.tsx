@@ -66,49 +66,53 @@ export const DataTable = React.memo(function DataTable<T extends { id: any }>({
 
   return (
     <div>
-        <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                    <tr>
-                        {columns.map(column => (
-                            <th key={String(column.accessorKey)} scope="col" className="px-6 py-3 cursor-pointer select-none" onClick={() => requestSort(String(column.accessorKey))}>
-                                <div className="flex items-center">
-                                    {column.header}
-                                    <span className="ml-1">
-                                        {sortConfig?.key === column.accessorKey ? (sortConfig.direction === 'ascending' ? <ChevronUpIcon /> : <ChevronDownIcon />) : <ChevronDownIcon className="text-gray-400/50"/>}
-                                    </span>
-                                </div>
-                            </th>
-                        ))}
-                        {renderRowActions && <th scope="col" className="px-6 py-3 text-right">Ações</th>}
-                    </tr>
-                </thead>
-                <tbody>
-                    {isLoading ? (
-                        <TableSkeleton columns={columns.length + (renderRowActions ? 1 : 0)} />
-                    ) : paginatedData.length > 0 ? (
-                        paginatedData.map(row => (
-                            <tr key={row.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                {columns.map(column => (
-                                    <td key={String(column.accessorKey)} className="px-6 py-4 whitespace-nowrap">
-                                        {column.cell ? column.cell(row) : String(getColumnValue(row, column.accessorKey))}
-                                    </td>
-                                ))}
-                                {renderRowActions && (
-                                    <td className="px-6 py-4 text-right whitespace-nowrap space-x-2">
-                                        {renderRowActions(row)}
-                                    </td>
-                                )}
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
+                        <tr>
+                            {columns.map(column => (
+                                <th key={String(column.accessorKey)} scope="col" className="px-6 py-3 cursor-pointer select-none" onClick={() => requestSort(String(column.accessorKey))}>
+                                    <div className="flex items-center">
+                                        {column.header}
+                                        <span className="ml-1">
+                                            {sortConfig?.key === column.accessorKey ? (sortConfig.direction === 'ascending' ? <ChevronUpIcon /> : <ChevronDownIcon />) : <ChevronDownIcon className="text-gray-400/50"/>}
+                                        </span>
+                                    </div>
+                                </th>
+                            ))}
+                            {renderRowActions && <th scope="col" className="px-6 py-3 text-right">Ações</th>}
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                        {isLoading ? (
+                            <TableSkeleton columns={columns.length + (renderRowActions ? 1 : 0)} />
+                        ) : paginatedData.length > 0 ? (
+                            paginatedData.map(row => (
+                                <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    {columns.map(column => (
+                                        <td key={String(column.accessorKey)} className="px-6 py-4 whitespace-nowrap">
+                                            {column.cell ? column.cell(row) : String(getColumnValue(row, column.accessorKey))}
+                                        </td>
+                                    ))}
+                                    {renderRowActions && (
+                                        <td className="px-6 py-4 text-right whitespace-nowrap space-x-2">
+                                            {renderRowActions(row)}
+                                        </td>
+                                    )}
+                                </tr>
+                            ))
+                        ) : (
+                             <tr>
+                                <td colSpan={columns.length + (renderRowActions ? 1 : 0)} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                                    Nenhum registo encontrado.
+                                </td>
                             </tr>
-                        ))
-                    ) : null}
-                </tbody>
-            </table>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        {!isLoading && data.length === 0 && (
-             <div className="text-center py-8 text-gray-500 dark:text-gray-400">Nenhum registo encontrado.</div>
-        )}
 
         {!isLoading && totalPages > 1 && (
             <div className="flex justify-between items-center mt-4">

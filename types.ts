@@ -18,7 +18,7 @@ export type View =
   | 'Dashboard'
   | 'Criminalidade'
   | 'Sinistralidade Rodoviária'
-  | 'Enfrentamento Policial'
+  | 'Resultados Operacionais'
   | 'Transportes'
   | 'Logística'
   | 'Gerir Usuários'
@@ -30,13 +30,13 @@ export interface NavItem {
   roles: Role[];
 }
 
-export type CrimeFamily = 'Crimes Contra Pessoa' | 'Crimes Contra o Património' | 'Crimes Contra Ambiente' | 'Crimes Contra Autoridade' | 'Crimes Contra Ordem e Tranquilidade Pública' | 'Crimes Contra Mercado e Economia' | 'Outros';
+export type FamíliaCriminal = 'Crimes Contra Pessoa' | 'Crimes Contra o Património' | 'Crimes Contra Ambiente' | 'Crimes Contra Autoridade' | 'Crimes Contra Ordem e Tranquilidade Pública' | 'Crimes Contra Mercado e Economia' | 'Outros';
 
 export type CrimeData = {
-    [key in CrimeFamily]: string[];
+    [key in FamíliaCriminal]: string[];
 };
 
-export type DashboardCategory = 'Criminalidade' | 'Sinistralidade Rodoviária' | 'Enfrentamento Policial' | 'Transportes' | 'Logística';
+export type DashboardCategory = 'Criminalidade' | 'Sinistralidade Rodoviária' | 'Resultados Operacionais' | 'Transportes' | 'Logística';
 
 export type ApiKey = 'criminalidade' | 'sinistralidade' | 'resultados' | 'transportes' | 'logistica';
 
@@ -48,7 +48,7 @@ export interface DataRecord {
 
 // Specific Record Types
 export interface CriminalidadeRecord extends DataRecord {
-  familiaDeletiva: CrimeFamily;
+  familiaCriminal: FamíliaCriminal;
   crime: string;
   municipio: string;
   vitimaNome: string;
@@ -70,7 +70,7 @@ export interface TransportesRecord extends DataRecord {
 }
 
 export interface LogisticaRecord extends DataRecord {
-    categoriaLogistica: 'Armamento' | 'Viveres' | 'Vestuario';
+    categoriaLogistica: 'Armamento' | 'Viveres' | 'Vestuário';
     agenteNome: string;
     tipoArmamento?: string;
     numSerieArma?: string;

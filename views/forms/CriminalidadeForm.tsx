@@ -1,10 +1,8 @@
-
-
 import React, { useState, useEffect } from 'react';
 import FormWrapper from './FormWrapper';
 import { Label, Input, Select, Textarea } from '../../components/common/FormElements';
-import { MUNICIPIOS_HUILA, UNIDADES_ESQUADRAS, PERIODOS, FAMILIAS_DELETIVAS, CRIMES_POR_FAMILIA, TODOS_OS_CRIMES } from '../../constants';
-import { CrimeFamily } from '../../types';
+import { MUNICIPIOS_HUILA, UNIDADES_ESQUADRAS, PERIODOS, FAMILIAS_CRIMINAIS, CRIMES_POR_FAMILIA, TODOS_OS_CRIMES } from '../../constants';
+import { FamíliaCriminal } from '../../types';
 import { api } from '../../services/api';
 import { useToast } from '../../contexts/ToastContext';
 import { useDataRefresh } from '../../contexts/DataRefreshContext';
@@ -18,7 +16,7 @@ const menuItems = [
 
 const CriminalidadeForm: React.FC = React.memo(() => {
     const [formData, setFormData] = useState<any>({
-        familiaDeletiva: '',
+        familiaCriminal: '',
         crime: '',
     });
     const [crimes, setCrimes] = useState<string[]>([]);
@@ -29,14 +27,14 @@ const CriminalidadeForm: React.FC = React.memo(() => {
     const { triggerRefresh } = useDataRefresh();
 
     useEffect(() => {
-        if (formData.familiaDeletiva) {
-            const familyKey = formData.familiaDeletiva as CrimeFamily;
+        if (formData.familiaCriminal) {
+            const familyKey = formData.familiaCriminal as FamíliaCriminal;
             setCrimes(CRIMES_POR_FAMILIA[familyKey] || []);
             setFormData(prev => ({ ...prev, crime: '' }));
         } else {
             setCrimes([]);
         }
-    }, [formData.familiaDeletiva]);
+    }, [formData.familiaCriminal]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -53,7 +51,7 @@ const CriminalidadeForm: React.FC = React.memo(() => {
             if (!formData.municipio) newErrors.municipio = 'Município é obrigatório.';
         }
         if (activeMenu === 'Crimes') {
-            if (!formData.familiaDeletiva) newErrors.familiaDeletiva = 'Família Deletiva é obrigatória.';
+            if (!formData.familiaCriminal) newErrors.familiaCriminal = 'Família Criminal é obrigatória.';
             if (!formData.crime) newErrors.crime = 'Crime é obrigatório.';
         }
         setErrors(newErrors);
@@ -79,7 +77,7 @@ const CriminalidadeForm: React.FC = React.memo(() => {
             addToast(`Dados de criminalidade (${activeMenu}) submetidos com sucesso!`, 'success');
             triggerRefresh();
             form.reset();
-            setFormData({ familiaDeletiva: '', crime: '' });
+            setFormData({ familiaCriminal: '', crime: '' });
             setActiveMenu('Ocorrência');
             setErrors({});
         } catch (error) {
@@ -122,8 +120,8 @@ const CriminalidadeForm: React.FC = React.memo(() => {
                     <div><Label htmlFor="acusadoNacionalidade">Nacionalidade</Label><Input id="acusadoNacionalidade" name="acusadoNacionalidade" type="text" /></div>
                     <div><Label htmlFor="acusadoTCP">TCP</Label><Input id="acusadoTCP" name="acusadoTCP" type="text" /></div>
                     <div><Label htmlFor="acusadoIdade">Idade</Label><Input id="acusadoIdade" name="acusadoIdade" type="number" /></div>
-                    <div><Label htmlFor="acusadoEstadoCivil">Estado Cívil</Label><Input id="acusadoEstadoCivil" name="acusadoEstadoCivil" type="text" /></div>
-                    <div><Label htmlFor="acusadoSituacaoCarceraria">Situação Carcerária</Label><Input id="acusadoSituacaoCarceraria" name="acusadoSituacaoCarceraria" type="text" /></div>
+                    <div><Label htmlFor="acusadoEstadoCivil">Estado Civil</Label><Input id="acusadoEstadoCivil" name="acusadoEstadoCivil" type="text" /></div>
+                    <div><Label htmlFor="acusadoSituacaoPrisional">Situação Prisional</Label><Input id="acusadoSituacaoPrisional" name="acusadoSituacaoPrisional" type="text" /></div>
                 </div>
             </fieldset>
         </div>
@@ -134,13 +132,13 @@ const CriminalidadeForm: React.FC = React.memo(() => {
             <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Dados das Ocorrências</legend>
             <div className="grid grid-cols-3 gap-6 mt-4">
                 <div className="lg:col-span-1">
-                    <Label htmlFor="familiaDeletiva">Família Deletiva</Label>
-                    <Select id="familiaDeletiva" name="familiaDeletiva" value={formData.familiaDeletiva} onChange={handleChange} required><option value="">Selecione a Família</option>{FAMILIAS_DELETIVAS.map(f => <option key={f} value={f}>{f}</option>)}</Select>
-                    {errors.familiaDeletiva && <p className="text-red-500 text-xs mt-1">{errors.familiaDeletiva}</p>}
+                    <Label htmlFor="familiaCriminal">Família Criminal</Label>
+                    <Select id="familiaCriminal" name="familiaCriminal" value={formData.familiaCriminal} onChange={handleChange} required><option value="">Selecione a Família</option>{FAMILIAS_CRIMINAIS.map(f => <option key={f} value={f}>{f}</option>)}</Select>
+                    {errors.familiaCriminal && <p className="text-red-500 text-xs mt-1">{errors.familiaCriminal}</p>}
                 </div>
                 <div className="lg:col-span-1">
                     <Label htmlFor="crime">Crime</Label>
-                    <Select id="crime" name="crime" value={formData.crime} onChange={handleChange} disabled={!formData.familiaDeletiva} required><option value="">Selecione o Crime</option>{crimes.map(c => <option key={c} value={c}>{c}</option>)}</Select>
+                    <Select id="crime" name="crime" value={formData.crime} onChange={handleChange} disabled={!formData.familiaCriminal} required><option value="">Selecione o Crime</option>{crimes.map(c => <option key={c} value={c}>{c}</option>)}</Select>
                     {errors.crime && <p className="text-red-500 text-xs mt-1">{errors.crime}</p>}
                 </div>
                 <div><Label htmlFor="tipoCrime">Tipo de Crime</Label><Input id="tipoCrime" name="tipoCrime" type="text" /></div>
@@ -149,13 +147,13 @@ const CriminalidadeForm: React.FC = React.memo(() => {
                     <Select id="todosCrimes" name="todosCrimes"><option value="">Selecione um crime da lista geral</option>{TODOS_OS_CRIMES.map(c => <option key={c} value={c}>{c}</option>)}</Select>
                 </div>
                 <div><Label htmlFor="modusOperandi">Modus Operandi</Label><Input id="modusOperandi" name="modusOperandi" type="text" /></div>
-                <div><Label htmlFor="mobilCrime">Mobil Crime</Label><Input id="mobilCrime" name="mobilCrime" type="text" /></div>
-                <div><Label htmlFor="objectoUsado">Objecto Usado</Label><Input id="objectoUsado" name="objectoUsado" type="text" /></div>
-                <div><Label htmlFor="descricaoObjecto">Descrição do Objecto</Label><Input id="descricaoObjecto" name="descricaoObjecto" type="text" /></div>
+                <div><Label htmlFor="mobilDoCrime">Móbil do Crime</Label><Input id="mobilDoCrime" name="mobilDoCrime" type="text" /></div>
+                <div><Label htmlFor="objetoUsado">Objeto Usado</Label><Input id="objetoUsado" name="objetoUsado" type="text" /></div>
+                <div><Label htmlFor="descricaoDoObjeto">Descrição do Objeto</Label><Input id="descricaoDoObjeto" name="descricaoDoObjeto" type="text" /></div>
                 <div><Label htmlFor="relacaoVitima">Relação com Vítima</Label><Input id="relacaoVitima" name="relacaoVitima" type="text" /></div>
                 <div><Label htmlFor="estado">Estado</Label><Input id="estado" name="estado" type="text" /></div>
-                <div><Label htmlFor="meiosSubtraidos">Meios Subtraídos</Label><Input id="meiosSubtraidos" name="meiosSubtraidos" type="text" /></div>
-                <div><Label htmlFor="situacaoMeios">Situação dos meios</Label><Input id="situacaoMeios" name="situacaoMeios" type="text" /></div>
+                <div><Label htmlFor="bensSubtraidos">Bens Subtraídos</Label><Input id="bensSubtraidos" name="bensSubtraidos" type="text" /></div>
+                <div><Label htmlFor="situacaoDosBens">Situação dos bens</Label><Input id="situacaoDosBens" name="situacaoDosBens" type="text" /></div>
             </div>
         </fieldset>
     );

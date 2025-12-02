@@ -1,5 +1,3 @@
-
-
 import React, { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { DataRecord } from '../../types';
@@ -38,16 +36,18 @@ const TransportesDetailsView: React.FC<{ records: DataRecord[] }> = React.memo((
         const currentRecords = filteredRecords;
         
         const renderTable = () => (
-             <div className="overflow-x-auto mt-4">
+             <div className="mt-4">
                 <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-2">Últimos Registos</h4>
-                <table className="w-full text-sm dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                        <tr>{currentRecords.length > 0 && Object.keys(currentRecords[0]).filter(k => !['id', 'createdAt', 'categoria', 'categoriaLogistica'].includes(k)).map(k => <th key={k} className="px-4 py-2">{k}</th>)}</tr>
-                    </thead>
-                    <tbody>
-                        {currentRecords.slice(0, 5).map(r => (<tr key={r.id} className="border-b dark:border-gray-700">{Object.entries(r).filter(([k]) => !['id', 'createdAt', 'categoria', 'categoriaLogistica'].includes(k)).map(([k, v]) => <td key={k} className="px-4 py-2">{String(v)}</td>)}</tr>))}
-                    </tbody>
-                </table>
+                <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                    <table className="w-full text-sm">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
+                            <tr>{currentRecords.length > 0 && Object.keys(currentRecords[0]).filter(k => !['id', 'createdAt', 'categoria', 'categoriaLogistica'].includes(k)).map(k => <th key={k} className="px-6 py-3 text-left">{k}</th>)}</tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                            {currentRecords.slice(0, 5).map(r => (<tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">{Object.entries(r).filter(([k]) => !['id', 'createdAt', 'categoria', 'categoriaLogistica'].includes(k)).map(([k, v]) => <td key={k} className="px-6 py-4 whitespace-nowrap">{String(v)}</td>)}</tr>))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         );
 

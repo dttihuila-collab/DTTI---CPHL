@@ -16,7 +16,7 @@ const iconMap: { [key in View]?: React.ReactElement } = {
     'Dashboard': <DashboardIcon />,
     'Criminalidade': <CrimeIcon />,
     'Sinistralidade Rodoviária': <RoadIcon />,
-    'Enfrentamento Policial': <PoliceIcon />,
+    'Resultados Operacionais': <PoliceIcon />,
     'Transportes': <TransportIcon />,
     'Logística': <LogisticsIcon />,
     'Gerir Usuários': <UsersIcon />,
@@ -34,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ user, isCollapsed, setCurr
     
     if (user.role === Role.Padrao) {
         if (item.name === 'Relatórios') {
-            const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial', 'Transportes', 'Logística'];
+            const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística'];
             return user.permissions?.some(p => formViews.includes(p)) ?? false;
         }
         return user.permissions?.includes(item.name) ?? false;
@@ -63,7 +63,7 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ user, isCollapsed, setCurr
             className={`${baseButtonClass} ${isCollapsed ? 'justify-center' : ''} ${currentView === item.name ? 'bg-custom-blue-100 text-custom-blue-700 dark:bg-custom-blue-900 dark:text-custom-blue-300' : 'hover:bg-custom-blue-50 hover:text-custom-blue-600 dark:hover:bg-gray-700 dark:hover:text-gray-200'}`}
           >
             {iconMap[item.name]}
-            <span className={`${textClass} ${transitionClass}`}>{item.name}</span>
+            <span className={`${textClass} ${transitionClass}`}>{item.name === 'Gerir Usuários' ? 'Gerir Utilizadores' : item.name}</span>
           </button>
         ))}
       </nav>

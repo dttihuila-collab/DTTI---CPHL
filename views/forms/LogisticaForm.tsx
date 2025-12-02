@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import FormWrapper from './FormWrapper';
 import { Label, Input, Select, Textarea } from '../../components/common/FormElements';
@@ -12,7 +10,7 @@ import { ArmamentIcon, ProvisionsIcon, ClothingIcon } from '../../components/ico
 const menuItems = [
     { name: 'Armamento', icon: <ArmamentIcon /> },
     { name: 'Viveres', icon: <ProvisionsIcon /> },
-    { name: 'Vestuario', icon: <ClothingIcon /> },
+    { name: 'Vestuário', icon: <ClothingIcon /> },
 ];
 
 const LogisticaForm: React.FC = React.memo(() => {
@@ -147,7 +145,7 @@ const LogisticaForm: React.FC = React.memo(() => {
             <div className="space-y-6">
                 {activeMenu === 'Armamento' && <ArmamentoTab />}
                 {activeMenu === 'Viveres' && <ViveresTab />}
-                {activeMenu === 'Vestuario' && <VestuarioTab />}
+                {activeMenu === 'Vestuário' && <VestuarioTab />}
             </div>
         </FormWrapper>
     );

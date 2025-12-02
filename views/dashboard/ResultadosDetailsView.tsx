@@ -1,5 +1,3 @@
-
-
 import React, { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { DataRecord } from '../../types';
@@ -70,20 +68,22 @@ const ResultadosDetailsView: React.FC<{ records: DataRecord[] }> = React.memo(({
                             <ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={chartData} dataKey="value" nameKey="name" cx="40%" cy="50%" outerRadius={80} fill="#8884d8">{chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip contentStyle={{ backgroundColor: theme === 'dark' ? '#334155' : '#fff', border: 'none', borderRadius: '0.5rem' }} itemStyle={{ color: theme === 'dark' ? '#cbd5e1' : '#000' }} /><Legend layout="vertical" verticalAlign="middle" align="right" formatter={(value) => <span className="text-gray-800 dark:text-gray-300">{value}</span>}/></PieChart></ResponsiveContainer>
                         </div>
                     )}
-                    <div className={chartData.length > 0 ? 'md:col-span-2 overflow-x-auto' : 'md:col-span-3 overflow-x-auto'}>
+                    <div className={chartData.length > 0 ? 'md:col-span-2' : 'md:col-span-3'}>
                         <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-2">Últimos Registos</h4>
-                        <table className="w-full text-sm dark:text-gray-400">
-                           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300"><tr><th className="px-4 py-2">Data/Nome</th><th className="px-4 py-2">Detalhe</th><th className="px-4 py-2">Município/Motivo</th></tr></thead>
-                            <tbody>
-                                {currentRecords.slice(0, 5).map(r => (
-                                    <tr key={r.id} className="border-b dark:border-gray-700">
-                                        <td className="px-4 py-2">{r.data ? new Date(r.data).toLocaleDateString() : r.detidoNome}</td>
-                                        <td className="px-4 py-2">{r.tipoOperacao || r.tipoPatrulhamento || 'N/A'}</td>
-                                        <td className="px-4 py-2">{r.municipio || r.motivoDetencao}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                            <table className="w-full text-sm">
+                               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300"><tr><th className="px-6 py-3 text-left">Data/Nome</th><th className="px-6 py-3 text-left">Detalhe</th><th className="px-6 py-3 text-left">Município/Motivo</th></tr></thead>
+                                <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                                    {currentRecords.slice(0, 5).map(r => (
+                                        <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
+                                            <td className="px-6 py-4 whitespace-nowrap">{r.data ? new Date(r.data).toLocaleDateString() : r.detidoNome}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{r.tipoOperacao || r.tipoPatrulhamento || 'N/A'}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{r.municipio || r.motivoDetencao}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 )}

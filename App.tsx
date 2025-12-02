@@ -19,7 +19,7 @@ import ToastContainer from './components/ToastContainer';
 import { DataRefreshProvider } from './contexts/DataRefreshContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 
-const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial', 'Transportes', 'Logística'];
+const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística'];
 
 const AppContent: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -82,7 +82,7 @@ const AppContent: React.FC = () => {
             {currentView === 'Dashboard' && <Dashboard />}
             {currentView === 'Criminalidade' && <CriminalidadeForm />}
             {currentView === 'Sinistralidade Rodoviária' && <SinistralidadeForm />}
-            {currentView === 'Enfrentamento Policial' && <ResultadosForm />}
+            {currentView === 'Resultados Operacionais' && <ResultadosForm />}
             {currentView === 'Transportes' && <TransportesForm />}
             {currentView === 'Logística' && <LogisticaForm />}
             {currentView === 'Gerir Usuários' && <GerirUsuarios />}

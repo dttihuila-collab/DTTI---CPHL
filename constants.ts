@@ -1,6 +1,6 @@
 import { User, Role, NavItem, CrimeData, View } from './types';
 
-export const PERMISSION_VIEWS: View[] = ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial', 'Transportes', 'Logística'];
+export const PERMISSION_VIEWS: View[] = ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística'];
 
 // SECURITY-FIX: Passwords are no longer stored in plaintext.
 // A mock hash is stored instead (btoa('user') -> 'dXNlcg==').
@@ -14,7 +14,7 @@ export const APP_VIEWS: NavItem[] = [
   { name: 'Dashboard', roles: [Role.Admin, Role.Padrao] },
   { name: 'Criminalidade', roles: [Role.Admin, Role.Padrao] },
   { name: 'Sinistralidade Rodoviária', roles: [Role.Admin, Role.Padrao] },
-  { name: 'Enfrentamento Policial', roles: [Role.Admin, Role.Padrao] },
+  { name: 'Resultados Operacionais', roles: [Role.Admin, Role.Padrao] },
   { name: 'Transportes', roles: [Role.Admin, Role.Padrao] },
   { name: 'Logística', roles: [Role.Admin, Role.Padrao] },
   { name: 'Gerir Usuários', roles: [Role.Admin] },
@@ -37,7 +37,7 @@ export const UNIDADES_ESQUADRAS: string[] = [
 
 export const PERIODOS: string[] = ["Iº", "IIº", "IIIº"];
 
-export const FAMILIAS_DELETIVAS: string[] = [
+export const FAMILIAS_CRIMINAIS: string[] = [
     'Crimes Contra Pessoa', 
     'Crimes Contra o Património', 
     'Crimes Contra Ambiente', 

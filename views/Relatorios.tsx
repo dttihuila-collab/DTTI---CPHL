@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useContext } from 'react';
-import { DashboardCategory, DataRecord, Role, ApiKey, CriminalidadeRecord, CrimeFamily } from '../types';
+import { DashboardCategory, DataRecord, Role, ApiKey, CriminalidadeRecord, FamíliaCriminal } from '../types';
 import { api } from '../services/api';
 import { Input, Label, Button, Select, FormError } from '../components/common/FormElements';
 import { EditIcon, DeleteIcon } from '../components/icons/Icon';
@@ -7,16 +7,16 @@ import { AuthContext } from '../contexts/AuthContext';
 import { useDataRefresh } from '../contexts/DataRefreshContext';
 import { useToast } from '../contexts/ToastContext';
 import Modal from '../components/Modal';
-import { MUNICIPIOS_HUILA, FAMILIAS_DELETIVAS, CRIMES_POR_FAMILIA } from '../constants';
+import { MUNICIPIOS_HUILA, FAMILIAS_CRIMINAIS, CRIMES_POR_FAMILIA } from '../constants';
 import { DataTable, ColumnDef } from '../components/common/DataTable';
 
-const TABS: DashboardCategory[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial', 'Transportes', 'Logística'];
+const TABS: DashboardCategory[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística'];
 
 const categoryToApiKey = (category: DashboardCategory): ApiKey => {
     switch (category) {
         case 'Criminalidade': return 'criminalidade';
         case 'Sinistralidade Rodoviária': return 'sinistralidade';
-        case 'Enfrentamento Policial': return 'resultados';
+        case 'Resultados Operacionais': return 'resultados';
         case 'Transportes': return 'transportes';
         case 'Logística': return 'logistica';
         default: return 'criminalidade';
@@ -44,7 +44,7 @@ const EditCriminalidadeModal: React.FC<{
         const { name, value } = e.target;
         setFormData(prev => {
             const newState = prev ? { ...prev, [name]: value } : null;
-            if (name === 'familiaDeletiva' && newState) {
+            if (name === 'familiaCriminal' && newState) {
                 newState.crime = '';
             }
             return newState;
@@ -67,20 +67,20 @@ const EditCriminalidadeModal: React.FC<{
 
     if (!isOpen || !formData) return null;
 
-    const crimes = formData.familiaDeletiva ? CRIMES_POR_FAMILIA[formData.familiaDeletiva as CrimeFamily] || [] : [];
+    const crimes = formData.familiaCriminal ? CRIMES_POR_FAMILIA[formData.familiaCriminal as FamíliaCriminal] || [] : [];
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Editar Registo de Criminalidade">
             <div className="space-y-4">
                 <div><Label>Data da Ocorrência</Label><Input type="datetime-local" name="data" value={formData.data || ''} onChange={handleChange} /></div>
                 <div><Label>Município</Label><Select name="municipio" value={formData.municipio || ''} onChange={handleChange} error={!!errors.municipio}><option value="">Selecione</option>{MUNICIPIOS_HUILA.map(m => <option key={m} value={m}>{m}</option>)}</Select><FormError message={errors.municipio} /></div>
-                <div><Label>Família Deletiva</Label><Select name="familiaDeletiva" value={formData.familiaDeletiva || ''} onChange={handleChange}><option value="">Selecione</option>{FAMILIAS_DELETIVAS.map(f => <option key={f} value={f}>{f}</option>)}</Select></div>
-                <div><Label>Crime</Label><Select name="crime" value={formData.crime || ''} onChange={handleChange} error={!!errors.crime} disabled={!formData.familiaDeletiva}><option value="">Selecione</option>{crimes.map(c => <option key={c} value={c}>{c}</option>)}</Select><FormError message={errors.crime} /></div>
+                <div><Label>Família Criminal</Label><Select name="familiaCriminal" value={formData.familiaCriminal || ''} onChange={handleChange}><option value="">Selecione</option>{FAMILIAS_CRIMINAIS.map(f => <option key={f} value={f}>{f}</option>)}</Select></div>
+                <div><Label>Crime</Label><Select name="crime" value={formData.crime || ''} onChange={handleChange} error={!!errors.crime} disabled={!formData.familiaCriminal}><option value="">Selecione</option>{crimes.map(c => <option key={c} value={c}>{c}</option>)}</Select><FormError message={errors.crime} /></div>
                 <div><Label>Nome da Vítima</Label><Input name="vitimaNome" value={formData.vitimaNome || ''} onChange={handleChange} /></div>
                 <div><Label>Nome do Acusado</Label><Input name="acusadoNome" value={formData.acusadoNome || ''} onChange={handleChange} /></div>
                 <div className="flex justify-end space-x-2 pt-4">
                     <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>Cancelar</Button>
-                    <Button onClick={handleSave} isLoading={isSubmitting}>Salvar</Button>
+                    <Button onClick={handleSave} isLoading={isSubmitting}>Guardar</Button>
                 </div>
             </div>
         </Modal>
@@ -256,7 +256,7 @@ const Relatorios: React.FC = React.memo(() => {
             </div>
             {activeTab === 'Criminalidade' && <EditCriminalidadeModal isOpen={isEditModalOpen} onClose={closeEditModal} record={recordToEdit as CriminalidadeRecord} onSave={handleSave as (r: CriminalidadeRecord) => void} />}
             <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} title="Confirmar Eliminação">
-                <p className="text-gray-700 dark:text-gray-300">Tem a certeza que deseja eliminar este registo? Esta ação não pode ser desfeita.</p>
+                <p className="text-gray-700 dark:text-gray-300">Tem a certeza de que deseja eliminar este registo? Esta ação não pode ser desfeita.</p>
                 <div className="flex justify-end space-x-2 pt-6"><Button variant="secondary" onClick={closeDeleteModal}>Cancelar</Button><Button variant="danger" onClick={handleDelete}>Eliminar</Button></div>
             </Modal>
         </div>

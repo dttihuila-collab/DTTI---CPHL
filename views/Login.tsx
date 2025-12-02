@@ -1,4 +1,3 @@
-
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { SecurityIcon } from '../components/icons/Icon';
@@ -15,7 +14,7 @@ const Login: React.FC = () => {
         setError('');
         const success = await login(username, password);
         if (!success) {
-            setError('Nome de usuário ou senha inválidos.');
+            setError('Nome de utilizador ou palavra-passe inválidos.');
         }
     };
 
@@ -27,13 +26,13 @@ const Login: React.FC = () => {
                         <SecurityIcon className="w-8 h-8 text-custom-blue-600" />
                     </div>
                     <h1 className="text-4xl font-bold text-custom-blue-700 dark:text-custom-blue-400">SCCPHL</h1>
-                    <p className="text-gray-600 dark:text-gray-300 mt-2">Sistema de Controle do CPHL</p>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">Faça login para aceder ao painel</p>
+                    <p className="text-gray-600 dark:text-gray-300 mt-2">Sistema de Controlo do CPHL</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">Inicie sessão para aceder ao painel</p>
                 </div>
 
                 <form className="space-y-6" onSubmit={handleLogin}>
                     <div>
-                        <Label htmlFor="username">Nome de Usuário</Label>
+                        <Label htmlFor="username">Nome de Utilizador</Label>
                         <Input
                             id="username"
                             name="username"
@@ -45,7 +44,7 @@ const Login: React.FC = () => {
                         />
                     </div>
                     <div>
-                        <Label htmlFor="password">Senha</Label>
+                        <Label htmlFor="password">Palavra-passe</Label>
                         <Input
                             id="password"
                             name="password"

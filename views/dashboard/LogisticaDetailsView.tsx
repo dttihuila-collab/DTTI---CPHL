@@ -1,5 +1,3 @@
-
-
 import React, { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { DataRecord } from '../../types';
@@ -81,28 +79,30 @@ const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = React.memo(({ 
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
-                                <div className="md:col-span-2 overflow-x-auto">
+                                <div className="md:col-span-2">
                                     <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-2">Últimos Registos de Armamento</h4>
-                                    <table className="w-full text-sm dark:text-gray-400">
-                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                            <tr>
-                                                <th className="px-4 py-2">Agente</th>
-                                                <th className="px-4 py-2">Tipo</th>
-                                                <th className="px-4 py-2">N/S</th>
-                                                <th className="px-4 py-2">Estado</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filteredArmamento.slice(0, 5).map(r => (
-                                                <tr key={r.id} className="border-b dark:border-gray-700">
-                                                    <td className="px-4 py-2">{r.agenteNome}</td>
-                                                    <td className="px-4 py-2">{r.tipoArmamento}</td>
-                                                    <td className="px-4 py-2">{r.numSerieArma}</td>
-                                                    <td className="px-4 py-2">{r.estadoArma}</td>
+                                    <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                        <table className="w-full text-sm">
+                                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
+                                                <tr>
+                                                    <th className="px-6 py-3 text-left">Agente</th>
+                                                    <th className="px-6 py-3 text-left">Tipo</th>
+                                                    <th className="px-6 py-3 text-left">N/S</th>
+                                                    <th className="px-6 py-3 text-left">Estado</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                                                {filteredArmamento.slice(0, 5).map(r => (
+                                                    <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
+                                                        <td className="px-6 py-4 whitespace-nowrap">{r.agenteNome}</td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">{r.tipoArmamento}</td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">{r.numSerieArma}</td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">{r.estadoArma}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -113,23 +113,23 @@ const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = React.memo(({ 
                     <fieldset className="border dark:border-gray-700 p-4 rounded-md animate-fade-in">
                         <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Controlo de Viveres</legend>
                         {filteredViveres.length === 0 ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Nenhum registo encontrado.</p> : (
-                            <div className="overflow-x-auto mt-4">
-                                <table className="w-full text-sm dark:text-gray-400">
+                            <div className="mt-4 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table className="w-full text-sm">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
                                         <tr>
-                                            <th className="px-4 py-2">Descrição</th>
-                                            <th className="px-4 py-2">Quantidade</th>
-                                            <th className="px-4 py-2">Validade</th>
-                                            <th className="px-4 py-2">Unidade</th>
+                                            <th className="px-6 py-3 text-left">Descrição</th>
+                                            <th className="px-6 py-3 text-left">Quantidade</th>
+                                            <th className="px-6 py-3 text-left">Validade</th>
+                                            <th className="px-6 py-3 text-left">Unidade</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
                                         {filteredViveres.map(r => (
-                                            <tr key={r.id} className="border-b dark:border-gray-700">
-                                                <td className="px-4 py-2">{r.descViveres}</td>
-                                                <td className="px-4 py-2">{r.qtdViveres}</td>
-                                                <td className="px-4 py-2">{r.validadeViveres}</td>
-                                                <td className="px-4 py-2">{r.unidadeViveres}</td>
+                                            <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
+                                                <td className="px-6 py-4 whitespace-nowrap">{r.descViveres}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap">{r.qtdViveres}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap">{r.validadeViveres}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap">{r.unidadeViveres}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -143,23 +143,23 @@ const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = React.memo(({ 
                     <fieldset className="border dark:border-gray-700 p-4 rounded-md animate-fade-in">
                         <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Controlo de Vestuário</legend>
                         {filteredVestuario.length === 0 ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Nenhum registo encontrado.</p> : (
-                            <div className="overflow-x-auto mt-4">
-                                <table className="w-full text-sm dark:text-gray-400">
+                            <div className="mt-4 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table className="w-full text-sm">
                                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
                                         <tr>
-                                            <th className="px-4 py-2">Tipo</th>
-                                            <th className="px-4 py-2">Estado</th>
-                                            <th className="px-4 py-2">Tamanho</th>
-                                            <th className="px-4 py-2">Quantidade</th>
+                                            <th className="px-6 py-3 text-left">Tipo</th>
+                                            <th className="px-6 py-3 text-left">Estado</th>
+                                            <th className="px-6 py-3 text-left">Tamanho</th>
+                                            <th className="px-6 py-3 text-left">Quantidade</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
                                         {filteredVestuario.map(r => (
-                                            <tr key={r.id} className="border-b dark:border-gray-700">
-                                                <td className="px-4 py-2">{r.tipoVestuario}</td>
-                                                <td className="px-4 py-2">{r.estadoVestuario}</td>
-                                                <td className="px-4 py-2">{r.tamanhoVestuario}</td>
-                                                <td className="px-4 py-2">{r.qtdVestuario}</td>
+                                            <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
+                                                <td className="px-6 py-4 whitespace-nowrap">{r.tipoVestuario}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap">{r.estadoVestuario}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap">{r.tamanhoVestuario}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap">{r.qtdVestuario}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -185,7 +185,7 @@ const LogisticaDetailsView: React.FC<{ records: DataRecord[] }> = React.memo(({ 
                             onClick={() => setActiveSubCategory(cat)}
                             className={`p-4 rounded-lg text-left transition-all duration-300 transform hover:scale-105 ${isActive ? 'bg-custom-blue-600 text-white shadow-lg' : 'bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
                         >
-                            <h4 className={`font-semibold ${isActive ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`}>Total {cat}</h4>
+                            <h4 className={`font-semibold ${isActive ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`}>{cat}</h4>
                             <p className={`text-3xl font-bold ${isActive ? 'text-white' : 'text-gray-800 dark:text-gray-100'}`}>{total}</p>
                         </button>
                     );

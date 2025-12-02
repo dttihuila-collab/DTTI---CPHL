@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { DashboardCategory, ApiKey } from '../types';
 import { CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, ChevronDownIcon } from '../components/icons/Icon';
@@ -18,7 +16,7 @@ import GenericDetailsTable from './dashboard/GenericDetailsTable';
 const categories = [
     { name: 'Criminalidade', icon: <CrimeIcon /> },
     { name: 'Sinistralidade Rodoviária', icon: <RoadIcon /> },
-    { name: 'Enfrentamento Policial', icon: <PoliceIcon /> },
+    { name: 'Resultados Operacionais', icon: <PoliceIcon /> },
     { name: 'Transportes', icon: <TransportIcon /> },
     { name: 'Logística', icon: <LogisticsIcon /> },
 ] as const;
@@ -30,7 +28,7 @@ const categoryToApiKey = (category: DashboardCategory): ApiKey => {
     switch (category) {
         case 'Criminalidade': return 'criminalidade';
         case 'Sinistralidade Rodoviária': return 'sinistralidade';
-        case 'Enfrentamento Policial': return 'resultados';
+        case 'Resultados Operacionais': return 'resultados';
         case 'Transportes': return 'transportes';
         case 'Logística': return 'logistica';
         default: return 'criminalidade';
@@ -85,7 +83,7 @@ const DashboardDetails: React.FC<{ category: DashboardCategory }> = React.memo((
             return <CriminalidadeDetailsView records={records} />;
         case 'Sinistralidade Rodoviária':
             return <SinistralidadeDetailsView records={records} />;
-        case 'Enfrentamento Policial':
+        case 'Resultados Operacionais':
             return <ResultadosDetailsView records={records} />;
         case 'Transportes':
             return <TransportesDetailsView records={records} />;
@@ -103,7 +101,7 @@ const Dashboard: React.FC = () => {
     const [totals, setTotals] = useState<{[key in DashboardCategory]: number}>({
         'Criminalidade': 0,
         'Sinistralidade Rodoviária': 0,
-        'Enfrentamento Policial': 0,
+        'Resultados Operacionais': 0,
         'Transportes': 0,
         'Logística': 0
     });
@@ -147,7 +145,7 @@ const Dashboard: React.FC = () => {
             setTotals({
                 'Criminalidade': filterRecordsByDate(criminalidade).length,
                 'Sinistralidade Rodoviária': filterRecordsByDate(sinistralidade).length,
-                'Enfrentamento Policial': filterRecordsByDate(resultados).length,
+                'Resultados Operacionais': filterRecordsByDate(resultados).length,
                 'Transportes': filterRecordsByDate(transportes).length,
                 'Logística': filterRecordsByDate(logistica).length,
             });

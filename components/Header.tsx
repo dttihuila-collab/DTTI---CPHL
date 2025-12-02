@@ -10,7 +10,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ user }) => {
   return (
     <header className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm h-16">
       <div className="flex items-center">
-         <h1 className="text-xl font-semibold text-gray-700 dark:text-gray-200">Sistema de Controle do CPHL</h1>
+         <h1 className="text-xl font-semibold text-gray-700 dark:text-gray-200">Sistema de Controlo do CPHL</h1>
       </div>
       <div className="flex items-center space-x-4">
         <ThemeToggle />

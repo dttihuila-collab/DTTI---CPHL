@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import FormWrapper from './FormWrapper';
 import { Label, Input, Select, Textarea } from '../../components/common/FormElements';
@@ -82,9 +80,9 @@ const TransportesForm: React.FC = React.memo(() => {
 
     const ManutencoesTab = () => (
          <fieldset className="border dark:border-gray-600 p-4 rounded-md animate-fade-in">
-            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Registo de Manutenção de Veículos</legend>
+            <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Registo de Manutenção de Viaturas</legend>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-                <div><Label htmlFor="veiculoMatricula">Veículo (Matrícula)</Label><Input id="veiculoMatricula" name="veiculoMatricula" type="text" required/></div>
+                <div><Label htmlFor="viaturaMatricula">Viatura (Matrícula)</Label><Input id="viaturaMatricula" name="viaturaMatricula" type="text" required/></div>
                 <div>
                     <Label htmlFor="tipoManutencao">Tipo de Manutenção</Label>
                     <Select id="tipoManutencao" name="tipoManutencao"><option value="">Selecione o tipo</option><option value="Preventiva">Preventiva</option><option value="Corretiva">Corretiva</option></Select>
