@@ -17,13 +17,12 @@ interface DataTableProps<T extends { id: any }> {
 
 const ITEMS_PER_PAGE = 10;
 
-// FIX: Updated the generic constraint from `T extends DataRecord` to `T extends { id: any }` to make the component more reusable with types like `User` that don't extend `DataRecord`.
-export const DataTable = <T extends { id: any }>({
+export const DataTable = React.memo(function DataTable<T extends { id: any }>({
   columns,
   data,
   isLoading = false,
   renderRowActions,
-}: DataTableProps<T>) => {
+}: DataTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'ascending' | 'descending' } | null>(null);
 
@@ -128,4 +127,4 @@ export const DataTable = <T extends { id: any }>({
         )}
     </div>
   );
-};
+}) as <T extends { id: any }>(props: DataTableProps<T>) => React.ReactElement;

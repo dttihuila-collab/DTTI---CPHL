@@ -6,7 +6,7 @@ interface HeaderProps {
   user: User;
 }
 
-const Header: React.FC<HeaderProps> = ({ user }) => {
+const Header: React.FC<HeaderProps> = React.memo(({ user }) => {
   return (
     <header className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm h-16">
       <div className="flex items-center">
@@ -21,6 +21,6 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
       </div>
     </header>
   );
-};
+});
 
 export default Header;

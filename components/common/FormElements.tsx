@@ -8,34 +8,34 @@ const baseClass = "border-gray-300 focus:ring-custom-blue-500 focus:border-custo
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     error?: string | boolean;
 }
-export const Input: React.FC<InputProps> = ({ error, ...props }) => {
+export const Input: React.FC<InputProps> = React.memo(({ error, ...props }) => {
     return <input {...props} className={`${baseInputClass} ${error ? errorClass : baseClass} ${props.className}`} />;
-};
+});
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     children: React.ReactNode;
     error?: string | boolean;
 }
-export const Select: React.FC<SelectProps> = ({ children, error, ...props }) => {
+export const Select: React.FC<SelectProps> = React.memo(({ children, error, ...props }) => {
     return <select {...props} className={`${baseInputClass} ${error ? errorClass : baseClass} ${props.className}`}>{children}</select>;
-};
+});
 
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
-export const Textarea: React.FC<TextareaProps> = (props) => {
+export const Textarea: React.FC<TextareaProps> = React.memo((props) => {
     return <textarea {...props} rows={4} className={`${baseInputClass} ${baseClass} ${props.className}`} />;
-};
+});
 
 interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
     children: React.ReactNode;
 }
-export const Label: React.FC<LabelProps> = ({ children, ...props }) => {
+export const Label: React.FC<LabelProps> = React.memo(({ children, ...props }) => {
     return <label {...props} className={`block text-sm font-medium text-gray-700 dark:text-gray-300 ${props.className}`}>{children}</label>;
-};
+});
 
-export const FormError: React.FC<{ message?: string }> = ({ message }) => {
+export const FormError: React.FC<{ message?: string }> = React.memo(({ message }) => {
     if (!message) return null;
     return <p className="text-red-500 text-xs mt-1">{message}</p>;
-};
+});
 
 
 const Spinner = () => (
@@ -50,7 +50,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'danger';
     isLoading?: boolean;
 }
-export const Button: React.FC<ButtonProps> = ({ children, variant = 'primary', isLoading = false, ...props }) => {
+export const Button: React.FC<ButtonProps> = React.memo(({ children, variant = 'primary', isLoading = false, ...props }) => {
     const baseButtonClass = "inline-flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
     
     let colorClass = 'bg-custom-blue-600 hover:bg-custom-blue-700 focus:ring-custom-blue-500';
@@ -65,4 +65,4 @@ export const Button: React.FC<ButtonProps> = ({ children, variant = 'primary', i
             {isLoading ? <Spinner /> : children}
         </button>
     );
-};
+});

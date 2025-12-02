@@ -4,7 +4,9 @@ export enum Role {
 }
 
 export interface User {
-  id?: number;
+  // FIX: Changed id to be required to ensure it exists for existing users,
+  // which is necessary for components like DataTable that rely on a stable ID.
+  id: number;
   name: string;
   email: string;
   role: Role;
@@ -16,7 +18,7 @@ export type View =
   | 'Dashboard'
   | 'Criminalidade'
   | 'Sinistralidade Rodoviária'
-  | 'Resultados Policiais'
+  | 'Enfrentamento Policial'
   | 'Transportes'
   | 'Logística'
   | 'Gerir Usuários'
@@ -34,7 +36,7 @@ export type CrimeData = {
     [key in CrimeFamily]: string[];
 };
 
-export type DashboardCategory = 'Criminalidade' | 'Sinistralidade Rodoviária' | 'Resultados Policiais' | 'Transportes' | 'Logística';
+export type DashboardCategory = 'Criminalidade' | 'Sinistralidade Rodoviária' | 'Enfrentamento Policial' | 'Transportes' | 'Logística';
 
 export type ApiKey = 'criminalidade' | 'sinistralidade' | 'resultados' | 'transportes' | 'logistica';
 

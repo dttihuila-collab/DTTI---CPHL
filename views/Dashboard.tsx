@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { DashboardCategory, ApiKey } from '../types';
 import { CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, ChevronDownIcon } from '../components/icons/Icon';
@@ -14,7 +15,7 @@ import GenericDetailsTable from './dashboard/GenericDetailsTable';
 const categories: { name: DashboardCategory, icon: React.ReactElement }[] = [
     { name: 'Criminalidade', icon: <CrimeIcon /> },
     { name: 'Sinistralidade Rodoviária', icon: <RoadIcon /> },
-    { name: 'Resultados Policiais', icon: <PoliceIcon /> },
+    { name: 'Enfrentamento Policial', icon: <PoliceIcon /> },
     { name: 'Transportes', icon: <TransportIcon /> },
     { name: 'Logística', icon: <LogisticsIcon /> },
 ];
@@ -26,14 +27,14 @@ const categoryToApiKey = (category: DashboardCategory): ApiKey => {
     switch (category) {
         case 'Criminalidade': return 'criminalidade';
         case 'Sinistralidade Rodoviária': return 'sinistralidade';
-        case 'Resultados Policiais': return 'resultados';
+        case 'Enfrentamento Policial': return 'resultados';
         case 'Transportes': return 'transportes';
         case 'Logística': return 'logistica';
         default: return 'criminalidade';
     }
 }
 
-const DetailsSkeleton = () => (
+const DetailsSkeleton = React.memo(() => (
     <div className="animate-pulse p-4">
         <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-6"></div>
         <div className="space-y-4">
@@ -43,9 +44,9 @@ const DetailsSkeleton = () => (
             <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
         </div>
     </div>
-);
+));
 
-const DashboardDetails: React.FC<{ category: DashboardCategory }> = ({ category }) => {
+const DashboardDetails: React.FC<{ category: DashboardCategory }> = React.memo(({ category }) => {
     const [records, setRecords] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const { refreshKey } = useDataRefresh();
@@ -81,7 +82,7 @@ const DashboardDetails: React.FC<{ category: DashboardCategory }> = ({ category 
             return <CriminalidadeDetailsView records={records} />;
         case 'Sinistralidade Rodoviária':
             return <SinistralidadeDetailsView records={records} />;
-        case 'Resultados Policiais':
+        case 'Enfrentamento Policial':
             return <ResultadosDetailsView records={records} />;
         case 'Transportes':
             return <TransportesDetailsView records={records} />;
@@ -90,7 +91,7 @@ const DashboardDetails: React.FC<{ category: DashboardCategory }> = ({ category 
         default:
             return <GenericDetailsTable records={records} title="Últimos Registos" />;
     }
-};
+});
 
 
 const Dashboard: React.FC = () => {
@@ -99,7 +100,7 @@ const Dashboard: React.FC = () => {
     const [totals, setTotals] = useState<{[key in DashboardCategory]: number}>({
         'Criminalidade': 0,
         'Sinistralidade Rodoviária': 0,
-        'Resultados Policiais': 0,
+        'Enfrentamento Policial': 0,
         'Transportes': 0,
         'Logística': 0
     });
@@ -143,7 +144,7 @@ const Dashboard: React.FC = () => {
             setTotals({
                 'Criminalidade': filterRecordsByDate(criminalidade).length,
                 'Sinistralidade Rodoviária': filterRecordsByDate(sinistralidade).length,
-                'Resultados Policiais': filterRecordsByDate(resultados).length,
+                'Enfrentamento Policial': filterRecordsByDate(resultados).length,
                 'Transportes': filterRecordsByDate(transportes).length,
                 'Logística': filterRecordsByDate(logistica).length,
             });
@@ -256,4 +257,4 @@ const Dashboard: React.FC = () => {
     );
 };
 
-export default Dashboard;
+export default React.memo(Dashboard);

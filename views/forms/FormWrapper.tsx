@@ -1,4 +1,5 @@
 
+
 import React, { ReactNode } from 'react';
 import { Button } from '../../components/common/FormElements';
 
@@ -10,7 +11,7 @@ interface FormWrapperProps {
     isSubmitting?: boolean;
 }
 
-const FormWrapper: React.FC<FormWrapperProps> = ({ title, description, onSubmit, children, isSubmitting = false }) => {
+const FormWrapper: React.FC<FormWrapperProps> = React.memo(({ title, description, onSubmit, children, isSubmitting = false }) => {
     return (
         <div className="max-w-4xl mx-auto">
             <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg">
@@ -31,6 +32,6 @@ const FormWrapper: React.FC<FormWrapperProps> = ({ title, description, onSubmit,
             </div>
         </div>
     );
-};
+});
 
 export default FormWrapper;

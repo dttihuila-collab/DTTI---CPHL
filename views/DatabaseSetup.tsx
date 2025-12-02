@@ -6,7 +6,7 @@ const CodeBlock: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     </div>
 );
 
-const DatabaseSetup: React.FC = () => {
+const DatabaseSetup: React.FC = React.memo(() => {
     return (
         <div className="max-w-4xl mx-auto">
             <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg">
@@ -47,6 +47,6 @@ const DatabaseSetup: React.FC = () => {
             </div>
         </div>
     );
-};
+});
 
 export default DatabaseSetup;

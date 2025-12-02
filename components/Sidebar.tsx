@@ -16,7 +16,7 @@ const iconMap: { [key in View]?: React.ReactElement } = {
     'Dashboard': <DashboardIcon />,
     'Criminalidade': <CrimeIcon />,
     'Sinistralidade Rodoviária': <RoadIcon />,
-    'Resultados Policiais': <PoliceIcon />,
+    'Enfrentamento Policial': <PoliceIcon />,
     'Transportes': <TransportIcon />,
     'Logística': <LogisticsIcon />,
     'Gerir Usuários': <UsersIcon />,
@@ -24,7 +24,7 @@ const iconMap: { [key in View]?: React.ReactElement } = {
     'Database Setup': <DatabaseIcon />,
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ user, isCollapsed, setCurrentView, currentView, onToggleSidebar }) => {
+const Sidebar: React.FC<SidebarProps> = React.memo(({ user, isCollapsed, setCurrentView, currentView, onToggleSidebar }) => {
   const { logout } = useContext(AuthContext);
 
   const navItems = APP_VIEWS.filter(item => {
@@ -34,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, isCollapsed, setCurrentView, cu
     
     if (user.role === Role.Padrao) {
         if (item.name === 'Relatórios') {
-            const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Policiais', 'Transportes', 'Logística'];
+            const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial', 'Transportes', 'Logística'];
             return user.permissions?.some(p => formViews.includes(p)) ?? false;
         }
         return user.permissions?.includes(item.name) ?? false;
@@ -78,6 +78,6 @@ const Sidebar: React.FC<SidebarProps> = ({ user, isCollapsed, setCurrentView, cu
       </div>
     </div>
   );
-};
+});
 
 export default Sidebar;

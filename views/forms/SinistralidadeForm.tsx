@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import FormWrapper from './FormWrapper';
 import { Label, Input, Select, Textarea } from '../../components/common/FormElements';
@@ -6,10 +7,15 @@ import { MUNICIPIOS_HUILA, UNIDADES_ESQUADRAS, PERIODOS, TIPOS_ACIDENTE } from '
 import { api } from '../../services/api';
 import { useToast } from '../../contexts/ToastContext';
 import { useDataRefresh } from '../../contexts/DataRefreshContext';
+import { AccidentIcon, VictimIcon, MoreIcon } from '../../components/icons/Icon';
 
-const menuItems = ['Acidentes', 'Vítimas', 'Outros'];
+const menuItems = [
+    { name: 'Acidentes', icon: <AccidentIcon /> },
+    { name: 'Vítimas', icon: <VictimIcon /> },
+    { name: 'Outros', icon: <MoreIcon /> },
+];
 
-const SinistralidadeForm: React.FC = () => {
+const SinistralidadeForm: React.FC = React.memo(() => {
     const [activeMenu, setActiveMenu] = useState('Acidentes');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { addToast } = useToast();
@@ -106,16 +112,17 @@ const SinistralidadeForm: React.FC = () => {
                 <nav className="-mb-px flex space-x-4" aria-label="Tabs">
                     {menuItems.map(item => (
                         <button
-                            key={item}
+                            key={item.name}
                             type="button"
-                            onClick={() => setActiveMenu(item)}
+                            onClick={() => setActiveMenu(item.name)}
                             className={`${
-                                activeMenu === item
+                                activeMenu === item.name
                                     ? 'border-custom-blue-500 text-custom-blue-600 dark:text-custom-blue-400'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500'
-                            } whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm focus:outline-none`}
+                            } flex items-center whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm focus:outline-none`}
                         >
-                            {item}
+                            {React.cloneElement(item.icon, { className: 'w-5 h-5 mr-2' })}
+                            {item.name}
                         </button>
                     ))}
                 </nav>
@@ -128,6 +135,6 @@ const SinistralidadeForm: React.FC = () => {
             </div>
         </FormWrapper>
     );
-};
+});
 
 export default SinistralidadeForm;

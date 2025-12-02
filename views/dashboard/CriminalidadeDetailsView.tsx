@@ -1,4 +1,5 @@
 
+
 import React, { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { DataRecord } from '../../types';
@@ -21,7 +22,7 @@ const countByKey = (records: DataRecord[], key: string): { name: string; value: 
 
 type CrimeSubCategory = 'Crimes Contra o Património' | 'Crimes Contra Pessoa' | 'Outros';
 
-const CriminalidadeDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }) => {
+const CriminalidadeDetailsView: React.FC<{ records: DataRecord[] }> = React.memo(({ records }) => {
     const { theme } = useTheme();
     const [activeSubCategory, setActiveSubCategory] = useState<CrimeSubCategory>('Crimes Contra o Património');
     const [searchTerm, setSearchTerm] = useState('');
@@ -166,6 +167,6 @@ const CriminalidadeDetailsView: React.FC<{ records: DataRecord[] }> = ({ records
             {renderContent()}
         </div>
     );
-};
+});
 
 export default CriminalidadeDetailsView;

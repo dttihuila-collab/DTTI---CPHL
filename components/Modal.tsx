@@ -1,4 +1,5 @@
 
+
 import React, { ReactNode } from 'react';
 import { CloseIcon } from './icons/Icon';
 
@@ -9,7 +10,7 @@ interface ModalProps {
   children: ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const Modal: React.FC<ModalProps> = React.memo(({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return (
@@ -27,6 +28,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
       </div>
     </div>
   );
-};
+});
 
 export default Modal;

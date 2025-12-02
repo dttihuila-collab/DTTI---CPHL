@@ -5,7 +5,7 @@ interface TableSkeletonProps {
     columns: number;
 }
 
-export const TableSkeleton: React.FC<TableSkeletonProps> = ({ rows = 5, columns }) => {
+export const TableSkeleton: React.FC<TableSkeletonProps> = React.memo(({ rows = 5, columns }) => {
     return (
         <>
             {[...Array(rows)].map((_, rowIndex) => (
@@ -19,4 +19,4 @@ export const TableSkeleton: React.FC<TableSkeletonProps> = ({ rows = 5, columns 
             ))}
         </>
     );
-};
+});

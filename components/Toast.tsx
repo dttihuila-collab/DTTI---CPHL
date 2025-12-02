@@ -1,4 +1,5 @@
 
+
 import React, { useEffect } from 'react';
 import { SuccessIcon, ErrorIcon, InfoIcon, CloseIcon } from './icons/Icon';
 import { ToastMessage } from '../contexts/ToastContext';
@@ -20,7 +21,7 @@ const colors = {
   info: 'bg-blue-500',
 };
 
-const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
+const Toast: React.FC<ToastProps> = React.memo(({ toast, onRemove }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onRemove(toast.id);
@@ -47,6 +48,6 @@ const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
       </button>
     </div>
   );
-};
+});
 
 export default Toast;

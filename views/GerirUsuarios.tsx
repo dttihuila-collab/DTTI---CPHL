@@ -8,7 +8,7 @@ import { AddIcon, EditIcon, DeleteIcon } from '../components/icons/Icon';
 import { useToast } from '../contexts/ToastContext';
 import { DataTable, ColumnDef } from '../components/common/DataTable';
 
-const GerirUsuarios: React.FC = () => {
+const GerirUsuarios: React.FC = React.memo(() => {
     const [users, setUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -238,6 +238,6 @@ const GerirUsuarios: React.FC = () => {
             </Modal>
         </div>
     );
-};
+});
 
 export default GerirUsuarios;

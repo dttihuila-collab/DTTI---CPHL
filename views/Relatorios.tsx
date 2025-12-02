@@ -10,13 +10,13 @@ import Modal from '../components/Modal';
 import { MUNICIPIOS_HUILA, FAMILIAS_DELETIVAS, CRIMES_POR_FAMILIA } from '../constants';
 import { DataTable, ColumnDef } from '../components/common/DataTable';
 
-const TABS: DashboardCategory[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Policiais', 'Transportes', 'Logística'];
+const TABS: DashboardCategory[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial', 'Transportes', 'Logística'];
 
 const categoryToApiKey = (category: DashboardCategory): ApiKey => {
     switch (category) {
         case 'Criminalidade': return 'criminalidade';
         case 'Sinistralidade Rodoviária': return 'sinistralidade';
-        case 'Resultados Policiais': return 'resultados';
+        case 'Enfrentamento Policial': return 'resultados';
         case 'Transportes': return 'transportes';
         case 'Logística': return 'logistica';
         default: return 'criminalidade';
@@ -29,7 +29,7 @@ const EditCriminalidadeModal: React.FC<{
     onClose: () => void;
     record: CriminalidadeRecord | null;
     onSave: (record: CriminalidadeRecord) => void;
-}> = ({ isOpen, onClose, record, onSave }) => {
+}> = React.memo(({ isOpen, onClose, record, onSave }) => {
     const [formData, setFormData] = useState<Partial<CriminalidadeRecord> | null>(null);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -85,10 +85,10 @@ const EditCriminalidadeModal: React.FC<{
             </div>
         </Modal>
     );
-};
+});
 
 
-const Relatorios: React.FC = () => {
+const Relatorios: React.FC = React.memo(() => {
     const { user } = useContext(AuthContext);
     const { refreshKey, triggerRefresh } = useDataRefresh();
     const { addToast } = useToast();
@@ -261,6 +261,6 @@ const Relatorios: React.FC = () => {
             </Modal>
         </div>
     );
-};
+});
 
 export default Relatorios;

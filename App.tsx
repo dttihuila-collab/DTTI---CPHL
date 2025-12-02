@@ -19,7 +19,7 @@ import ToastContainer from './components/ToastContainer';
 import { DataRefreshProvider } from './contexts/DataRefreshContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 
-const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Policiais', 'Transportes', 'Logística'];
+const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial', 'Transportes', 'Logística'];
 
 const AppContent: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -58,31 +58,6 @@ const AppContent: React.FC = () => {
     }
   }, [user]);
 
-  const renderView = () => {
-    switch (currentView) {
-      case 'Dashboard':
-        return <Dashboard />;
-      case 'Criminalidade':
-        return <CriminalidadeForm />;
-      case 'Sinistralidade Rodoviária':
-        return <SinistralidadeForm />;
-      case 'Resultados Policiais':
-        return <ResultadosForm />;
-      case 'Transportes':
-        return <TransportesForm />;
-      case 'Logística':
-        return <LogisticaForm />;
-      case 'Gerir Usuários':
-        return <GerirUsuarios />;
-      case 'Relatórios':
-        return <Relatorios />;
-      case 'Database Setup':
-        return <DatabaseSetup />;
-      default:
-        return <Dashboard />;
-    }
-  };
-
   if (!user) {
     return (
       <AuthContext.Provider value={authContextValue}>
@@ -104,7 +79,15 @@ const AppContent: React.FC = () => {
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header user={user} />
           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
-            {renderView()}
+            {currentView === 'Dashboard' && <Dashboard />}
+            {currentView === 'Criminalidade' && <CriminalidadeForm />}
+            {currentView === 'Sinistralidade Rodoviária' && <SinistralidadeForm />}
+            {currentView === 'Enfrentamento Policial' && <ResultadosForm />}
+            {currentView === 'Transportes' && <TransportesForm />}
+            {currentView === 'Logística' && <LogisticaForm />}
+            {currentView === 'Gerir Usuários' && <GerirUsuarios />}
+            {currentView === 'Relatórios' && <Relatorios />}
+            {currentView === 'Database Setup' && <DatabaseSetup />}
           </main>
         </div>
       </div>

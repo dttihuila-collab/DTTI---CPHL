@@ -1,3 +1,5 @@
+
+
 import React, { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { DataRecord } from '../../types';
@@ -8,7 +10,7 @@ const COLORS = ['#3b82f6', '#16a34a', '#f97316', '#ef4444', '#8b5cf6', '#fde047'
 
 type TransportesSubCategory = 'Combustível' | 'Pessoal' | 'Manutenções';
 
-const TransportesDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }) => {
+const TransportesDetailsView: React.FC<{ records: DataRecord[] }> = React.memo(({ records }) => {
     const { theme } = useTheme();
     const [activeSubCategory, setActiveSubCategory] = useState<TransportesSubCategory>('Combustível');
     const [searchTerm, setSearchTerm] = useState('');
@@ -88,6 +90,6 @@ const TransportesDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }
             {renderContent()}
         </div>
     );
-};
+});
 
 export default TransportesDetailsView;

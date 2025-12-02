@@ -1,8 +1,9 @@
 
+
 import React from 'react';
 import { DataRecord } from '../../types';
 
-const GenericDetailsTable: React.FC<{ records: DataRecord[], title?: string }> = ({ records, title }) => {
+const GenericDetailsTable: React.FC<{ records: DataRecord[], title?: string }> = React.memo(({ records, title }) => {
     const recentRecords = records.slice(0, 10);
     const headers = recentRecords.length > 0 ? Object.keys(recentRecords[0]) : [];
 
@@ -25,6 +26,6 @@ const GenericDetailsTable: React.FC<{ records: DataRecord[], title?: string }> =
             </table>
         </div>
     );
-};
+});
 
 export default GenericDetailsTable;

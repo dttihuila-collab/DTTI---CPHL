@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import FormWrapper from './FormWrapper';
 import { Label, Input, Select, Textarea } from '../../components/common/FormElements';
@@ -6,10 +7,16 @@ import { MUNICIPIOS_HUILA, UNIDADES_ESQUADRAS, PERIODOS } from '../../constants'
 import { api } from '../../services/api';
 import { useToast } from '../../contexts/ToastContext';
 import { useDataRefresh } from '../../contexts/DataRefreshContext';
+import { OperationIcon, PatrolIcon, DetainedIcon, MoreIcon } from '../../components/icons/Icon';
 
-const menuItems = ['Operações', 'Patrulhamentos', 'Detidos', 'Outros'];
+const menuItems = [
+    { name: 'Operações', icon: <OperationIcon /> },
+    { name: 'Patrulhamentos', icon: <PatrolIcon /> },
+    { name: 'Detidos', icon: <DetainedIcon /> },
+    { name: 'Outros', icon: <MoreIcon /> },
+];
 
-const ResultadosForm: React.FC = () => {
+const ResultadosForm: React.FC = React.memo(() => {
     const [activeMenu, setActiveMenu] = useState('Operações');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { addToast } = useToast();
@@ -100,8 +107,8 @@ const ResultadosForm: React.FC = () => {
 
     return (
         <FormWrapper
-            title="Registo de Resultados Policiais"
-            description="Preencha os detalhes abaixo para registar novos resultados policiais."
+            title="Registo de Enfrentamento Policial"
+            description="Preencha os detalhes abaixo para registar novos resultados de enfrentamento policial."
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
         >
@@ -109,16 +116,17 @@ const ResultadosForm: React.FC = () => {
                 <nav className="-mb-px flex space-x-4" aria-label="Tabs">
                     {menuItems.map(item => (
                         <button
-                            key={item}
+                            key={item.name}
                             type="button"
-                            onClick={() => setActiveMenu(item)}
+                            onClick={() => setActiveMenu(item.name)}
                             className={`${
-                                activeMenu === item
+                                activeMenu === item.name
                                     ? 'border-custom-blue-500 text-custom-blue-600 dark:text-custom-blue-400'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500'
-                            } whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm focus:outline-none`}
+                            } flex items-center whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm focus:outline-none`}
                         >
-                            {item}
+                            {React.cloneElement(item.icon, { className: 'w-5 h-5 mr-2' })}
+                            {item.name}
                         </button>
                     ))}
                 </nav>
@@ -132,6 +140,6 @@ const ResultadosForm: React.FC = () => {
             </div>
         </FormWrapper>
     );
-};
+});
 
 export default ResultadosForm;

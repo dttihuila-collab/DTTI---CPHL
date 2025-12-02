@@ -1,3 +1,5 @@
+
+
 import React, { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { DataRecord } from '../../types';
@@ -20,7 +22,7 @@ const countByKey = (records: DataRecord[], key: string): { name: string; value: 
 
 type SinistralidadeSubCategory = 'Acidentes' | 'Vítimas';
 
-const SinistralidadeDetailsView: React.FC<{ records: DataRecord[] }> = ({ records }) => {
+const SinistralidadeDetailsView: React.FC<{ records: DataRecord[] }> = React.memo(({ records }) => {
     const { theme } = useTheme();
     const [activeSubCategory, setActiveSubCategory] = useState<SinistralidadeSubCategory>('Acidentes');
     const [searchTerm, setSearchTerm] = useState('');
@@ -138,6 +140,6 @@ const SinistralidadeDetailsView: React.FC<{ records: DataRecord[] }> = ({ record
             {renderContent()}
         </div>
     );
-};
+});
 
 export default SinistralidadeDetailsView;
