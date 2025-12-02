@@ -48,10 +48,10 @@ const SinistralidadeDetailsView: React.FC<{ records: DataRecord[] }> = ({ record
                                     <h4 className="text-md font-semibold text-center text-gray-700 mb-2">Acidentes por Tipo</h4>
                                     <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
-                                            <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
+                                            <Pie data={chartData} dataKey="value" nameKey="name" cx="40%" cy="50%" outerRadius={80} fill="#8884d8">
                                                 {chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
                                             </Pie>
-                                            <Tooltip /> <Legend />
+                                            <Tooltip /> <Legend layout="vertical" verticalAlign="middle" align="right" />
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -84,10 +84,10 @@ const SinistralidadeDetailsView: React.FC<{ records: DataRecord[] }> = ({ record
                                     <h4 className="text-md font-semibold text-center text-gray-700 mb-2">Vítimas por Estado</h4>
                                     <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
-                                            <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#82ca9d">
+                                            <Pie data={chartData} dataKey="value" nameKey="name" cx="40%" cy="50%" outerRadius={80} fill="#82ca9d">
                                                 {chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
                                             </Pie>
-                                            <Tooltip /> <Legend />
+                                            <Tooltip /> <Legend layout="vertical" verticalAlign="middle" align="right" />
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>

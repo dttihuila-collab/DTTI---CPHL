@@ -63,7 +63,7 @@ const ResultadosDetailsView: React.FC<{ records: DataRecord[] }> = ({ records })
                     {chartData.length > 0 && (
                         <div className="h-64 md:col-span-1">
                             <h4 className="text-md font-semibold text-center text-gray-700 mb-2">{chartTitle}</h4>
-                            <ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">{chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip /><Legend /></PieChart></ResponsiveContainer>
+                            <ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={chartData} dataKey="value" nameKey="name" cx="40%" cy="50%" outerRadius={80} fill="#8884d8">{chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip /><Legend layout="vertical" verticalAlign="middle" align="right" /></PieChart></ResponsiveContainer>
                         </div>
                     )}
                     <div className={chartData.length > 0 ? 'md:col-span-2 overflow-x-auto' : 'md:col-span-3 overflow-x-auto'}>
