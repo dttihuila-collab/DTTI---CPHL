@@ -32,7 +32,6 @@ const AppContent: React.FC = () => {
   const [actionMenuCategory, setActionMenuCategory] = useState<DashboardCategory | null>(null);
   const [consultaCategory, setConsultaCategory] = useState<DashboardCategory | null>(null);
   const [activeReportTab, setActiveReportTab] = useState<DashboardCategory | null>(null);
-  const [activeFormTab, setActiveFormTab] = useState<string | null>(null);
   const [initialFormData, setInitialFormData] = useState<any | null>(null);
 
   const login = useCallback(async (username: string, password: string): Promise<boolean> => {
@@ -67,7 +66,6 @@ const AppContent: React.FC = () => {
     }
     setActionMenuCategory(null);
     setConsultaCategory(null);
-    setActiveFormTab(null);
     setInitialFormData(null);
     if (view !== 'Relatórios') {
         setActiveReportTab(null);
@@ -82,11 +80,6 @@ const AppContent: React.FC = () => {
   const handleNavigateToConsulta = useCallback((category: DashboardCategory) => {
     setCurrentView('Consulta');
     setConsultaCategory(category);
-  }, []);
-
-  const handleNavigateToFormTab = useCallback((view: View, tab: string) => {
-    setCurrentView(view);
-    setActiveFormTab(tab);
   }, []);
 
   const handleNavigateToFormWithData = useCallback((view: View, data: any) => {
@@ -111,7 +104,6 @@ const AppContent: React.FC = () => {
                           category={actionMenuCategory} 
                           onNavigateToForm={handleSetCurrentView} 
                           onNavigateToConsulta={handleNavigateToConsulta}
-                          onNavigateToFormTab={handleNavigateToFormTab}
                           onNavigateToFormWithData={handleNavigateToFormWithData}
                        />;
             }
@@ -121,17 +113,17 @@ const AppContent: React.FC = () => {
                 return <ConsultaView 
                           category={consultaCategory}
                           onBack={() => handleOpenActionMenu(consultaCategory)}
-                          onRegisterNew={() => handleSetCurrentView(consultaCategory as View)}
+                          onRegisterNew={(data) => handleNavigateToFormWithData(consultaCategory as View, data)}
                        />;
             }
              return <Dashboard />; // Fallback if no category
-        case 'Criminalidade': return <CriminalidadeForm />;
-        case 'Sinistralidade Rodoviária': return <SinistralidadeForm />;
-        case 'Resultados Operacionais': return <ResultadosForm />;
-        case 'Transportes': return <TransportesForm initialTab={activeFormTab} />;
-        case 'Logística': return <LogisticaForm initialTab={activeFormTab} />;
-        case 'Autos de Expediente': return <AutosExpedienteForm initialData={initialFormData} />;
-        case 'Processos': return <ProcessosForm />;
+        case 'Criminalidade': return <CriminalidadeForm onCancel={() => handleOpenActionMenu('Criminalidade')} />;
+        case 'Sinistralidade Rodoviária': return <SinistralidadeForm onCancel={() => handleOpenActionMenu('Sinistralidade Rodoviária')} />;
+        case 'Resultados Operacionais': return <ResultadosForm onCancel={() => handleOpenActionMenu('Resultados Operacionais')} />;
+        case 'Transportes': return <TransportesForm onCancel={() => handleOpenActionMenu('Transportes')} />;
+        case 'Logística': return <LogisticaForm onCancel={() => handleOpenActionMenu('Logística')} />;
+        case 'Autos de Expediente': return <AutosExpedienteForm initialData={initialFormData} onCancel={() => handleOpenActionMenu('Autos de Expediente')} />;
+        case 'Processos': return <ProcessosForm onCancel={() => handleOpenActionMenu('Processos')} />;
         case 'Gerir Usuários': return <GerirUsuarios />;
         case 'Relatórios': return <Relatorios initialTab={activeReportTab} />;
         case 'Database Setup': return <DatabaseSetup />;

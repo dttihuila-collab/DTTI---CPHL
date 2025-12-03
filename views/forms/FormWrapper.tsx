@@ -1,5 +1,3 @@
-
-
 import React, { ReactNode } from 'react';
 import { Button } from '../../components/common/FormElements';
 
@@ -9,9 +7,11 @@ interface FormWrapperProps {
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
     children: ReactNode;
     isSubmitting?: boolean;
+    onCancel?: () => void;
+    submitButtonText?: string;
 }
 
-const FormWrapper: React.FC<FormWrapperProps> = React.memo(({ title, description, onSubmit, children, isSubmitting = false }) => {
+const FormWrapper: React.FC<FormWrapperProps> = React.memo(({ title, description, onSubmit, children, isSubmitting = false, onCancel, submitButtonText = "Inserir" }) => {
     return (
         <div className="max-w-4xl mx-auto">
             <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg">
@@ -23,9 +23,14 @@ const FormWrapper: React.FC<FormWrapperProps> = React.memo(({ title, description
                     <div className="p-6 space-y-6">
                         {children}
                     </div>
-                    <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 text-right rounded-b-lg">
+                    <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 flex justify-end items-center space-x-3 rounded-b-lg">
+                        {onCancel && (
+                             <Button type="button" variant="secondary" onClick={onCancel} disabled={isSubmitting}>
+                                Cancelar
+                            </Button>
+                        )}
                         <Button type="submit" isLoading={isSubmitting}>
-                            Inserir
+                            {submitButtonText}
                         </Button>
                     </div>
                 </form>

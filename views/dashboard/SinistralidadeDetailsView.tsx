@@ -25,8 +25,9 @@ const SinistralidadeDetailsView: React.FC<{ records: DataRecord[] }> = React.mem
     const [activeSubCategory, setActiveSubCategory] = useState<SinistralidadeSubCategory>('Acidentes');
     const [searchTerm, setSearchTerm] = useState('');
 
-    const acidentesRecords = useMemo(() => records.filter(r => r.categoria === 'Acidentes'), [records]);
-    const vitimasRecords = useMemo(() => records.filter(r => r.categoria === 'Vítimas'), [records]);
+    const acidentesRecords = useMemo(() => records.filter(r => r.categoria !== 'Vítimas'), [records]);
+    const vitimasRecords = useMemo(() => records.filter(r => r.vitimaNome || r.vitimaIdade || r.vitimaEstado), [records]);
+
 
     const filteredRecords = useMemo(() => {
         const recordsToFilter = activeSubCategory === 'Acidentes' ? acidentesRecords : vitimasRecords;

@@ -139,3 +139,14 @@ export const ESTADOS_CIVIS: string[] = ["Solteiro(a)", "Casado(a)", "Divorciado(
 export const GENEROS: string[] = ["Masculino", "Feminino"];
 export const NACIONALIDADES: string[] = ["Angolana", "Portuguesa", "Brasileira", "Outra"];
 export const PROFISSOES: string[] = ["Estudante", "Professor", "Polícia", "Pedreiro", "Doméstica", "Outra"];
+
+// FIX: Added DIAS_DA_SEMANA constant to be used in the AutosExpedienteForm.
+export const DIAS_DA_SEMANA: string[] = [
+    "Segunda-feira",
+    "Terça-feira",
+    "Quarta-feira",
+    "Quinta-feira",
+    "Sexta-feira",
+    "Sábado",
+    "Domingo",
+];

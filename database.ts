@@ -1,5 +1,4 @@
 import { MOCK_USERS } from './constants';
-import { DataRecord } from './types';
 
 const DB_KEY = 'sccphl_db';
 
@@ -10,39 +9,22 @@ const initialDb: { [key: string]: any[] } = {
     criminalidade: [
         { id: generateId(), createdAt: new Date('2023-10-26T10:00:00Z').toISOString(), familiaCriminal: 'Crimes Contra o Património', crime: 'Roubo', data: '2023-10-26T08:30', periodo: 'Iº', municipio: 'Lubango', unidadeEsquadra: '1ª Esquadra', vitimaNome: 'Ana Costa', acusadoNome: 'Desconhecido' },
         { id: generateId(), createdAt: new Date('2023-10-25T15:20:00Z').toISOString(), familiaCriminal: 'Crimes Contra Pessoa', crime: 'Ofensa a Integridade Física', data: '2023-10-25T14:00', periodo: 'IIº', municipio: 'Matala', unidadeEsquadra: 'Comando Municipal', vitimaNome: 'Carlos Neves', acusadoNome: 'Manuel Golias' },
-        { id: generateId(), createdAt: new Date('2023-10-24T22:10:00Z').toISOString(), familiaCriminal: 'Crimes Contra o Património', crime: 'Furto', data: '2023-10-24T21:00', periodo: 'IIIº', municipio: 'Humpata', unidadeEsquadra: '2ª Esquadra', vitimaNome: 'Empresa Agricola XYZ', acusadoNome: 'Desconhecido' },
-        { id: generateId(), createdAt: new Date('2023-10-23T11:05:00Z').toISOString(), familiaCriminal: 'Crimes Contra Pessoa', crime: 'Ameaça', data: '2023-10-23T10:45', periodo: 'Iº', municipio: 'Lubango', unidadeEsquadra: '3ª Esquadra', vitimaNome: 'Sofia Pinto', acusadoNome: 'António Lopes' },
-        { id: generateId(), createdAt: new Date('2023-10-22T18:00:00Z').toISOString(), familiaCriminal: 'Crimes Contra Ordem e Tranquilidade Pública', crime: 'Posse Ilegal de arma de fogo', data: '2023-10-22T17:30', periodo: 'IIº', municipio: 'Chibia', unidadeEsquadra: 'Comando Municipal', vitimaNome: 'N/A', acusadoNome: 'Pedro Chivukuvuku' },
     ],
     sinistralidade: [
-        { id: generateId(), createdAt: new Date('2023-10-26T18:00:00Z').toISOString(), categoria: 'Acidentes', tipoAcidente: 'Colisão', data: '2023-10-26T17:45', municipio: 'Lubango', periodo: 'IIº' },
-        { id: generateId(), createdAt: new Date('2023-10-26T18:01:00Z').toISOString(), categoria: 'Vítimas', vitimaNome: 'Joana Miguel', vitimaEstado: 'Ligeiro' },
-        { id: generateId(), createdAt: new Date('2023-10-25T09:30:00Z').toISOString(), categoria: 'Acidentes', tipoAcidente: 'Atropelamento', data: '2023-10-25T09:25', municipio: 'Matala', periodo: 'Iº' },
-        { id: generateId(), createdAt: new Date('2023-10-25T09:31:00Z').toISOString(), categoria: 'Vítimas', vitimaNome: 'Criança Desconhecida', vitimaEstado: 'Grave' },
-        { id: generateId(), createdAt: new Date('2023-10-24T12:00:00Z').toISOString(), categoria: 'Acidentes', tipoAcidente: 'Despiste', data: '2023-10-24T11:50', municipio: 'Quilengues', periodo: 'Iº' },
-        { id: generateId(), createdAt: new Date('2023-10-24T12:01:00Z').toISOString(), categoria: 'Vítimas', vitimaNome: 'Condutor', vitimaEstado: 'Fatal' },
+        { id: generateId(), createdAt: new Date('2023-10-26T18:00:00Z').toISOString(), tipoAcidente: 'Colisão', data: '2023-10-26T17:45', municipio: 'Lubango', periodo: 'IIº', vitimaNome: 'Joana Miguel', vitimaEstado: 'Ligeiro' },
+        { id: generateId(), createdAt: new Date('2023-10-25T09:30:00Z').toISOString(), tipoAcidente: 'Atropelamento', data: '2023-10-25T09:25', municipio: 'Matala', periodo: 'Iº', vitimaNome: 'Criança Desconhecida', vitimaEstado: 'Grave' },
+        { id: generateId(), createdAt: new Date('2023-10-24T12:00:00Z').toISOString(), tipoAcidente: 'Despiste', data: '2023-10-24T11:50', municipio: 'Quilengues', periodo: 'Iº', vitimaNome: 'Condutor', vitimaEstado: 'Fatal' },
     ],
     resultados: [
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Operações', tipoOperacao: 'Stop', data: '2023-10-26T20:00', municipio: 'Lubango', resultadosObtidos: '2 viaturas apreendidas' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Operações', tipoOperacao: 'Fiscalização de Venda Ambulante', data: '2023-10-25T10:00', municipio: 'Lubango', resultadosObtidos: 'Vendedores sensibilizados' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Patrulhamentos', tipoPatrulhamento: 'Auto', areaPatrulhada: 'Bairro Comercial', ocorrenciasRegistadas: 'Nenhuma' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Patrulhamentos', tipoPatrulhamento: 'Apeado', areaPatrulhada: 'Centro da Cidade', ocorrenciasRegistadas: '1 desordem na via pública' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Detidos', detidoNome: 'José Firmino', motivoDetencao: 'Furto qualificado' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Detidos', detidoNome: 'Armando Faria', motivoDetencao: 'Condução em estado de embriaguez' },
+        { id: generateId(), createdAt: new Date().toISOString(), tipoOperacao: 'Stop', data: '2023-10-26T20:00', municipio: 'Lubango', resultadosObtidos: '2 viaturas apreendidas', detidoNome: 'José Firmino', motivoDetencao: 'Furto qualificado' },
+        { id: generateId(), createdAt: new Date().toISOString(), tipoPatrulhamento: 'Auto', areaPatrulhada: 'Bairro Comercial', ocorrenciasRegistadas: 'Nenhuma' },
     ],
     transportes: [
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Municípios', combustivel: 'Gasolina', quantidade: 5000, municipio: 'Lubango', quantidadeRecebida: 2000, existencia: 3000 },
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Municípios', combustivel: 'Gasóleo', quantidade: 10000, municipio: 'Matala', quantidadeRecebida: 3000, existencia: 7000 },
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Membros', nome: 'Agente Silva', patente: 'Agente de 1ª', area: 'Logística' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Membros', nome: 'Chefe Almeida', patente: 'Subchefe', area: 'Operações' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Manutenções', veiculoMatricula: 'LD-01-02-AA', tipoManutencao: 'Preventiva', descManutencao: 'Troca de óleo e filtros' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Manutenções', veiculoMatricula: 'HL-05-20-BB', tipoManutencao: 'Corretiva', descManutencao: 'Reparação do sistema de travagem' },
+        { id: generateId(), createdAt: new Date().toISOString(), combustivel: 'Gasolina', quantidade: 5000, municipio: 'Lubango', quantidadeRecebida: 2000, existencia: 3000, nome: 'Agente Silva', patente: 'Agente de 1ª', area: 'Logística', viaturaMatricula: 'LD-01-02-AA', tipoManutencao: 'Preventiva', descManutencao: 'Troca de óleo e filtros' },
     ],
     logistica: [
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Armamento', nip: '132257', nomeCompleto: 'Nilton Edgar Lamúrias Gourgel', patente: 'Inspector Chefe', orgaoUnidade: 'Departamento de Telec. Tec. de Informação', numFicha: '1', funcao: 'Chefe de Secção', localIngresso: 'ENPOP - Luanda', dataAbertura: '2023-08-18', dataIncorporacao: '2017-07-17' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Armamento', nip: '123456', nomeCompleto: 'Agente Santos', patente: 'Agente', orgaoUnidade: 'Comando Municipal', numFicha: '2', funcao: 'Patrulheiro', localIngresso: 'ENPOP - Luanda', dataAbertura: '2022-01-10', dataIncorporacao: '2022-01-10' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Vestuário', numRegisto: '1', efectivoId: '132257', tipoFardamento: 'Farda de Saída', tamanhoBone: '24', tamanhoBoina: '24', calcadoNum: '43', camisaNum: '42', calcaNum: '42', casacoNum: '50', atendente: 'Martinho Luter', dataEntrega: '2023-10-27' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Vestuário', numRegisto: '2', efectivoId: '123456', tipoFardamento: 'Farda de Trabalho', tamanhoBone: '22', tamanhoBoina: '22', calcadoNum: '41', camisaNum: '40', calcaNum: '40', casacoNum: '48', atendente: 'Sgt. Almeida', dataEntrega: '2023-10-26' },
+        { id: generateId(), createdAt: new Date().toISOString(), nip: '132257', nomeCompleto: 'Nilton Edgar Lamúrias Gourgel', patente: 'Inspector Chefe', orgaoUnidade: 'Departamento de Telec. Tec. de Informação', numFicha: '1', funcao: 'Chefe de Secção', localIngresso: 'ENPOP - Luanda', dataAbertura: '2023-08-18', dataIncorporacao: '2017-07-17' },
+        { id: generateId(), createdAt: new Date().toISOString(), numRegisto: '1', efectivoId: '132257', tipoFardamento: 'Farda de Saída', tamanhoBone: '24', tamanhoBoina: '24', calcadoNum: '43', camisaNum: '42', calcaNum: '42', casacoNum: '50', atendente: 'Martinho Luter', dataEntrega: '2023-10-27' },
     ],
     autosExpediente: [
         { 
@@ -61,6 +43,33 @@ const initialDb: { [key: string]: any[] } = {
             queixadoNomeCompleto: 'Indivíduo Desconhecido',
             descricaoFactos: 'A noticiante reportou o furto da sua carteira na via pública.',
         },
+        {
+            id: generateId(),
+            createdAt: new Date().toISOString(),
+            tipoAuto: 'Auto de Apreensão',
+            numeroAuto: 'AA2023/001',
+            dataAuto: '2023-10-29',
+            autuadoNomeCompleto: 'Carlos Alberto',
+            descricaoOcorrenciaMeioApreendido: 'Apreensão de material furtado.'
+        },
+        {
+            id: generateId(),
+            createdAt: new Date().toISOString(),
+            tipoAuto: 'Auto de Notícia',
+            numeroAuto: 'AN2023/001',
+            dataAuto: '2023-10-30',
+            autuadoNomeCompleto: 'Juliana Paes',
+            acusadoNomeCompleto: 'Roberto Silva',
+            descricaoFactos: 'Conflito na via pública.'
+        },
+        {
+            id: generateId(),
+            createdAt: new Date().toISOString(),
+            tipoAuto: 'Aviso de Notificação',
+            numeroAuto: 'AV2023/001',
+            avisoNotificanteNome: 'Manuel Vicente',
+            avisoData: '2023-11-05'
+        }
     ],
     processos: [
         { id: generateId(), createdAt: new Date().toISOString(), numeroProcesso: 'PC2023/105', dataAbertura: new Date().toISOString(), tipoProcesso: 'Processo-crime', arguido: 'João da Silva', vitima: 'Maria Santos', estado: 'Em instrução' },
