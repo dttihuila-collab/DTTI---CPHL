@@ -10,7 +10,7 @@ import Modal from '../components/Modal';
 import { MUNICIPIOS_HUILA, FAMILIAS_CRIMINAIS, CRIMES_POR_FAMILIA } from '../constants';
 import { DataTable, ColumnDef } from '../components/common/DataTable';
 
-const TABS: DashboardCategory[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística'];
+const TABS: DashboardCategory[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística', 'Autos de Expediente', 'Processos'];
 
 const categoryToApiKey = (category: DashboardCategory): ApiKey => {
     switch (category) {
@@ -19,6 +19,8 @@ const categoryToApiKey = (category: DashboardCategory): ApiKey => {
         case 'Resultados Operacionais': return 'resultados';
         case 'Transportes': return 'transportes';
         case 'Logística': return 'logistica';
+        case 'Autos de Expediente': return 'autosExpediente';
+        case 'Processos': return 'processos';
         default: return 'criminalidade';
     }
 }

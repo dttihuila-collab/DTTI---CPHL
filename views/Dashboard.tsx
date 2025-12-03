@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DashboardCategory, ApiKey } from '../types';
-import { CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, ChevronDownIcon } from '../components/icons/Icon';
+import { CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, ChevronDownIcon, DocumentIcon, FolderIcon } from '../components/icons/Icon';
 import { api } from '../services/api';
 import { useDataRefresh } from '../contexts/DataRefreshContext';
 import CriminalidadeDetailsView from './dashboard/CriminalidadeDetailsView';
@@ -19,6 +19,8 @@ const categories = [
     { name: 'Resultados Operacionais', icon: <PoliceIcon /> },
     { name: 'Transportes', icon: <TransportIcon /> },
     { name: 'Logística', icon: <LogisticsIcon /> },
+    { name: 'Autos de Expediente', icon: <DocumentIcon /> },
+    { name: 'Processos', icon: <FolderIcon /> },
 ] as const;
 
 type TimeFilter = 'Dia' | 'Semana' | 'Mês' | 'Ano';
@@ -31,6 +33,8 @@ const categoryToApiKey = (category: DashboardCategory): ApiKey => {
         case 'Resultados Operacionais': return 'resultados';
         case 'Transportes': return 'transportes';
         case 'Logística': return 'logistica';
+        case 'Autos de Expediente': return 'autosExpediente';
+        case 'Processos': return 'processos';
         default: return 'criminalidade';
     }
 }
@@ -103,7 +107,9 @@ const Dashboard: React.FC = () => {
         'Sinistralidade Rodoviária': 0,
         'Resultados Operacionais': 0,
         'Transportes': 0,
-        'Logística': 0
+        'Logística': 0,
+        'Autos de Expediente': 0,
+        'Processos': 0
     });
     const { refreshKey } = useDataRefresh();
     
@@ -134,12 +140,14 @@ const Dashboard: React.FC = () => {
                 });
             };
 
-            const [criminalidade, sinistralidade, resultados, transportes, logistica] = await Promise.all([
+            const [criminalidade, sinistralidade, resultados, transportes, logistica, autosExpediente, processos] = await Promise.all([
                 api.getRecords('criminalidade'),
                 api.getRecords('sinistralidade'),
                 api.getRecords('resultados'),
                 api.getRecords('transportes'),
-                api.getRecords('logistica')
+                api.getRecords('logistica'),
+                api.getRecords('autosExpediente'),
+                api.getRecords('processos')
             ]);
 
             setTotals({
@@ -148,6 +156,8 @@ const Dashboard: React.FC = () => {
                 'Resultados Operacionais': filterRecordsByDate(resultados).length,
                 'Transportes': filterRecordsByDate(transportes).length,
                 'Logística': filterRecordsByDate(logistica).length,
+                'Autos de Expediente': filterRecordsByDate(autosExpediente).length,
+                'Processos': filterRecordsByDate(processos).length,
             });
         };
         
@@ -187,7 +197,7 @@ const Dashboard: React.FC = () => {
                 </div>
             </div>
 
-            <div className={`grid gap-6 ${isAnyCategoryExpanded && categories.length > 1 ? `grid-cols-${categories.length}` : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'}`}>
+            <div className={`grid gap-6 ${isAnyCategoryExpanded && categories.length > 1 ? `grid-cols-${categories.length}` : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4'}`}>
                 {categories.map(({ name, icon }) => {
                     const isSelected = expandedCategory === name;
                     

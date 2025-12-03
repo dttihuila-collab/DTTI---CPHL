@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { Role, View, User } from '../types';
 import { APP_VIEWS } from '../constants';
-import { DashboardIcon, CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, UsersIcon, ReportsIcon, LogoutIcon, ChevronLeftIcon, ChevronRightIcon, DatabaseIcon } from './icons/Icon';
+import { DashboardIcon, CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, UsersIcon, ReportsIcon, LogoutIcon, ChevronLeftIcon, ChevronRightIcon, DatabaseIcon, DocumentIcon, FolderIcon } from './icons/Icon';
 
 interface SidebarProps {
   user: User;
@@ -19,6 +19,8 @@ const iconMap: { [key in View]?: React.ReactElement } = {
     'Resultados Operacionais': <PoliceIcon />,
     'Transportes': <TransportIcon />,
     'Logística': <LogisticsIcon />,
+    'Autos de Expediente': <DocumentIcon />,
+    'Processos': <FolderIcon />,
     'Gerir Usuários': <UsersIcon />,
     'Relatórios': <ReportsIcon />,
     'Database Setup': <DatabaseIcon />,
@@ -34,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ user, isCollapsed, setCurr
     
     if (user.role === Role.Padrao) {
         if (item.name === 'Relatórios') {
-            const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística'];
+            const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística', 'Autos de Expediente', 'Processos'];
             return user.permissions?.some(p => formViews.includes(p)) ?? false;
         }
         return user.permissions?.includes(item.name) ?? false;

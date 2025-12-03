@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import FormWrapper from './FormWrapper';
 import { Label, Input, Select, Textarea } from '../../components/common/FormElements';
-import { MUNICIPIOS_HUILA } from '../../constants';
+import { MUNICIPIOS_HUILA, PATENTES } from '../../constants';
 import { api } from '../../services/api';
 import { useToast } from '../../contexts/ToastContext';
 import { useDataRefresh } from '../../contexts/DataRefreshContext';
@@ -71,7 +71,13 @@ const TransportesForm: React.FC = React.memo(() => {
             <legend className="text-lg font-medium text-gray-900 dark:text-gray-100 px-2">Registo de Pessoal</legend>
             <div className="grid grid-cols-4 gap-6 mt-4">
                 <div><Label htmlFor="nome">Nome</Label><Input id="nome" name="nome" type="text" required /></div>
-                <div><Label htmlFor="patente">Patente</Label><Input id="patente" name="patente" type="text" /></div>
+                <div>
+                    <Label htmlFor="patente">Patente</Label>
+                    <Select id="patente" name="patente">
+                        <option value="">Selecione a Patente</option>
+                        {PATENTES.map(p => <option key={p} value={p}>{p}</option>)}
+                    </Select>
+                </div>
                 <div><Label htmlFor="area">Área</Label><Input id="area" name="area" type="text" /></div>
                 <div><Label htmlFor="quantidadeRecebidaPessoal">Quantidade Recebida</Label><Input id="quantidadeRecebidaPessoal" name="quantidadeRecebidaPessoal" type="number" /></div>
             </div>

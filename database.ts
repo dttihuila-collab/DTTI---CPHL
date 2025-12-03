@@ -39,12 +39,16 @@ const initialDb: { [key: string]: any[] } = {
         { id: generateId(), createdAt: new Date().toISOString(), categoria: 'Manutenções', veiculoMatricula: 'HL-05-20-BB', tipoManutencao: 'Corretiva', descManutencao: 'Reparação do sistema de travagem' },
     ],
     logistica: [
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Armamento', agenteNome: 'Agente Barros', tipoArmamento: 'Pistola', numSerieArma: '987654', estadoArma: 'Operacional' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Armamento', agenteNome: 'Agente Santos', tipoArmamento: 'AKM', numSerieArma: '123456', estadoArma: 'Operacional' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Viveres', descViveres: 'Arroz 25kg', qtdViveres: 100, unidadeViveres: 'Comando Municipal' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Viveres', descViveres: 'Água Mineral 1.5L', qtdViveres: 500, unidadeViveres: 'Comando Municipal' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Vestuario', tipoVestuario: 'Botas', qtdVestuario: 20, estadoVestuario: 'Operacional' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Vestuario', tipoVestuario: 'Farda de Trabalho', qtdVestuario: 50, estadoVestuario: 'Operacional' },
+        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Armamento', nip: '132257', nomeCompleto: 'Nilton Edgar Lamúrias Gourgel', patente: 'Inspector Chefe', orgaoUnidade: 'Departamento de Telec. Tec. de Informação', numFicha: '1', funcao: 'Chefe de Secção', localIngresso: 'ENPOP - Luanda', dataAbertura: '2023-08-18', dataIncorporacao: '2017-07-17' },
+        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Armamento', nip: '123456', nomeCompleto: 'Agente Santos', patente: 'Agente', orgaoUnidade: 'Comando Municipal', numFicha: '2', funcao: 'Patrulheiro', localIngresso: 'ENPOP - Luanda', dataAbertura: '2022-01-10', dataIncorporacao: '2022-01-10' },
+        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Vestuário', numRegisto: '1', efectivoId: '132257', tipoFardamento: 'Farda de Saída', tamanhoBone: '24', tamanhoBoina: '24', calcadoNum: '43', camisaNum: '42', calcaNum: '42', casacoNum: '50', atendente: 'Martinho Luter', dataEntrega: '2023-10-27' },
+        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Vestuário', numRegisto: '2', efectivoId: '123456', tipoFardamento: 'Farda de Trabalho', tamanhoBone: '22', tamanhoBoina: '22', calcadoNum: '41', camisaNum: '40', calcaNum: '40', casacoNum: '48', atendente: 'Sgt. Almeida', dataEntrega: '2023-10-26' },
+    ],
+    autosExpediente: [
+        { id: generateId(), createdAt: new Date().toISOString(), numeroAuto: 'AE2023/001', data: new Date().toISOString(), tipoAuto: 'Auto de Apreensão', entidade: 'SIC', descricaoFactos: 'Apreensão de material furtado.' },
+    ],
+    processos: [
+        { id: generateId(), createdAt: new Date().toISOString(), numeroProcesso: 'PC2023/105', dataAbertura: new Date().toISOString(), tipoProcesso: 'Processo-crime', arguido: 'João da Silva', vitima: 'Maria Santos', estado: 'Em instrução' },
     ],
 };
 

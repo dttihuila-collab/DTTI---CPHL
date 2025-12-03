@@ -9,6 +9,8 @@ import SinistralidadeForm from './views/forms/SinistralidadeForm';
 import ResultadosForm from './views/forms/ResultadosForm';
 import TransportesForm from './views/forms/TransportesForm';
 import LogisticaForm from './views/forms/LogisticaForm';
+import AutosExpedienteForm from './views/forms/AutosExpedienteForm';
+import ProcessosForm from './views/forms/ProcessosForm';
 import GerirUsuarios from './views/GerirUsuarios';
 import Relatorios from './views/Relatorios';
 import DatabaseSetup from './views/DatabaseSetup';
@@ -19,7 +21,7 @@ import ToastContainer from './components/ToastContainer';
 import { DataRefreshProvider } from './contexts/DataRefreshContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 
-const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística'];
+const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística', 'Autos de Expediente', 'Processos'];
 
 const AppContent: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -85,6 +87,8 @@ const AppContent: React.FC = () => {
             {currentView === 'Resultados Operacionais' && <ResultadosForm />}
             {currentView === 'Transportes' && <TransportesForm />}
             {currentView === 'Logística' && <LogisticaForm />}
+            {currentView === 'Autos de Expediente' && <AutosExpedienteForm />}
+            {currentView === 'Processos' && <ProcessosForm />}
             {currentView === 'Gerir Usuários' && <GerirUsuarios />}
             {currentView === 'Relatórios' && <Relatorios />}
             {currentView === 'Database Setup' && <DatabaseSetup />}

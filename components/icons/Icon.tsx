@@ -3,7 +3,7 @@
 import React from 'react';
 
 const Icon: React.FC<{ path: string, className?: string }> = ({ path, className = "w-6 h-6" }) => (
-    <svg xmlns="http://www.w-3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
         <path d={path} />
     </svg>
 );
@@ -36,6 +36,9 @@ export const InfoIcon: React.FC<IconProps> = ({ className }) => <Icon path="M12 
 export const DatabaseIcon: React.FC<IconProps> = ({ className }) => <Icon path="M2 20h20v-4H2v4zm2-3h2v2H4v-2zM2 4v4h20V4H2zm4 3H4V5h2v2z" className={className} />;
 export const SunIcon: React.FC<IconProps> = ({ className }) => <Icon path="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.64 5.64c.39.39 1.02.39 1.41 0s.39-1.02 0-1.41L5.64 2.81c-.39-.39-1.02-.39-1.41 0s-.39 1.02 0 1.41l1.41 1.42zm12.72 12.72c.39.39 1.02.39 1.41 0s.39-1.02 0-1.41l-1.41-1.42c-.39-.39-1.02-.39-1.41 0s-.39 1.02 0 1.41l1.41 1.42zM4.22 18.36c.39.39 1.02.39 1.41 0L18.36 5.64c.39-.39.39-1.02 0-1.41s-1.02-.39-1.41 0L4.22 16.95c-.39.39-.39 1.02 0 1.41z" className={className} />;
 export const MoonIcon: React.FC<IconProps> = ({ className }) => <Icon path="M10 2c-1.1 0-2.11.25-3.03.7-1.1.55-2.05 1.33-2.73 2.25A7.493 7.493 0 002 10c0 4.14 3.36 7.5 7.5 7.5 2.05 0 3.91-.81 5.27-2.14.93-.9.16-2.17.43-3.27.22-.92.51-1.83.9-2.71C17.29 7.98 17.5 6.9 17.5 5.75c0-1.9-1.09-3.5-2.68-4.42C13.63 2.5 11.88 2 10 2z" className={className} />;
+export const DocumentIcon: React.FC<IconProps> = ({ className }) => <Icon path="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" className={className} />;
+export const FolderIcon: React.FC<IconProps> = ({ className }) => <Icon path="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" className={className} />;
+
 
 // New Icons for Form Tabs
 export const OcorrenciaIcon: React.FC<IconProps> = ({ className }) => <Icon path="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" className={className} />;

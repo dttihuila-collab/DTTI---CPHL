@@ -21,6 +21,8 @@ export type View =
   | 'Resultados Operacionais'
   | 'Transportes'
   | 'Logística'
+  | 'Autos de Expediente'
+  | 'Processos'
   | 'Gerir Usuários'
   | 'Relatórios'
   | 'Database Setup';
@@ -36,9 +38,9 @@ export type CrimeData = {
     [key in FamíliaCriminal]: string[];
 };
 
-export type DashboardCategory = 'Criminalidade' | 'Sinistralidade Rodoviária' | 'Resultados Operacionais' | 'Transportes' | 'Logística';
+export type DashboardCategory = 'Criminalidade' | 'Sinistralidade Rodoviária' | 'Resultados Operacionais' | 'Transportes' | 'Logística' | 'Autos de Expediente' | 'Processos';
 
-export type ApiKey = 'criminalidade' | 'sinistralidade' | 'resultados' | 'transportes' | 'logistica';
+export type ApiKey = 'criminalidade' | 'sinistralidade' | 'resultados' | 'transportes' | 'logistica' | 'autosExpediente' | 'processos';
 
 export interface DataRecord {
   id: number;
@@ -69,9 +71,48 @@ export interface TransportesRecord extends DataRecord {
     categoria: 'Municípios' | 'Membros' | 'Manutenções' | 'Outros';
 }
 
-export interface LogisticaRecord extends DataRecord {
-    categoriaLogistica: 'Armamento' | 'Viveres' | 'Vestuário';
-    agenteNome: string;
-    tipoArmamento?: string;
-    numSerieArma?: string;
+
+type ArmamentoData = {
+    categoriaLogistica: 'Armamento';
+    numFicha?: string;
+    orgaoUnidade?: string;
+    nip?: string;
+    patente?: string;
+    nomeCompleto?: string;
+    funcao?: string;
+    dataIncorporacao?: string;
+    localIngresso?: string;
+    dataAbertura?: string;
+};
+
+type VestuarioData = {
+    categoriaLogistica: 'Vestuário';
+    numRegisto?: string;
+    efectivoId?: string; 
+    tipoFardamento?: string;
+    tamanhoBone?: string;
+    tamanhoBoina?: string;
+    calcadoNum?: string;
+    camisaNum?: string;
+    calcaNum?: string;
+    casacoNum?: string;
+    atendente?: string;
+    dataEntrega?: string;
+};
+
+export type LogisticaRecord = DataRecord & (ArmamentoData | VestuarioData);
+
+export interface AutosExpedienteRecord extends DataRecord {
+    numeroAuto: string;
+    tipoAuto: string;
+    entidade: string;
+    descricaoFactos: string;
+}
+
+export interface ProcessosRecord extends DataRecord {
+    numeroProcesso: string;
+    tipoProcesso: string;
+    arguido: string;
+    vitima: string;
+    estado: 'Em instrução' | 'Julgado' | 'Arquivado';
 }

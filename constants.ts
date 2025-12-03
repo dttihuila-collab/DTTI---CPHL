@@ -1,6 +1,6 @@
 import { User, Role, NavItem, CrimeData, View } from './types';
 
-export const PERMISSION_VIEWS: View[] = ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística'];
+export const PERMISSION_VIEWS: View[] = ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística', 'Autos de Expediente', 'Processos'];
 
 // SECURITY-FIX: Passwords are no longer stored in plaintext.
 // A mock hash is stored instead (btoa('user') -> 'dXNlcg==').
@@ -17,15 +17,37 @@ export const APP_VIEWS: NavItem[] = [
   { name: 'Resultados Operacionais', roles: [Role.Admin, Role.Padrao] },
   { name: 'Transportes', roles: [Role.Admin, Role.Padrao] },
   { name: 'Logística', roles: [Role.Admin, Role.Padrao] },
+  { name: 'Autos de Expediente', roles: [Role.Admin, Role.Padrao] },
+  { name: 'Processos', roles: [Role.Admin, Role.Padrao] },
   { name: 'Gerir Usuários', roles: [Role.Admin] },
   { name: 'Relatórios', roles: [Role.Admin, Role.Padrao] },
   { name: 'Database Setup', roles: [Role.Admin] },
 ];
 
 export const MUNICIPIOS_HUILA: string[] = [
-    "Caconda", "Cacula", "Caluquembe", "Chibia", "Chicomba", "Chipindo", 
-    "Cuvango", "Humpata", "Jamba", "Lubango", "Matala", "Quilengues", 
-    "Quipungo"
+    "C. Cavilngo",
+    "Caconda",
+    "Cacula",
+    "Caluquembe",
+    "Capelongo",
+    "Chibia",
+    "Chicomba",
+    "Chicungo",
+    "Chipindo",
+    "Chituto",
+    "Cuvango",
+    "Dongo",
+    "Galangui",
+    "Gambos",
+    "Hoque",
+    "Humpata",
+    "Jamba",
+    "Lubango",
+    "Matala",
+    "Palanca",
+    "Quilengues",
+    "Quipungo",
+    "Viti Vivali"
 ];
 
 export const UNIDADES_ESQUADRAS: string[] = [
@@ -34,6 +56,29 @@ export const UNIDADES_ESQUADRAS: string[] = [
     "8ª Esquadra", "9ª Esquadra", "10ª Esquadra", "11ª Esquadra", "12ª Esquadra",
     "Outra"
 ];
+
+export const ORGAOS_UNIDADES: string[] = [
+    "Departamento de Telec. Tec. de Informação",
+    "Comando Provincial",
+    "Direcção de Recursos Humanos",
+    "Departamento de Operações",
+    "Secção de Logística",
+    ...UNIDADES_ESQUADRAS
+];
+
+export const PATENTES: string[] = [
+    "Comissário",
+    "Superintendente-Chefe",
+    "Superintendente",
+    "Intendente",
+    "Inspector-Chefe",
+    "Inspector",
+    "Sub-Inspector",
+    "Agente de 1ª Classe",
+    "Agente de 2ª Classe",
+    "Agente"
+];
+
 
 export const PERIODOS: string[] = ["Iº", "IIº", "IIIº"];
 
@@ -77,5 +122,4 @@ export const ITENS_ESCRITORIO: string[] = ["Resma de Papel A4", "Toner de Impres
 
 export const TIPOS_ARMAMENTO: string[] = ["Pistola", "AKM", "G3", "Outro"];
 export const CALIBRES: string[] = ["9mm", "7.62mm", "5.56mm", "Outro"];
-export const TIPOS_VIVERES: string[] = ["Não Perecível", "Perecível", "Água", "Outro"];
-export const TIPOS_VESTUARIO: string[] = ["Farda de Gala", "Farda de Trabalho", "Botas", "Cobertura (Boné/Boina)", "Outro"];
+export const TIPOS_VESTUARIO: string[] = ["Farda de Gala", "Farda de Saída", "Farda de Trabalho", "Botas", "Cobertura (Boné/Boina)", "Outro"];
