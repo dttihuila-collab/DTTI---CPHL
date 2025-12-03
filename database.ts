@@ -45,7 +45,22 @@ const initialDb: { [key: string]: any[] } = {
         { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Vestuário', numRegisto: '2', efectivoId: '123456', tipoFardamento: 'Farda de Trabalho', tamanhoBone: '22', tamanhoBoina: '22', calcadoNum: '41', camisaNum: '40', calcaNum: '40', casacoNum: '48', atendente: 'Sgt. Almeida', dataEntrega: '2023-10-26' },
     ],
     autosExpediente: [
-        { id: generateId(), createdAt: new Date().toISOString(), numeroAuto: 'AE2023/001', data: new Date().toISOString(), tipoAuto: 'Auto de Apreensão', entidade: 'SIC', descricaoFactos: 'Apreensão de material furtado.' },
+        { 
+            id: generateId(), 
+            createdAt: new Date().toISOString(), 
+            tipoAuto: 'Auto de Queixa',
+            numeroAuto: 'AQ2023/001',
+            dataAuto: '2023-10-28',
+            horaAuto: '14:30',
+            servicoDe: 'Atendimento a vítima',
+            nomeFuncionario: 'Agente Dias',
+            postoPatente: 'Agente de 1ª Classe',
+            esquadra: '1ª Esquadra',
+            noticianteNomeCompleto: 'Maria da Conceição',
+            noticianteIdade: '34',
+            queixadoNomeCompleto: 'Indivíduo Desconhecido',
+            descricaoFactos: 'A noticiante reportou o furto da sua carteira na via pública.',
+        },
     ],
     processos: [
         { id: generateId(), createdAt: new Date().toISOString(), numeroProcesso: 'PC2023/105', dataAbertura: new Date().toISOString(), tipoProcesso: 'Processo-crime', arguido: 'João da Silva', vitima: 'Maria Santos', estado: 'Em instrução' },

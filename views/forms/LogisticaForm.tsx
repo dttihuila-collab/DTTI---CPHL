@@ -12,12 +12,15 @@ const menuItems = [
     { name: 'Vestuário', icon: <ClothingIcon /> },
 ];
 
-const LogisticaForm: React.FC = React.memo(() => {
-    const [activeMenu, setActiveMenu] = useState('Armamento');
+interface LogisticaFormProps {
+    initialTab?: string | null;
+}
+
+const LogisticaForm: React.FC<LogisticaFormProps> = React.memo(({ initialTab }) => {
+    const [activeMenu, setActiveMenu] = useState(initialTab || 'Armamento');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [efectivos, setEfectivos] = useState<{ nip: string, nome: string }[]>([]);
     const { addToast } = useToast();
-    // FIX: Destructured `refreshKey` from `useDataRefresh` to use in the `useEffect` dependency array.
     const { triggerRefresh, refreshKey } = useDataRefresh();
 
     useEffect(() => {

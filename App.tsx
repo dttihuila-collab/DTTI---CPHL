@@ -15,6 +15,7 @@ import GerirUsuarios from './views/GerirUsuarios';
 import Relatorios from './views/Relatorios';
 import DatabaseSetup from './views/DatabaseSetup';
 import ActionMenuView from './views/ActionMenuView';
+import ConsultaView from './views/ConsultaView';
 import { api } from './services/api';
 import { AuthContext } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
@@ -29,6 +30,7 @@ const AppContent: React.FC = () => {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [currentView, setCurrentView] = useState<View>('Dashboard');
   const [actionMenuCategory, setActionMenuCategory] = useState<DashboardCategory | null>(null);
+  const [consultaCategory, setConsultaCategory] = useState<DashboardCategory | null>(null);
   const [activeReportTab, setActiveReportTab] = useState<DashboardCategory | null>(null);
   const [activeFormTab, setActiveFormTab] = useState<string | null>(null);
   const [initialFormData, setInitialFormData] = useState<any | null>(null);
@@ -64,6 +66,7 @@ const AppContent: React.FC = () => {
       setCurrentView(view);
     }
     setActionMenuCategory(null);
+    setConsultaCategory(null);
     setActiveFormTab(null);
     setInitialFormData(null);
     if (view !== 'Relatórios') {
@@ -76,9 +79,9 @@ const AppContent: React.FC = () => {
     setActionMenuCategory(category);
   }, []);
 
-  const handleNavigateToReport = useCallback((tab: DashboardCategory) => {
-    setCurrentView('Relatórios');
-    setActiveReportTab(tab);
+  const handleNavigateToConsulta = useCallback((category: DashboardCategory) => {
+    setCurrentView('Consulta');
+    setConsultaCategory(category);
   }, []);
 
   const handleNavigateToFormTab = useCallback((view: View, tab: string) => {
@@ -107,17 +110,26 @@ const AppContent: React.FC = () => {
                 return <ActionMenuView 
                           category={actionMenuCategory} 
                           onNavigateToForm={handleSetCurrentView} 
-                          onNavigateToReport={handleNavigateToReport}
+                          onNavigateToConsulta={handleNavigateToConsulta}
                           onNavigateToFormTab={handleNavigateToFormTab}
                           onNavigateToFormWithData={handleNavigateToFormWithData}
                        />;
             }
             return <Dashboard />; // Fallback if no category
+        case 'Consulta':
+            if (consultaCategory) {
+                return <ConsultaView 
+                          category={consultaCategory}
+                          onBack={() => handleOpenActionMenu(consultaCategory)}
+                          onRegisterNew={() => handleSetCurrentView(consultaCategory as View)}
+                       />;
+            }
+             return <Dashboard />; // Fallback if no category
         case 'Criminalidade': return <CriminalidadeForm />;
         case 'Sinistralidade Rodoviária': return <SinistralidadeForm />;
         case 'Resultados Operacionais': return <ResultadosForm />;
         case 'Transportes': return <TransportesForm initialTab={activeFormTab} />;
-        case 'Logística': return <LogisticaForm />;
+        case 'Logística': return <LogisticaForm initialTab={activeFormTab} />;
         case 'Autos de Expediente': return <AutosExpedienteForm initialData={initialFormData} />;
         case 'Processos': return <ProcessosForm />;
         case 'Gerir Usuários': return <GerirUsuarios />;

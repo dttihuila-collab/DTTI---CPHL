@@ -133,3 +133,9 @@ export const TIPOS_AUTO_EXPEDIENTE: string[] = [
     'Participação',
     'Apresentação'
 ];
+
+export const SERVICOS_ATENDIMENTO: string[] = ["Atendimento a vítima", "Piquete", "Investigação"];
+export const ESTADOS_CIVIS: string[] = ["Solteiro(a)", "Casado(a)", "Divorciado(a)", "Viúvo(a)"];
+export const GENEROS: string[] = ["Masculino", "Feminino"];
+export const NACIONALIDADES: string[] = ["Angolana", "Portuguesa", "Brasileira", "Outra"];
+export const PROFISSOES: string[] = ["Estudante", "Professor", "Polícia", "Pedreiro", "Doméstica", "Outra"];

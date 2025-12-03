@@ -17,6 +17,7 @@ export interface User {
 export type View =
   | 'Dashboard'
   | 'ActionMenu'
+  | 'Consulta'
   | 'Criminalidade'
   | 'Sinistralidade Rodoviária'
   | 'Resultados Operacionais'
@@ -104,11 +105,57 @@ type VestuarioData = {
 export type LogisticaRecord = DataRecord & (ArmamentoData | VestuarioData);
 
 export interface AutosExpedienteRecord extends DataRecord {
-    numeroAuto: string;
     tipoAuto: string;
-    entidade: string;
+
+    // DADOS DA ESQUADRA
+    numeroAuto: string;
+    dataAuto: string;
+    horaAuto: string;
+    servicoDe: string;
+    nomeFuncionario: string;
+    postoPatente: string;
+    esquadra: string;
+
+    // DADOS DO NOTICIANTE
+    noticianteNomeCompleto: string;
+    noticianteFilhoDe: string;
+    noticianteEDe: string;
+    noticianteNdoBilhete: string;
+    noticianteGenero: string;
+    noticianteNacionalidade: string;
+    noticianteResidente: string;
+    noticianteBairro: string;
+    noticianteProximo: string;
+    noticianteContacto: string;
+    noticianteEstadoCivil: string;
+    noticianteIdade: string;
+    noticianteNatural: string;
+    noticianteRua: string;
+    noticianteProfissao: string;
+    noticianteLocalTrabalho: string;
+
+    // DADOS DO QUEIXADO
+    queixadoNomeCompleto: string;
+    queixadoNomePai: string;
+    queixadoEDe: string;
+    queixadoNdoBilhete: string;
+    queixadoGenero: string;
+    queixadoNacionalidade: string;
+    queixadoResidente: string;
+    queixadoBairro: string;
+    queixadoProximo: string;
+    queixadoContacto: string;
+    queixadoEstadoCivil: string;
+    queixadoIdade: string;
+    queixadoNacional: string;
+    queixadoRua: string;
+    queixadoProfissao: string;
+    queixadoLocalTrabalho: string;
+
+    // DESCRIÇÃO DOS FACTOS
     descricaoFactos: string;
 }
+
 
 export interface ProcessosRecord extends DataRecord {
     numeroProcesso: string;
