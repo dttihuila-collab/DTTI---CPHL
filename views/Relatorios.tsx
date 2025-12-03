@@ -90,12 +90,20 @@ const EditCriminalidadeModal: React.FC<{
 });
 
 
-const Relatorios: React.FC = React.memo(() => {
+const Relatorios: React.FC<{ initialTab?: DashboardCategory | null }> = React.memo(({ initialTab }) => {
     const { user } = useContext(AuthContext);
     const { refreshKey, triggerRefresh } = useDataRefresh();
     const { addToast } = useToast();
     
-    const [activeTab, setActiveTab] = useState<DashboardCategory>(TABS[0]);
+    const availableTabs = useMemo(() => {
+        if (user?.role === Role.Admin) return TABS;
+        if (user?.role === Role.Padrao) {
+            return TABS.filter(tab => user.permissions?.includes(tab));
+        }
+        return [];
+    }, [user]);
+    
+    const [activeTab, setActiveTab] = useState<DashboardCategory>(initialTab || availableTabs[0]);
     const [records, setRecords] = useState<DataRecord[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     
@@ -107,20 +115,14 @@ const Relatorios: React.FC = React.memo(() => {
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
-    
-    const availableTabs = useMemo(() => {
-        if (user?.role === Role.Admin) return TABS;
-        if (user?.role === Role.Padrao) {
-            return TABS.filter(tab => user.permissions?.includes(tab));
-        }
-        return [];
-    }, [user]);
 
     useEffect(() => {
-        if(availableTabs.length > 0 && !availableTabs.includes(activeTab)) {
+        if (initialTab && availableTabs.includes(initialTab)) {
+            setActiveTab(initialTab);
+        } else if (!availableTabs.includes(activeTab) && availableTabs.length > 0) {
             setActiveTab(availableTabs[0]);
         }
-    }, [availableTabs, activeTab]);
+    }, [initialTab, availableTabs, activeTab]);
 
     const fetchRecords = useCallback(async () => {
         if (!activeTab) return;

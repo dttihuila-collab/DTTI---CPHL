@@ -16,6 +16,7 @@ export interface User {
 
 export type View =
   | 'Dashboard'
+  | 'ActionMenu'
   | 'Criminalidade'
   | 'Sinistralidade Rodoviária'
   | 'Resultados Operacionais'

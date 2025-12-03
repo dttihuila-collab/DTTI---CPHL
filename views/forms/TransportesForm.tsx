@@ -14,8 +14,12 @@ const menuItems = [
     { name: 'Outros', icon: <MoreIcon /> },
 ];
 
-const TransportesForm: React.FC = React.memo(() => {
-    const [activeMenu, setActiveMenu] = useState('Municípios');
+interface TransportesFormProps {
+    initialTab?: string | null;
+}
+
+const TransportesForm: React.FC<TransportesFormProps> = React.memo(({ initialTab }) => {
+    const [activeMenu, setActiveMenu] = useState(initialTab || 'Municípios');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { addToast } = useToast();
     const { triggerRefresh } = useDataRefresh();
@@ -33,7 +37,7 @@ const TransportesForm: React.FC = React.memo(() => {
             addToast(`Dados de transportes (${activeMenu}) submetidos com sucesso!`, 'success');
             triggerRefresh();
             form.reset();
-            setActiveMenu('Municípios');
+            setActiveMenu(initialTab || 'Municípios');
         } catch (error) {
             addToast('Ocorreu um erro ao submeter os dados.', 'error');
             console.error(error);

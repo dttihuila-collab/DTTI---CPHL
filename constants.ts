@@ -123,3 +123,13 @@ export const ITENS_ESCRITORIO: string[] = ["Resma de Papel A4", "Toner de Impres
 export const TIPOS_ARMAMENTO: string[] = ["Pistola", "AKM", "G3", "Outro"];
 export const CALIBRES: string[] = ["9mm", "7.62mm", "5.56mm", "Outro"];
 export const TIPOS_VESTUARIO: string[] = ["Farda de Gala", "Farda de Saída", "Farda de Trabalho", "Botas", "Cobertura (Boné/Boina)", "Outro"];
+
+export const TIPOS_AUTO_EXPEDIENTE: string[] = [
+    'Auto de Queixa',
+    'Auto de Apreensão',
+    'Auto de Notícia',
+    'Aviso de Notificação',
+    'Informação',
+    'Participação',
+    'Apresentação'
+];
