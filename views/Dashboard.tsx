@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { DashboardCategory, ApiKey } from '../types';
+import React, { useState, useEffect, useMemo } from 'react';
+import { DashboardCategory, ApiKey, Subsystem } from '../types';
 import { CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, ChevronDownIcon, DocumentIcon, FolderIcon } from '../components/icons/Icon';
 import { api } from '../services/api';
 import { useDataRefresh } from '../contexts/DataRefreshContext';
@@ -10,10 +10,7 @@ import TransportesDetailsView from './dashboard/TransportesDetailsView';
 import LogisticaDetailsView from './dashboard/LogisticaDetailsView';
 import GenericDetailsTable from './dashboard/GenericDetailsTable';
 
-// FIX: Removed explicit type annotation to allow TypeScript to infer a more specific type for the 'icon' property.
-// The generic 'React.ReactElement' type was too broad, causing type errors when using 'React.cloneElement'.
-// FIX: Added 'as const' to infer the 'name' property as a specific string literal type, compatible with 'DashboardCategory'.
-const categories = [
+const allCategories = [
     { name: 'Criminalidade', icon: <CrimeIcon /> },
     { name: 'Sinistralidade Rodoviária', icon: <RoadIcon /> },
     { name: 'Resultados Operacionais', icon: <PoliceIcon /> },
@@ -22,6 +19,15 @@ const categories = [
     { name: 'Autos de Expediente', icon: <DocumentIcon /> },
     { name: 'Processos', icon: <FolderIcon /> },
 ] as const;
+
+const subsystemCategories: Record<Subsystem, DashboardCategory[]> = {
+    'Ocorrências Policiais': ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais'],
+    'Transportes': ['Transportes'],
+    'Logística': ['Logística'],
+    'Autos de Expedientes': ['Autos de Expediente', 'Processos'],
+    'Administração do Sistema': [],
+};
+
 
 type TimeFilter = 'Dia' | 'Semana' | 'Mês' | 'Ano';
 const timeFilters: TimeFilter[] = ['Dia', 'Semana', 'Mês', 'Ano'];
@@ -99,19 +105,20 @@ const DashboardDetails: React.FC<{ category: DashboardCategory }> = React.memo((
 });
 
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+    subsystem: Subsystem;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ subsystem }) => {
     const [activeFilter, setActiveFilter] = useState<TimeFilter>('Mês');
     const [expandedCategory, setExpandedCategory] = useState<DashboardCategory | null>(null);
-    const [totals, setTotals] = useState<{[key in DashboardCategory]: number}>({
-        'Criminalidade': 0,
-        'Sinistralidade Rodoviária': 0,
-        'Resultados Operacionais': 0,
-        'Transportes': 0,
-        'Logística': 0,
-        'Autos de Expediente': 0,
-        'Processos': 0
-    });
+    const [totals, setTotals] = useState<{[key in DashboardCategory]?: number}>({});
     const { refreshKey } = useDataRefresh();
+
+    const categories = useMemo(() => {
+        const relevantCategoryNames = subsystemCategories[subsystem];
+        return allCategories.filter(cat => relevantCategoryNames.includes(cat.name));
+    }, [subsystem]);
     
     useEffect(() => {
         const fetchTotals = async () => {
@@ -119,18 +126,10 @@ const Dashboard: React.FC = () => {
             let startDate = new Date();
 
             switch(activeFilter) {
-                case 'Dia':
-                    startDate.setHours(0, 0, 0, 0);
-                    break;
-                case 'Semana':
-                    startDate.setDate(now.getDate() - 7);
-                    break;
-                case 'Mês':
-                    startDate.setMonth(now.getMonth() - 1);
-                    break;
-                case 'Ano':
-                    startDate.setFullYear(now.getFullYear() - 1);
-                    break;
+                case 'Dia': startDate.setHours(0, 0, 0, 0); break;
+                case 'Semana': startDate.setDate(now.getDate() - 7); break;
+                case 'Mês': startDate.setMonth(now.getMonth() - 1); break;
+                case 'Ano': startDate.setFullYear(now.getFullYear() - 1); break;
             }
 
             const filterRecordsByDate = (records: any[]) => {
@@ -140,29 +139,22 @@ const Dashboard: React.FC = () => {
                 });
             };
 
-            const [criminalidade, sinistralidade, resultados, transportes, logistica, autosExpediente, processos] = await Promise.all([
-                api.getRecords('criminalidade'),
-                api.getRecords('sinistralidade'),
-                api.getRecords('resultados'),
-                api.getRecords('transportes'),
-                api.getRecords('logistica'),
-                api.getRecords('autosExpediente'),
-                api.getRecords('processos')
-            ]);
+            const relevantCategoryNames = subsystemCategories[subsystem];
+            const promises = relevantCategoryNames.map(catName => api.getRecords(categoryToApiKey(catName)));
+            const results = await Promise.all(promises);
 
-            setTotals({
-                'Criminalidade': filterRecordsByDate(criminalidade).length,
-                'Sinistralidade Rodoviária': filterRecordsByDate(sinistralidade).length,
-                'Resultados Operacionais': filterRecordsByDate(resultados).length,
-                'Transportes': filterRecordsByDate(transportes).length,
-                'Logística': filterRecordsByDate(logistica).length,
-                'Autos de Expediente': filterRecordsByDate(autosExpediente).length,
-                'Processos': filterRecordsByDate(processos).length,
+            const newTotals: {[key in DashboardCategory]?: number} = {};
+            relevantCategoryNames.forEach((catName, index) => {
+                newTotals[catName] = filterRecordsByDate(results[index]).length;
             });
+            
+            setTotals(newTotals);
         };
         
-        fetchTotals();
-    }, [refreshKey, activeFilter]);
+        if (subsystem !== 'Administração do Sistema') {
+            fetchTotals();
+        }
+    }, [refreshKey, activeFilter, subsystem]);
 
     const handleCardClick = (category: DashboardCategory) => {
         setExpandedCategory(prev => prev === category ? null : category);
@@ -183,7 +175,7 @@ const Dashboard: React.FC = () => {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Dashboard</h2>
+                <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Dashboard do Subsistema</h2>
                 <div className="flex items-center space-x-2 bg-white dark:bg-gray-800 p-1 rounded-lg shadow-sm">
                     {timeFilters.map(filter => (
                         <button
@@ -197,7 +189,7 @@ const Dashboard: React.FC = () => {
                 </div>
             </div>
 
-            <div className={`grid gap-6 ${isAnyCategoryExpanded && categories.length > 1 ? `grid-cols-${categories.length}` : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4'}`}>
+            <div className={`grid gap-6 ${isAnyCategoryExpanded && categories.length > 1 ? `grid-cols-${categories.length}` : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3'}`}>
                 {categories.map(({ name, icon }) => {
                     const isSelected = expandedCategory === name;
                     
@@ -230,7 +222,7 @@ const Dashboard: React.FC = () => {
                                         ? 'text-custom-blue-900 dark:text-white'
                                         : 'text-gray-800 dark:text-gray-200'
                                     }`}>
-                                        {totals[name].toLocaleString()}
+                                        {(totals[name] ?? 0).toLocaleString()}
                                     </p>
                                 </div>
                             </div>
@@ -255,7 +247,7 @@ const Dashboard: React.FC = () => {
                                 </div>
                             </div>
                              <div className="mt-4">
-                                <p className="text-4xl font-bold text-gray-800 dark:text-gray-100">{totals[name].toLocaleString()}</p>
+                                <p className="text-4xl font-bold text-gray-800 dark:text-gray-100">{(totals[name] ?? 0).toLocaleString()}</p>
                                 <p className="text-sm text-gray-500 dark:text-gray-400">Total no período</p>
                              </div>
                         </div>

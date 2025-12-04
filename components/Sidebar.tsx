@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { Role, View, User, NavItem, DashboardCategory } from '../types';
-import { APP_VIEWS } from '../constants';
+import { Role, View, User, DashboardCategory, Subsystem } from '../types';
+import { SUBSYSTEMS, ALL_VIEWS } from '../constants';
 import { DashboardIcon, CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, UsersIcon, ReportsIcon, LogoutIcon, ChevronLeftIcon, ChevronRightIcon, DatabaseIcon, DocumentIcon, FolderIcon } from './icons/Icon';
 
 interface SidebarProps {
   user: User;
+  subsystem: Subsystem;
   isCollapsed: boolean;
   setCurrentView: (view: View) => void;
   openActionMenu: (category: DashboardCategory) => void;
@@ -30,29 +31,28 @@ const iconMap: { [key in View]?: React.ReactElement } = {
 const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística', 'Autos de Expediente', 'Processos'];
 
 
-const Sidebar: React.FC<SidebarProps> = React.memo(({ user, isCollapsed, setCurrentView, openActionMenu, currentView, onToggleSidebar }) => {
+const Sidebar: React.FC<SidebarProps> = React.memo(({ user, subsystem, isCollapsed, setCurrentView, openActionMenu, currentView, onToggleSidebar }) => {
   const { logout } = useContext(AuthContext);
 
-  const navItems = APP_VIEWS.filter(item => {
-    if (!item.roles.includes(user.role)) {
-      return false;
-    }
+  const navItems = useMemo(() => {
+    const subsystemConfig = SUBSYSTEMS[subsystem];
+    if (!subsystemConfig) return [];
     
-    if (user.role === Role.Padrao) {
-        if (item.name === 'Relatórios') {
-            return user.permissions?.some(p => formViews.includes(p)) ?? false;
+    return subsystemConfig.views.filter(viewName => {
+        const viewConfig = ALL_VIEWS[viewName];
+        if (!viewConfig || !viewConfig.roles.includes(user.role)) {
+            return false;
         }
-        return user.permissions?.includes(item.name) ?? false;
-    }
+        return true;
+    });
+}, [user, subsystem]);
 
-    return true;
-  });
 
-  const handleMenuClick = (item: NavItem) => {
-    if (formViews.includes(item.name)) {
-        openActionMenu(item.name as DashboardCategory);
+  const handleMenuClick = (viewName: View) => {
+    if (formViews.includes(viewName)) {
+        openActionMenu(viewName as DashboardCategory);
     } else {
-        setCurrentView(item.name);
+        setCurrentView(viewName);
     }
   };
 
@@ -69,17 +69,17 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ user, isCollapsed, setCurr
         </button>
       </div>
       <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
-        {navItems.map(item => {
-            const isActive = currentView === item.name;
+        {navItems.map(viewName => {
+            const isActive = currentView === viewName;
 
             return (
-                <div key={item.name}>
+                <div key={viewName}>
                     <button
-                        onClick={() => handleMenuClick(item)}
+                        onClick={() => handleMenuClick(viewName)}
                         className={`${baseButtonClass} ${isCollapsed ? 'justify-center' : ''} ${isActive ? 'bg-custom-blue-100 text-custom-blue-700 dark:bg-custom-blue-900 dark:text-custom-blue-300' : 'hover:bg-custom-blue-50 hover:text-custom-blue-600 dark:hover:bg-gray-700 dark:hover:text-gray-200'}`}
                     >
-                        {iconMap[item.name]}
-                        <span className={`${textClass} ${transitionClass} flex-1`}>{item.name === 'Gerir Usuários' ? 'Gerir Utilizadores' : item.name}</span>
+                        {iconMap[viewName]}
+                        <span className={`${textClass} ${transitionClass} flex-1`}>{viewName === 'Gerir Usuários' ? 'Gerir Utilizadores' : viewName}</span>
                     </button>
                 </div>
             )

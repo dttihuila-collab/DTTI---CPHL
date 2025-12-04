@@ -115,11 +115,24 @@ export const api = {
     addRecord: async (key: ApiKey, data: any): Promise<DataRecord> => {
         await delay(350);
         const db = loadDatabase();
-        const newRecord = { 
+        const newRecord: any = { 
             ...data, 
             id: new Date().getTime(),
             createdAt: new Date().toISOString() 
         };
+
+        if (key === 'autosExpediente') {
+            const records = db[key];
+            const sigla = (data.tipoAuto || '')
+                .split(' ')
+                .map((word: string) => word.charAt(0))
+                .join('')
+                .toUpperCase();
+            const ano = new Date().getFullYear();
+            const count = records.filter((r: any) => r.numeroAuto && r.numeroAuto.startsWith(`${sigla}${ano}`)).length + 1;
+            newRecord.numeroAuto = `${sigla}${ano}/${String(count).padStart(3, '0')}`;
+        }
+
         db[key].push(newRecord);
         saveDatabase(db);
         return newRecord;

@@ -1,6 +1,7 @@
 export enum Role {
   Admin = 'Administrador',
   Padrao = 'Padrão',
+  Supervisor = 'Supervisor',
 }
 
 export interface User {
@@ -11,8 +12,13 @@ export interface User {
   email?: string;
   role: Role;
   passwordHash?: string;
-  permissions?: View[];
+  permissions?: Subsystem[];
+  patente?: string;
+  orgaoUnidade?: string;
+  funcao?: string;
 }
+
+export type Subsystem = 'Ocorrências Policiais' | 'Transportes' | 'Logística' | 'Autos de Expedientes' | 'Administração do Sistema';
 
 export type View =
   | 'Dashboard'

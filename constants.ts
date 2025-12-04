@@ -1,28 +1,52 @@
-import { User, Role, NavItem, CrimeData, View } from './types';
-
-export const PERMISSION_VIEWS: View[] = ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística', 'Autos de Expediente', 'Processos'];
+import { User, Role, CrimeData, View, Subsystem } from './types';
 
 // SECURITY-FIX: Passwords are no longer stored in plaintext.
 // A mock hash is stored instead (btoa('user') -> 'dXNlcg==').
 export const MOCK_USERS: User[] = [
-  { id: 1, name: 'Admin', role: Role.Admin, passwordHash: 'dXNlcg==', permissions: PERMISSION_VIEWS },
-  { id: 2, name: 'Padrao', role: Role.Padrao, passwordHash: 'dXNlcg==', permissions: ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária'] },
-  { id: 3, name: 'Visualizador', role: Role.Padrao, passwordHash: 'dXNlcg==', permissions: ['Dashboard'] },
+  { id: 1, name: 'Admin', role: Role.Admin, passwordHash: 'dXNlcg==', patente: 'Comissário', orgaoUnidade: 'Comando Provincial', funcao: 'Comandante' },
+  { id: 2, name: 'Supervisor', role: Role.Supervisor, passwordHash: 'dXNlcg==', patente: 'Superintendente-Chefe', orgaoUnidade: 'Departamento de Operações', funcao: 'Supervisor Geral' },
+  { id: 3, name: 'Operador Padrão', role: Role.Padrao, passwordHash: 'dXNlcg==', permissions: ['Ocorrências Policiais', 'Transportes'], patente: 'Agente de 1ª Classe', orgaoUnidade: '1ª Esquadra', funcao: 'Agente de Campo' },
+  { id: 4, name: 'Operador Logistica', role: Role.Padrao, passwordHash: 'dXNlcg==', permissions: ['Logística'], patente: 'Agente', orgaoUnidade: 'Secção de Logística', funcao: 'Operador' },
+  { id: 5, name: 'Nilton Gourgel', role: Role.Supervisor, passwordHash: 'dXNlcg==', patente: 'Inspector-Chefe', orgaoUnidade: 'Departamento de Telec. Tec. de Informação', funcao: 'Chefe de Departamento' },
 ];
 
-export const APP_VIEWS: NavItem[] = [
-  { name: 'Dashboard', roles: [Role.Admin, Role.Padrao] },
-  { name: 'Criminalidade', roles: [Role.Admin, Role.Padrao] },
-  { name: 'Sinistralidade Rodoviária', roles: [Role.Admin, Role.Padrao] },
-  { name: 'Resultados Operacionais', roles: [Role.Admin, Role.Padrao] },
-  { name: 'Transportes', roles: [Role.Admin, Role.Padrao] },
-  { name: 'Logística', roles: [Role.Admin, Role.Padrao] },
-  { name: 'Autos de Expediente', roles: [Role.Admin, Role.Padrao] },
-  { name: 'Processos', roles: [Role.Admin, Role.Padrao] },
-  { name: 'Gerir Usuários', roles: [Role.Admin] },
-  { name: 'Relatórios', roles: [Role.Admin, Role.Padrao] },
-  { name: 'Database Setup', roles: [Role.Admin] },
-];
+export const ALL_VIEWS: { [key in View]?: { roles: Role[] } } = {
+    'Dashboard': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Criminalidade': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Sinistralidade Rodoviária': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Resultados Operacionais': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Transportes': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Logística': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Autos de Expediente': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Processos': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Gerir Usuários': { roles: [Role.Admin] },
+    'Relatórios': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Database Setup': { roles: [Role.Admin] },
+};
+
+export const SUBSYSTEMS: Record<Subsystem, { views: View[], roles: Role[] }> = {
+    'Ocorrências Policiais': {
+        views: ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Relatórios'],
+        roles: [Role.Admin, Role.Padrao, Role.Supervisor],
+    },
+    'Transportes': {
+        views: ['Dashboard', 'Transportes', 'Relatórios'],
+        roles: [Role.Admin, Role.Padrao, Role.Supervisor],
+    },
+    'Logística': {
+        views: ['Dashboard', 'Logística', 'Relatórios'],
+        roles: [Role.Admin, Role.Padrao, Role.Supervisor],
+    },
+    'Autos de Expedientes': {
+        views: ['Dashboard', 'Autos de Expediente', 'Processos', 'Relatórios'],
+        roles: [Role.Admin, Role.Padrao, Role.Supervisor],
+    },
+    'Administração do Sistema': {
+        views: ['Gerir Usuários', 'Database Setup'],
+        roles: [Role.Admin],
+    },
+};
+
 
 export const MUNICIPIOS_HUILA: string[] = [
     "C. Cavilngo",

@@ -48,7 +48,7 @@ const AutosExpedienteForm: React.FC<AutosExpedienteFormProps> = React.memo(({ in
         try {
             const dataToSave = { ...formData };
             if (!editingRecord) {
-                // Let the API generate the number for new records
+                // The API will generate the number for new records
                 delete dataToSave.numeroAuto;
             }
 
@@ -196,7 +196,7 @@ const AutosExpedienteForm: React.FC<AutosExpedienteFormProps> = React.memo(({ in
 
     return (
         <FormWrapper
-            title={editingRecord ? `Editar ${formData.tipoAuto}` : `Registo de ${formData.tipoAuto || 'Auto de Expediente'}`}
+            title={editingRecord ? `Editar ${formData.tipoAuto} (${formData.numeroAuto})` : `Registo de ${formData.tipoAuto || 'Auto de Expediente'}`}
             description="Preencha os detalhes abaixo para registar um novo Auto de Expediente."
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
@@ -206,10 +206,10 @@ const AutosExpedienteForm: React.FC<AutosExpedienteFormProps> = React.memo(({ in
             <div className="space-y-6">
                 <CollapsibleSection title="Dados da Esquadra" defaultOpen>
                     <div className="p-4 grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <div className="md:col-span-3"><Label>Nº do Auto</Label><Input name="numeroAuto" value={formData.numeroAuto || ''} onChange={handleChange} disabled /><span className="text-xs text-red-500">{!editingRecord && "(Será gerado automaticamente)"}</span></div>
-                        <div className="md:col-span-3"><Label>Data</Label><Input name="dataAuto" type="date" value={formData.dataAuto || ''} onChange={handleChange} /></div>
-                        <div className="md:col-span-2"><Label>Hora</Label><Input name="horaAuto" type="time" value={formData.horaAuto || ''} onChange={handleChange} /></div>
-                        <div className="md:col-span-4"><Label>Tipo de Auto</Label><Select name="tipoAuto" value={formData.tipoAuto} onChange={handleChange} required><option value="">Selecione</option>{TIPOS_AUTO_EXPEDIENTE.map(t => <option key={t} value={t}>{t}</option>)}</Select></div>
+                         { editingRecord && <div className="md:col-span-3"><Label>Nº do Auto</Label><Input name="numeroAuto" value={formData.numeroAuto || ''} disabled /></div> }
+                        <div className="md:col-span-4"><Label>Data</Label><Input name="dataAuto" type="date" value={formData.dataAuto || ''} onChange={handleChange} /></div>
+                        <div className="md:col-span-3"><Label>Hora</Label><Input name="horaAuto" type="time" value={formData.horaAuto || ''} onChange={handleChange} /></div>
+                        <div className="md:col-span-5"><Label>Tipo de Auto</Label><Select name="tipoAuto" value={formData.tipoAuto} onChange={handleChange} required disabled={!!editingRecord}><option value="">Selecione</option>{TIPOS_AUTO_EXPEDIENTE.map(t => <option key={t} value={t}>{t}</option>)}</Select></div>
                     </div>
                 </CollapsibleSection>
                 {renderFormBody()}

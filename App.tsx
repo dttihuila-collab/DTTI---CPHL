@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { User, View, Role, DashboardCategory } from './types';
+import { User, View, Role, DashboardCategory, Subsystem } from './types';
 import Login from './views/Login';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -22,11 +22,11 @@ import { ToastProvider } from './contexts/ToastContext';
 import ToastContainer from './components/ToastContainer';
 import { DataRefreshProvider } from './contexts/DataRefreshContext';
 import { ThemeProvider } from './contexts/ThemeContext';
-
-const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística', 'Autos de Expediente', 'Processos'];
+import SubsystemSelection from './views/SubsystemSelection';
 
 const AppContent: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [selectedSubsystem, setSelectedSubsystem] = useState<Subsystem | null>(null);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [currentView, setCurrentView] = useState<View>('Dashboard');
   const [actionMenuCategory, setActionMenuCategory] = useState<DashboardCategory | null>(null);
@@ -38,7 +38,6 @@ const AppContent: React.FC = () => {
     const foundUser = await api.login(username, password);
     if (foundUser) {
         setUser(foundUser);
-        setCurrentView('Dashboard');
         return true;
     }
     return false;
@@ -46,31 +45,38 @@ const AppContent: React.FC = () => {
 
   const logout = useCallback(() => {
     setUser(null);
+    setSelectedSubsystem(null);
+    setCurrentView('Dashboard');
   }, []);
 
   const authContextValue = useMemo(() => ({ user, login, logout }), [user, login, logout]);
+
+  const handleSelectSubsystem = useCallback((subsystem: Subsystem) => {
+      setSelectedSubsystem(subsystem);
+      if (subsystem === 'Administração do Sistema') {
+          setCurrentView('Gerir Usuários');
+      } else {
+          setCurrentView('Dashboard');
+      }
+  }, []);
+
+  const handleGoToSubsystemSelection = useCallback(() => {
+      setSelectedSubsystem(null);
+  }, []);
 
   const toggleSidebar = useCallback(() => {
     setSidebarCollapsed(prevState => !prevState);
   }, []);
 
   const handleSetCurrentView = useCallback((view: View) => {
-    if (user?.role === Role.Padrao && (formViews.includes(view) || view === 'Relatórios' || view === 'Gerir Usuários' || view === 'Database Setup')) {
-      if (user.permissions?.includes(view) || (view === 'Relatórios' && user.permissions?.some(p => formViews.includes(p)))) {
-        setCurrentView(view);
-      } else {
-        setCurrentView('Dashboard');
-      }
-    } else {
-      setCurrentView(view);
-    }
+    setCurrentView(view);
     setActionMenuCategory(null);
     setConsultaCategory(null);
     setInitialFormData(null);
     if (view !== 'Relatórios') {
         setActiveReportTab(null);
     }
-  }, [user]);
+  }, []);
 
   const handleOpenActionMenu = useCallback((category: DashboardCategory) => {
     setCurrentView('ActionMenu');
@@ -95,9 +101,17 @@ const AppContent: React.FC = () => {
     );
   }
 
+  if (!selectedSubsystem) {
+    return (
+      <AuthContext.Provider value={authContextValue}>
+        <SubsystemSelection onSelectSubsystem={handleSelectSubsystem} />
+      </AuthContext.Provider>
+    );
+  }
+
   const renderCurrentView = () => {
     switch (currentView) {
-        case 'Dashboard': return <Dashboard />;
+        case 'Dashboard': return <Dashboard subsystem={selectedSubsystem} />;
         case 'ActionMenu': 
             if (actionMenuCategory) {
                 return <ActionMenuView 
@@ -107,16 +121,16 @@ const AppContent: React.FC = () => {
                           onNavigateToFormWithData={handleNavigateToFormWithData}
                        />;
             }
-            return <Dashboard />; // Fallback if no category
+            return <Dashboard subsystem={selectedSubsystem} />; // Fallback if no category
         case 'Consulta':
             if (consultaCategory) {
                 return <ConsultaView 
                           category={consultaCategory}
                           onBack={() => handleOpenActionMenu(consultaCategory)}
-                          onRegisterNew={(data) => handleNavigateToFormWithData(consultaCategory as View, data)}
+                          onRegisterNew={() => handleNavigateToFormWithData(consultaCategory as View, {})}
                        />;
             }
-             return <Dashboard />; // Fallback if no category
+             return <Dashboard subsystem={selectedSubsystem} />; // Fallback if no category
         case 'Criminalidade': return <CriminalidadeForm onCancel={() => handleOpenActionMenu('Criminalidade')} />;
         case 'Sinistralidade Rodoviária': return <SinistralidadeForm onCancel={() => handleOpenActionMenu('Sinistralidade Rodoviária')} />;
         case 'Resultados Operacionais': return <ResultadosForm onCancel={() => handleOpenActionMenu('Resultados Operacionais')} />;
@@ -127,7 +141,7 @@ const AppContent: React.FC = () => {
         case 'Gerir Usuários': return <GerirUsuarios />;
         case 'Relatórios': return <Relatorios initialTab={activeReportTab} />;
         case 'Database Setup': return <DatabaseSetup />;
-        default: return <Dashboard />;
+        default: return <Dashboard subsystem={selectedSubsystem} />;
     }
   };
 
@@ -136,6 +150,7 @@ const AppContent: React.FC = () => {
       <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
         <Sidebar
           user={user}
+          subsystem={selectedSubsystem}
           isCollapsed={isSidebarCollapsed}
           setCurrentView={handleSetCurrentView}
           openActionMenu={handleOpenActionMenu}
@@ -143,7 +158,7 @@ const AppContent: React.FC = () => {
           onToggleSidebar={toggleSidebar}
         />
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Header user={user} />
+          <Header user={user} subsystemName={selectedSubsystem} onGoHome={handleGoToSubsystemSelection} />
           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
             {renderCurrentView()}
           </main>

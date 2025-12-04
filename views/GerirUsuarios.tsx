@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import { User, Role, View } from '../types';
+import { User, Role, Subsystem } from '../types';
 import { api } from '../services/api';
-import { PERMISSION_VIEWS } from '../constants';
+import { SUBSYSTEMS, PATENTES, ORGAOS_UNIDADES } from '../constants';
 import Modal from '../components/Modal';
 import { Label, Input, Select, Button, FormError } from '../components/common/FormElements';
 import { AddIcon, EditIcon, DeleteIcon } from '../components/icons/Icon';
@@ -47,7 +47,7 @@ const GerirUsuarios: React.FC = React.memo(() => {
     }, [loadUsers]);
 
     const openModal = (user: User | null = null) => {
-        setCurrentUser(user ? { ...user, password: '' } : { name: '', role: Role.Padrao, password: '', permissions: ['Dashboard'] });
+        setCurrentUser(user ? { ...user, password: '' } : { name: '', role: Role.Padrao, password: '', permissions: [], patente: '', orgaoUnidade: '', funcao: '' });
         setFormErrors({});
         setIsModalOpen(true);
     };
@@ -89,8 +89,8 @@ const GerirUsuarios: React.FC = React.memo(() => {
         setIsSubmitting(true);
         try {
             const userToSave = { ...currentUser };
-            if (userToSave.role === Role.Admin) {
-                userToSave.permissions = PERMISSION_VIEWS;
+            if (userToSave.role === Role.Admin || userToSave.role === Role.Supervisor) {
+                userToSave.permissions = [];
             }
 
             if (currentUser.id) {
@@ -129,8 +129,8 @@ const GerirUsuarios: React.FC = React.memo(() => {
         if(currentUser) {
             const { name, value } = e.target;
             const updatedUser = { ...currentUser, [name]: value };
-            if (name === 'role' && value === Role.Admin) {
-                updatedUser.permissions = PERMISSION_VIEWS;
+             if (name === 'role' && value !== Role.Padrao) {
+                updatedUser.permissions = [];
             }
             setCurrentUser(updatedUser);
             if (formErrors[name as keyof typeof formErrors]) {
@@ -141,7 +141,7 @@ const GerirUsuarios: React.FC = React.memo(() => {
         }
     };
 
-    const handlePermissionChange = (permission: View) => {
+    const handlePermissionChange = (permission: Subsystem) => {
         if (currentUser) {
             const currentPermissions = currentUser.permissions || [];
             const newPermissions = currentPermissions.includes(permission)
@@ -187,27 +187,55 @@ const GerirUsuarios: React.FC = React.memo(() => {
                         <Input id="name" name="name" type="text" value={currentUser?.name || ''} onChange={handleFormChange} required error={formErrors.name} />
                         <FormError message={formErrors.name} />
                     </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                           <Label htmlFor="patente">Patente</Label>
+                           <Select id="patente" name="patente" value={currentUser?.patente || ''} onChange={handleFormChange}>
+                                <option value="">Selecione a Patente</option>
+                                {PATENTES.map(p => <option key={p} value={p}>{p}</option>)}
+                           </Select>
+                        </div>
+                        <div>
+                            <Label htmlFor="funcao">Função</Label>
+                            <Input id="funcao" name="funcao" type="text" value={currentUser?.funcao || ''} onChange={handleFormChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <Label htmlFor="orgaoUnidade">Orgão/Unidade</Label>
+                        <Select id="orgaoUnidade" name="orgaoUnidade" value={currentUser?.orgaoUnidade || ''} onChange={handleFormChange}>
+                            <option value="">Selecione o Orgão/Unidade</option>
+                            {ORGAOS_UNIDADES.map(o => <option key={o} value={o}>{o}</option>)}
+                        </Select>
+                    </div>
                     <div>
                         <Label htmlFor="password">Palavra-passe</Label>
                         <Input id="password" name="password" type="password" value={currentUser?.password || ''} onChange={handleFormChange} error={formErrors.password} placeholder={currentUser?.id ? 'Deixar em branco para não alterar' : ''}/>
                         <FormError message={formErrors.password} />
                     </div>
                     <div><Label htmlFor="role">Perfil</Label><Select id="role" name="role" value={currentUser?.role || ''} onChange={handleFormChange}>{Object.values(Role).map(role => (<option key={role} value={role}>{role}</option>))}</Select></div>
-                    {currentUser?.role === Role.Admin && (<div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-md text-center"><p className="text-sm text-gray-600 dark:text-gray-300">Os administradores têm acesso a todos os formulários.</p></div>)}
+                    
                     {currentUser?.role === Role.Padrao && (
                         <fieldset className="border dark:border-gray-600 p-4 rounded-md">
-                             <legend className="text-sm font-medium text-gray-900 dark:text-gray-200 px-1">Permissões de Formulário</legend>
-                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
-                                {PERMISSION_VIEWS.map(permission => (
-                                    <div key={permission} className="flex items-center">
-                                        <input id={`perm-${permission}`} type="checkbox" checked={currentUser.permissions?.includes(permission) || false} onChange={() => handlePermissionChange(permission)} className="h-4 w-4 text-custom-blue-600 border-gray-300 rounded focus:ring-custom-blue-500 dark:bg-gray-600 dark:border-gray-500" />
-                                        <label htmlFor={`perm-${permission}`} className="ml-2 block text-sm text-gray-900 dark:text-gray-300">{permission}</label>
+                             <legend className="text-sm font-medium text-gray-900 dark:text-gray-200 px-1">Acesso a Subsistemas</legend>
+                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                                {(Object.keys(SUBSYSTEMS) as Subsystem[]).map(subsystem => (
+                                    <div key={subsystem} className="flex items-center">
+                                        <input id={`perm-${subsystem}`} type="checkbox" checked={currentUser.permissions?.includes(subsystem) || false} onChange={() => handlePermissionChange(subsystem)} className="h-4 w-4 text-custom-blue-600 border-gray-300 rounded focus:ring-custom-blue-500 dark:bg-gray-600 dark:border-gray-500" />
+                                        <label htmlFor={`perm-${subsystem}`} className="ml-2 block text-sm text-gray-900 dark:text-gray-300">{subsystem}</label>
                                     </div>
                                 ))}
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Para acesso de apenas visualização, selecione somente 'Dashboard'.</p>
                         </fieldset>
                     )}
+
+                    {(currentUser?.role === Role.Admin || currentUser?.role === Role.Supervisor) && (
+                        <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-md text-center">
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                                {currentUser.role === Role.Admin ? "Administradores têm acesso total a todos os subsistemas." : "Supervisores têm acesso de visualização a todos os subsistemas."}
+                            </p>
+                        </div>
+                    )}
+
                     <div className="flex justify-end space-x-2 pt-4">
                         <Button variant="secondary" onClick={closeModal}>Cancelar</Button>
                         <Button onClick={handleSave} isLoading={isSubmitting}>Guardar</Button>
