@@ -9,101 +9,43 @@ const oneYearAgo = new Date();
 oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 const now = new Date();
 
+// NOVA BASE DE DADOS INICIAL - ESTRUTURA LIMPA
 const initialDb: { [key: string]: any[] } = {
     users: MOCK_USERS.map(u => ({ ...u })), 
     criminalidade: [
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra o Património', crime: 'Roubo', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'Iº', municipio: 'Lubango', unidadeEsquadra: '1ª Esquadra', vitimaNome: 'Ana Costa', acusadoNome: 'Desconhecido', modusOperandi: 'Arrombamento de residência' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra Pessoa', crime: 'Ofensa a Integridade Física', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'IIº', municipio: 'Matala', unidadeEsquadra: 'Comando Municipal', vitimaNome: 'Carlos Neves', acusadoNome: 'Manuel Golias' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra o Património', crime: 'Furto', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'IIIº', municipio: 'Caconda', unidadeEsquadra: '2ª Esquadra', vitimaNome: 'Sofia Almeida', acusadoNome: 'Adolescente (17 anos)', bensSubtraidos: 'Telemóvel e carteira' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra Ordem e Tranquilidade Pública', crime: 'Posse Ilegal de arma de fogo', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'Iº', municipio: 'Lubango', unidadeEsquadra: '5ª Esquadra', acusadoNome: 'José Firmino' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra Pessoa', crime: 'Homicídio', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'IIº', municipio: 'Quilengues', unidadeEsquadra: 'Comando Municipal', vitimaNome: 'António Lopes', acusadoNome: 'Em investigação', objetoUsado: 'Arma branca' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra o Património', crime: 'Burla', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'Iº', municipio: 'Lubango', unidadeEsquadra: '3ª Esquadra', vitimaNome: 'Joana Miguel', acusadoNome: 'Desconhecido', modusOperandi: 'Fraude online' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra Pessoa', crime: 'Ameaça', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'IIIº', municipio: 'Matala', unidadeEsquadra: 'Posto Policial', vitimaNome: 'Pedro Ramos', acusadoNome: 'Vizinho' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra o Património', crime: 'Roubo', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'Iº', municipio: 'Humpata', unidadeEsquadra: 'Comando Municipal', vitimaNome: 'Turista Estrangeiro', acusadoNome: 'Grupo de jovens', bensSubtraidos: 'Câmara fotográfica' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra Autoridade', crime: 'Desobediência', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'IIº', municipio: 'Lubango', unidadeEsquadra: 'Patrulha', acusadoNome: 'Condutor de veículo' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra o Património', crime: 'Danos', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'Iº', municipio: 'Caluquembe', unidadeEsquadra: 'Comando Municipal', vitimaNome: 'Estabelecimento Comercial', acusadoNome: 'Vândalos' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra Pessoa', crime: 'Abuso Sexual', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'IIº', municipio: 'Cacula', unidadeEsquadra: 'Investigação Criminal', vitimaNome: 'Vítima protegida', acusadoNome: 'Membro da família' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra o Património', crime: 'Incêndio', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'IIIº', municipio: 'Gambos', unidadeEsquadra: 'Comando Municipal', local: 'Área florestal', acusadoNome: 'Causa indeterminada' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra Ordem e Tranquilidade Pública', crime: 'Posse e consumo de Cannabis', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'Iº', municipio: 'Lubango', unidadeEsquadra: '7ª Esquadra', acusadoNome: 'Jovem (22 anos)' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra o Património', crime: 'Furto', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'IIº', municipio: 'Matala', unidadeEsquadra: '4ª Esquadra', vitimaNome: 'Agricultor', bensSubtraidos: 'Equipamento agrícola' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), familiaCriminal: 'Crimes Contra Pessoa', crime: 'Ofensa a Integridade Física', data: randomDate(oneYearAgo, now).toISOString(), periodo: 'Iº', municipio: 'Lubango', unidadeEsquadra: '9ª Esquadra', vitimaNome: 'Estudante', acusadoNome: 'Colega de escola' },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), dataOcorrencia: randomDate(oneYearAgo, now).toISOString(), periodo: 'Noite', municipio: 'Lubango', unidadeEsquadra: '1ª Esquadra', numeroProcesso: 'PC2024/001', familiaCriminal: 'Crimes Contra o Património', crime: 'Roubo', modusOperandi: 'Arrombamento', nomeVitima: 'Ana Costa', nomeAcusado: 'Desconhecido', situacaoAcusado: 'Foragido', estadoProcesso: 'Em Investigação', bensRecuperados: 'Nenhum' },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), dataOcorrencia: randomDate(oneYearAgo, now).toISOString(), periodo: 'Tarde', municipio: 'Matala', unidadeEsquadra: 'Comando Municipal', numeroProcesso: 'PC2024/002', familiaCriminal: 'Crimes Contra Pessoa', crime: 'Ofensa a Integridade Física', nomeVitima: 'Carlos Neves', nomeAcusado: 'Manuel Golias', situacaoAcusado: 'Detido', estadoProcesso: 'Remetido a Tribunal' },
     ],
     sinistralidade: [
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAcidente: 'Colisão', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Lubango', periodo: 'IIº', vitimaNome: 'Joana Miguel', vitimaEstado: 'Ligeiro' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAcidente: 'Atropelamento', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Matala', periodo: 'Iº', vitimaNome: 'Criança Desconhecida', vitimaEstado: 'Grave' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAcidente: 'Despiste', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Quilengues', periodo: 'Iº', vitimaNome: 'Condutor', vitimaEstado: 'Fatal' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAcidente: 'Capotamento', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Humpata', periodo: 'IIIº', vitimaNome: 'Manuel Vicente', vitimaEstado: 'Grave' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAcidente: 'Choque com obstáculo fixo', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Lubango', periodo: 'Iº', vitimaNome: 'Alberto João', vitimaEstado: 'Ligeiro' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAcidente: 'Colisão', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Caconda', periodo: 'IIº', vitimaNome: 'Família Silva', vitimaEstado: 'Ileso' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAcidente: 'Atropelamento', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Lubango', periodo: 'Iº', vitimaNome: 'Idoso (78 anos)', vitimaEstado: 'Fatal' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAcidente: 'Abalroamento', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Matala', periodo: 'IIIº', vitimaNome: 'Condutor de motociclo', vitimaEstado: 'Grave' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAcidente: 'Despiste', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Chibia', periodo: 'IIº', vitimaNome: 'Jonas K.', vitimaEstado: 'Ligeiro' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAcidente: 'Incêndio de veículo', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Lubango', periodo: 'Iº', vitimaNome: 'N/A', vitimaEstado: 'Ileso' },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), dataAcidente: randomDate(oneYearAgo, now).toISOString(), periodo: 'Manhã', municipio: 'Lubango', local: 'Estrada da Tundavala', tipoAcidente: 'Colisão entre veículos', causaPresumivel: 'Excesso de velocidade', numeroVeiculos: 2, numeroVitimas: 3, numeroMortos: 1, numeroFeridosGraves: 1, numeroFeridosLigeiros: 1 },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), dataAcidente: randomDate(oneYearAgo, now).toISOString(), periodo: 'Noite', municipio: 'Quilengues', local: 'EN-280', tipoAcidente: 'Despiste seguido de capotamento', causaPresumivel: 'Cansaço ou sonolência', numeroVeiculos: 1, numeroVitimas: 1, numeroMortos: 0, numeroFeridosGraves: 1, numeroFeridosLigeiros: 0 },
     ],
-    resultados: [
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Operações', tipoOperacao: 'Stop', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Lubango', resultadosObtidos: '2 viaturas apreendidas por falta de documentação.', objetivo: 'Fiscalização de trânsito' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Patrulhamentos', tipoPatrulhamento: 'Auto', areaPatrulhada: 'Bairro Comercial', ocorrenciasRegistadas: 'Nenhuma', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Lubango' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Detidos', detidoNome: 'José Firmino', motivoDetencao: 'Furto qualificado', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Matala' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Operações', tipoOperacao: 'Busca e Apreensão', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Caconda', resultadosObtidos: 'Apreensão de 50kg de cannabis.', objetivo: 'Combate ao narcotráfico' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Patrulhamentos', tipoPatrulhamento: 'Apeado', areaPatrulhada: 'Mercado Municipal', ocorrenciasRegistadas: 'Pequenos furtos dispersados', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Quilengues' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Detidos', detidoNome: 'António Miguel', motivoDetencao: 'Posse ilegal de arma', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Lubango' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Operações', tipoOperacao: 'Operação Bloco', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Lubango', resultadosObtidos: 'Verificação de 150 cidadãos, 5 detidos por imigração ilegal.', objetivo: 'Controlo de imigração' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Patrulhamentos', tipoPatrulhamento: 'Misto', areaPatrulhada: 'Zonas periféricas', ocorrenciasRegistadas: 'Identificação de suspeitos', data: randomDate(oneYearAgo, now).toISOString(), municipio: 'Matala' },
+    enfrentamento: [
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Operação', data: randomDate(oneYearAgo, now).toISOString(), unidadeResponsavel: 'Comando Municipal', municipio: 'Lubango', nomeOperacao: 'Operação Stop', objetivoOperacao: 'Fiscalização de trânsito', resultadosOperacao: '2 viaturas apreendidas' },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Patrulhamento', data: randomDate(oneYearAgo, now).toISOString(), unidadeResponsavel: '3ª Esquadra', municipio: 'Lubango', tipoPatrulhamento: 'Auto', areaPatrulhada: 'Bairro Comercial' },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Detenção', data: randomDate(oneYearAgo, now).toISOString(), unidadeResponsavel: 'Investigação Criminal', municipio: 'Matala', nomeDetido: 'José Firmino', idadeDetido: 28, motivoDetencao: 'Furto qualificado' },
     ],
     transportes: [
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Municípios', combustivel: 'Gasolina', quantidade: 5000, municipio: 'Lubango', quantidadeRecebida: 2000, existencia: 3000 },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Municípios', combustivel: 'Gasóleo', quantidade: 10000, municipio: 'Matala', quantidadeRecebida: 4000, existencia: 6000 },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Municípios', combustivel: 'Gasolina', quantidade: 3000, municipio: 'Caconda', quantidadeRecebida: 1500, existencia: 1500 },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Membros', nome: 'Agente Silva', patente: 'Agente de 1ª Classe', area: 'Logística' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Membros', nome: 'Sub-Inspector Costa', patente: 'Sub-Inspector', area: 'Operações' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Manutenções', viaturaMatricula: 'LD-01-02-AA', tipoManutencao: 'Preventiva', descManutencao: 'Troca de óleo e filtros', custoManutencao: 25000 },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Manutenções', viaturaMatricula: 'HL-25-18-BB', tipoManutencao: 'Corretiva', descManutencao: 'Reparação do sistema de travagem', custoManutencao: 80000 },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), categoria: 'Municípios', combustivel: 'Gasóleo', quantidade: 8000, municipio: 'Quilengues', quantidadeRecebida: 3000, existencia: 5000 },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Abastecimento', data: randomDate(oneYearAgo, now).toISOString(), viaturaMatricula: 'LD-01-02-AA', combustivel: 'Gasolina', quantidadeLitros: 50, bombaCombustivel: 'Pumangol' },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Manutenção', data: randomDate(oneYearAgo, now).toISOString(), viaturaMatricula: 'HL-25-18-BB', tipoManutencao: 'Corretiva', descricaoServico: 'Reparação do sistema de travagem', custoManutencao: 80000 },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Movimento de Pessoal', data: randomDate(oneYearAgo, now).toISOString(), nipEfetivo: '112233', nomeEfetivo: 'Ana Paula dos Santos', tipoMovimento: 'Transferência', origem: '1ª Esquadra', destino: 'Comando Municipal de Matala' },
     ],
-    logistica: [
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Armamento', nip: '132257', nomeCompleto: 'Nilton Edgar Lamúrias Gourgel', patente: 'Inspector-Chefe', orgaoUnidade: 'Departamento de Telec. Tec. de Informação', numFicha: '1', funcao: 'Chefe de Secção', localIngresso: 'ENPOP - Luanda', dataAbertura: '2023-08-18', dataIncorporacao: '2017-07-17' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Vestuario', numRegisto: '1', efectivoId: '132257', tipoFardamento: 'Farda de Saída', tamanhoBone: '24', tamanhoBoina: '24', calcadoNum: '43', camisaNum: '42', calcaNum: '42', casacoNum: '50', atendente: 'Martinho Luter', dataEntrega: '2023-10-27' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Armamento', nip: '112233', nomeCompleto: 'Ana Paula dos Santos', patente: 'Agente de 1ª Classe', orgaoUnidade: '1ª Esquadra', numFicha: '2', funcao: 'Agente de Patrulha', localIngresso: 'CFP - Huíla', dataAbertura: '2020-01-15', dataIncorporacao: '2020-01-01' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Vestuario', numRegisto: '2', efectivoId: '112233', tipoFardamento: 'Farda de Trabalho', calcadoNum: '38', camisaNum: '38', calcaNum: '40', atendente: 'Martinho Luter', dataEntrega: '2022-05-20' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Armamento', nip: '445566', nomeCompleto: 'Carlos Alberto Gomes', patente: 'Sub-Inspector', orgaoUnidade: 'Comando Municipal de Matala', numFicha: '3', funcao: 'Chefe de Posto', localIngresso: 'ENPOP - Luanda', dataAbertura: '2015-03-10', dataIncorporacao: '2015-02-20' },
-        { id: generateId(), createdAt: new Date().toISOString(), categoriaLogistica: 'Vestuario', numRegisto: '3', efectivoId: '445566', tipoFardamento: 'Botas', calcadoNum: '42', atendente: 'Sargento Pinto', dataEntrega: '2023-01-15' },
+    // LOGÍSTICA FOI DIVIDIDA EM DUAS "TABELAS"
+    efetivo: [
+        { id: generateId(), createdAt: new Date().toISOString(), nip: '132257', nomeCompleto: 'Nilton Edgar Lamúrias Gourgel', patente: 'Inspector-Chefe', orgaoUnidade: 'Departamento de Telec. Tec. de Informação', funcao: 'Chefe de Departamento', dataNascimento: '1990-05-20', genero: 'Masculino', contacto: '923000000', estado: 'Ativo' },
+        { id: generateId(), createdAt: new Date().toISOString(), nip: '112233', nomeCompleto: 'Ana Paula dos Santos', patente: 'Agente de 1ª Classe', orgaoUnidade: '1ª Esquadra', funcao: 'Agente de Patrulha', dataNascimento: '1995-10-15', genero: 'Feminino', contacto: '912000000', estado: 'Ativo' },
+    ],
+    material: [
+        { id: generateId(), createdAt: new Date().toISOString(), tipoMaterial: 'Armamento', descricaoItem: 'Pistola Glock G19', quantidade: 1, estado: 'Bom', nipEfetivoResponsavel: '132257' },
+        { id: generateId(), createdAt: new Date().toISOString(), tipoMaterial: 'Fardamento', descricaoItem: 'Farda de Trabalho (Calça e Camisa)', quantidade: 2, estado: 'Bom', nipEfetivoResponsavel: '112233' },
+        { id: generateId(), createdAt: new Date().toISOString(), tipoMaterial: 'Comunicações', descricaoItem: 'Rádio HT Baofeng', quantidade: 1, estado: 'Razoável', nipEfetivoResponsavel: '112233', observacoes: 'Bateria com pouca autonomia' },
     ],
     autosExpediente: [
-        { 
-            id: generateId(), 
-            createdAt: randomDate(oneYearAgo, now).toISOString(), 
-            tipoAuto: 'Auto de Queixa',
-            numeroAuto: 'AQ2023/001', dataAuto: randomDate(oneYearAgo, now).toISOString().split('T')[0], horaAuto: '14:30', servicoDe: 'Atendimento a vítima', nomeFuncionario: 'Agente Dias', postoPatente: 'Agente de 1ª Classe', esquadra: '1ª Esquadra',
-            noticianteNomeCompleto: 'Maria da Conceição', noticianteIdade: '34', queixadoNomeCompleto: 'Indivíduo Desconhecido', descricaoFactos: 'A noticiante reportou o furto da sua carteira na via pública.',
-        },
-        {
-            id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAuto: 'Auto de Apreensão', numeroAuto: 'AA2023/001', dataAuto: randomDate(oneYearAgo, now).toISOString().split('T')[0],
-            autuadoNomeCompleto: 'Carlos Alberto', descricaoOcorrenciaMeioApreendido: 'Apreensão de material furtado (um telemóvel e um computador portátil).', esquadra: '2ª Esquadra',
-        },
-        {
-            id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAuto: 'Auto de Notícia', numeroAuto: 'AN2023/001', dataAuto: randomDate(oneYearAgo, now).toISOString().split('T')[0],
-            autuadoNomeCompleto: 'Juliana Paes', acusadoNomeCompleto: 'Roberto Silva', descricaoFactos: 'Conflito na via pública resultante de um acidente de viação menor.', esquadra: '3ª Esquadra',
-        },
-        {
-            id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAuto: 'Aviso de Notificação', numeroAuto: 'AV2023/001',
-            avisoNotificanteNome: 'Manuel Vicente', avisoData: '2023-11-05', esquadra: 'Comando Municipal',
-        },
-        { 
-            id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAuto: 'Auto de Queixa', numeroAuto: 'AQ2023/002', dataAuto: randomDate(oneYearAgo, now).toISOString().split('T')[0], horaAuto: '10:00', servicoDe: 'Piquete', nomeFuncionario: 'Agente Bastos', postoPatente: 'Agente', esquadra: '5ª Esquadra',
-            noticianteNomeCompleto: 'Alberto Miguel', noticianteIdade: '45', queixadoNomeCompleto: 'Vizinho (não identificado)', descricaoFactos: 'Queixa de barulho excessivo e ameaças verbais.',
-        },
-        {
-            id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAuto: 'Participação', numeroAuto: 'P2023/001', dataAuto: randomDate(oneYearAgo, now).toISOString().split('T')[0],
-            descricaoFactos: 'Participação de objecto encontrado na via pública (BI).', esquadra: '6ª Esquadra',
-        },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAuto: 'Auto de Queixa', numeroAuto: 'AQ2024/001', dataAuto: randomDate(oneYearAgo, now).toISOString().split('T')[0], esquadra: '1ª Esquadra', agenteResponsavel: 'Agente Dias', noticianteNome: 'Maria da Conceição', queixadoNome: 'Indivíduo Desconhecido', descricaoFactos: 'Reportou o furto da sua carteira na via pública.' },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoAuto: 'Auto de Apreensão', numeroAuto: 'AA2024/001', dataAuto: randomDate(oneYearAgo, now).toISOString().split('T')[0], esquadra: '2ª Esquadra', agenteResponsavel: 'Agente Bastos', noticianteNome: 'Carlos Alberto', descricaoFactos: 'Apreensão de material furtado (um telemóvel).' },
     ],
-    processos: [
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), numeroProcesso: 'PC2023/105', dataAbertura: randomDate(oneYearAgo, now).toISOString(), tipoProcesso: 'Processo-crime', arguido: 'João da Silva', vitima: 'Maria Santos', estado: 'Em instrução' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), numeroProcesso: 'PC2023/106', dataAbertura: randomDate(oneYearAgo, now).toISOString(), tipoProcesso: 'Processo de Querela', arguido: 'António Costa', vitima: 'Luísa Mendes', estado: 'Arquivado' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), numeroProcesso: 'PC2023/107', dataAbertura: randomDate(oneYearAgo, now).toISOString(), tipoProcesso: 'Processo-crime', arguido: 'José Firmino', vitima: 'Estabelecimento XYZ', estado: 'Julgado' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), numeroProcesso: 'PC2023/108', dataAbertura: randomDate(oneYearAgo, now).toISOString(), tipoProcesso: 'Processo Sumário', arguido: 'Carla Rocha', vitima: 'N/A', estado: 'Em instrução' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), numeroProcesso: 'PC2023/109', dataAbertura: randomDate(oneYearAgo, now).toISOString(), tipoProcesso: 'Processo-crime', arguido: 'Desconhecido', vitima: 'Ana Costa', estado: 'Em instrução' },
-    ],
+    // FIX: Added 'processos' table to the database for the new form.
+    processos: [],
 };
 
 // Function to load the database from localStorage

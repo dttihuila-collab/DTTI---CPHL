@@ -1,46 +1,40 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { DashboardCategory, ApiKey, Subsystem } from '../types';
-import { CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, ChevronDownIcon, DocumentIcon, FolderIcon } from '../components/icons/Icon';
+import { CrimeIcon, SinistralidadeIcon, PoliceIcon, TransportIcon, LogisticsIcon, ChevronDownIcon, DocumentIcon, FolderIcon } from '../components/icons/Icon';
 import { api } from '../services/api';
 import { useDataRefresh } from '../contexts/DataRefreshContext';
 import CriminalidadeDetailsView from './dashboard/CriminalidadeDetailsView';
 import SinistralidadeDetailsView from './dashboard/SinistralidadeDetailsView';
-import ResultadosDetailsView from './dashboard/ResultadosDetailsView';
+import EnfrentamentoDetailsView from './dashboard/ResultadosDetailsView';
 import TransportesDetailsView from './dashboard/TransportesDetailsView';
 import LogisticaDetailsView from './dashboard/LogisticaDetailsView';
 import GenericDetailsTable from './dashboard/GenericDetailsTable';
 
 const allCategories = [
     { name: 'Criminalidade', icon: <CrimeIcon /> },
-    { name: 'Sinistralidade Rodoviária', icon: <RoadIcon /> },
-    { name: 'Resultados Operacionais', icon: <PoliceIcon /> },
+    { name: 'Sinistralidade Rodoviária', icon: <SinistralidadeIcon /> },
+    { name: 'Enfrentamento Policial', icon: <PoliceIcon /> },
     { name: 'Transportes', icon: <TransportIcon /> },
     { name: 'Logística', icon: <LogisticsIcon /> },
     { name: 'Autos de Expediente', icon: <DocumentIcon /> },
-    { name: 'Processos', icon: <FolderIcon /> },
 ] as const;
 
 const subsystemCategories: Record<Subsystem, DashboardCategory[]> = {
-    'Ocorrências Policiais': ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais'],
+    'Ocorrências Policiais': ['Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial'],
     'Transportes': ['Transportes'],
     'Logística': ['Logística'],
-    'Autos de Expedientes': ['Autos de Expediente', 'Processos'],
+    'Autos de Expedientes': ['Autos de Expediente'],
     'Administração do Sistema': [],
 };
-
-
-type TimeFilter = 'Dia' | 'Semana' | 'Mês' | 'Ano';
-const timeFilters: TimeFilter[] = ['Dia', 'Semana', 'Mês', 'Ano'];
 
 const categoryToApiKey = (category: DashboardCategory): ApiKey => {
     switch (category) {
         case 'Criminalidade': return 'criminalidade';
         case 'Sinistralidade Rodoviária': return 'sinistralidade';
-        case 'Resultados Operacionais': return 'resultados';
+        case 'Enfrentamento Policial': return 'enfrentamento';
         case 'Transportes': return 'transportes';
         case 'Logística': return 'logistica';
         case 'Autos de Expediente': return 'autosExpediente';
-        case 'Processos': return 'processos';
         default: return 'criminalidade';
     }
 }
@@ -93,8 +87,8 @@ const DashboardDetails: React.FC<{ category: DashboardCategory }> = React.memo((
             return <CriminalidadeDetailsView records={records} />;
         case 'Sinistralidade Rodoviária':
             return <SinistralidadeDetailsView records={records} />;
-        case 'Resultados Operacionais':
-            return <ResultadosDetailsView records={records} />;
+        case 'Enfrentamento Policial':
+            return <EnfrentamentoDetailsView records={records} />;
         case 'Transportes':
             return <TransportesDetailsView records={records} />;
         case 'Logística':
@@ -110,42 +104,24 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ subsystem }) => {
-    const [activeFilter, setActiveFilter] = useState<TimeFilter>('Mês');
     const [expandedCategory, setExpandedCategory] = useState<DashboardCategory | null>(null);
     const [totals, setTotals] = useState<{[key in DashboardCategory]?: number}>({});
     const { refreshKey } = useDataRefresh();
 
     const categories = useMemo(() => {
         const relevantCategoryNames = subsystemCategories[subsystem];
-        return allCategories.filter(cat => relevantCategoryNames.includes(cat.name));
+        return allCategories.filter(cat => relevantCategoryNames.includes(cat.name as DashboardCategory));
     }, [subsystem]);
     
     useEffect(() => {
         const fetchTotals = async () => {
-            const now = new Date();
-            let startDate = new Date();
-
-            switch(activeFilter) {
-                case 'Dia': startDate.setHours(0, 0, 0, 0); break;
-                case 'Semana': startDate.setDate(now.getDate() - 7); break;
-                case 'Mês': startDate.setMonth(now.getMonth() - 1); break;
-                case 'Ano': startDate.setFullYear(now.getFullYear() - 1); break;
-            }
-
-            const filterRecordsByDate = (records: any[]) => {
-                return records.filter(r => {
-                    const recordDate = new Date(r.createdAt || r.data);
-                    return recordDate >= startDate && recordDate <= now;
-                });
-            };
-
             const relevantCategoryNames = subsystemCategories[subsystem];
             const promises = relevantCategoryNames.map(catName => api.getRecords(categoryToApiKey(catName)));
             const results = await Promise.all(promises);
 
             const newTotals: {[key in DashboardCategory]?: number} = {};
             relevantCategoryNames.forEach((catName, index) => {
-                newTotals[catName] = filterRecordsByDate(results[index]).length;
+                newTotals[catName] = results[index].length;
             });
             
             setTotals(newTotals);
@@ -154,7 +130,7 @@ const Dashboard: React.FC<DashboardProps> = ({ subsystem }) => {
         if (subsystem !== 'Administração do Sistema') {
             fetchTotals();
         }
-    }, [refreshKey, activeFilter, subsystem]);
+    }, [refreshKey, subsystem]);
 
     const handleCardClick = (category: DashboardCategory) => {
         setExpandedCategory(prev => prev === category ? null : category);
@@ -174,30 +150,20 @@ const Dashboard: React.FC<DashboardProps> = ({ subsystem }) => {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div>
                 <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Dashboard do Subsistema</h2>
-                <div className="flex items-center space-x-2 bg-white dark:bg-gray-800 p-1 rounded-lg shadow-sm">
-                    {timeFilters.map(filter => (
-                        <button
-                            key={filter}
-                            onClick={() => setActiveFilter(filter)}
-                            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeFilter === filter ? 'bg-custom-blue-600 text-white shadow' : 'text-gray-600 hover:bg-custom-blue-50 dark:text-gray-300 dark:hover:bg-gray-700'}`}
-                        >
-                            {filter}
-                        </button>
-                    ))}
-                </div>
             </div>
 
             <div className={`grid gap-6 ${isAnyCategoryExpanded && categories.length > 1 ? `grid-cols-${categories.length}` : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3'}`}>
                 {categories.map(({ name, icon }) => {
-                    const isSelected = expandedCategory === name;
+                    const categoryName = name as DashboardCategory;
+                    const isSelected = expandedCategory === categoryName;
                     
                     if (isAnyCategoryExpanded) {
                         return (
                             <div
                                 key={name}
-                                onClick={() => handleCardClick(name)}
+                                onClick={() => handleCardClick(categoryName)}
                                 className={`p-3 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-all duration-300 border-2 ${
                                     isSelected 
                                     ? 'border-custom-blue-500 bg-custom-blue-100 dark:bg-custom-blue-900/50' 
@@ -222,7 +188,7 @@ const Dashboard: React.FC<DashboardProps> = ({ subsystem }) => {
                                         ? 'text-custom-blue-900 dark:text-white'
                                         : 'text-gray-800 dark:text-gray-200'
                                     }`}>
-                                        {(totals[name] ?? 0).toLocaleString()}
+                                        {(totals[categoryName] ?? 0).toLocaleString()}
                                     </p>
                                 </div>
                             </div>
@@ -232,7 +198,7 @@ const Dashboard: React.FC<DashboardProps> = ({ subsystem }) => {
                     return (
                         <div
                             key={name}
-                            onClick={() => handleCardClick(name)}
+                            onClick={() => handleCardClick(categoryName)}
                             className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow border-2 border-transparent flex flex-col justify-between h-full"
                         >
                            <div className="flex items-start justify-between">
@@ -247,8 +213,8 @@ const Dashboard: React.FC<DashboardProps> = ({ subsystem }) => {
                                 </div>
                             </div>
                              <div className="mt-4">
-                                <p className="text-4xl font-bold text-gray-800 dark:text-gray-100">{(totals[name] ?? 0).toLocaleString()}</p>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">Total no período</p>
+                                <p className="text-4xl font-bold text-gray-800 dark:text-gray-100">{(totals[categoryName] ?? 0).toLocaleString()}</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Total de registos</p>
                              </div>
                         </div>
                     );

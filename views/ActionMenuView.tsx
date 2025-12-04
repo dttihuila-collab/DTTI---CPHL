@@ -7,7 +7,6 @@ interface ActionMenuViewProps {
   category: DashboardCategory;
   onNavigateToForm: (view: View) => void;
   onNavigateToConsulta: (category: DashboardCategory) => void;
-  onNavigateToFormTab: (view: View, tab: string) => void;
   onNavigateToFormWithData: (view: View, data: any) => void;
 }
 
@@ -59,91 +58,16 @@ const ActionCard: React.FC<ActionCardProps> = ({ title, subtitle, icon, onClick,
 };
 
 
-const ActionMenuView: React.FC<ActionMenuViewProps> = ({ category, onNavigateToForm, onNavigateToConsulta, onNavigateToFormTab, onNavigateToFormWithData }) => {
-    
-    const renderTransportesMenu = () => (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <ActionCard
-                title="Cadastrar Meio"
-                icon={<MembersIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
-                onClick={() => onNavigateToFormTab('Transportes', 'Membros')}
-            />
-            <ActionCard
-                title="Plano de Distribuição"
-                icon={<MunicipalityIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
-                onClick={() => onNavigateToFormTab('Transportes', 'Municípios')}
-            />
-            <ActionCard
-                title="Manutenções"
-                icon={<MaintenanceIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
-                onClick={() => onNavigateToFormTab('Transportes', 'Manutenções')}
-            />
-            <ActionCard
-                title="Consultas"
-                icon={<ReportsIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
-                onClick={() => onNavigateToConsulta(category)}
-                variant="primary"
-            />
-        </div>
-    );
-
-    const renderAutosExpedienteMenu = () => (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {TIPOS_AUTO_EXPEDIENTE.map(tipo => (
-                 <ActionCard
-                    key={tipo}
-                    title={tipo}
-                    icon={<DocumentIcon className="w-10 h-10 text-custom-blue-600 dark:text-custom-blue-400"/>}
-                    onClick={() => onNavigateToFormWithData('Autos de Expediente', { tipoAuto: tipo })}
-                    small
-                />
-            ))}
-             <ActionCard
-                title="Consultas"
-                icon={<ReportsIcon className="w-10 h-10 text-custom-blue-600 dark:text-custom-blue-400"/>}
-                onClick={() => onNavigateToConsulta(category)}
-                small
-                variant="primary"
-            />
-        </div>
-    );
-
-    const renderLogisticaMenu = () => (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <ActionCard
-                title="Armamento"
-                icon={<ArmamentIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
-                onClick={() => onNavigateToFormTab('Logística', 'Armamento')}
-            />
-            <ActionCard
-                title="Vestuário"
-                icon={<ClothingIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
-                onClick={() => onNavigateToFormTab('Logística', 'Vestuário')}
-            />
-            <ActionCard
-                title="Consultas"
-                icon={<ReportsIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
-                onClick={() => onNavigateToConsulta(category)}
-                variant="primary"
-            />
-        </div>
-    );
+const ActionMenuView: React.FC<ActionMenuViewProps> = ({ category, onNavigateToForm, onNavigateToConsulta, onNavigateToFormWithData }) => {
     
     const renderDefaultMenu = () => {
         let registerTitle = "Registar Novo";
-        let registerSubtitle: string | undefined = undefined;
         let consultTitle = "Consultas";
-        
-        if (category === 'Criminalidade') {
-            registerTitle = "Nova Ocorrência";
-            consultTitle = "Consultas";
-        }
 
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <ActionCard
                     title={registerTitle}
-                    subtitle={registerSubtitle}
                     icon={<AddIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
                     onClick={() => onNavigateToForm(category as View)}
                 />
@@ -159,12 +83,6 @@ const ActionMenuView: React.FC<ActionMenuViewProps> = ({ category, onNavigateToF
     
     const renderMenu = () => {
         switch(category) {
-            case 'Transportes':
-                return renderTransportesMenu();
-            case 'Autos de Expediente':
-                return renderAutosExpedienteMenu();
-            case 'Logística':
-                return renderLogisticaMenu();
             default:
                 return renderDefaultMenu();
         }

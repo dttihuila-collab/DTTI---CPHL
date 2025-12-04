@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { Role, View, User, DashboardCategory, Subsystem } from '../types';
 import { SUBSYSTEMS, ALL_VIEWS } from '../constants';
-import { DashboardIcon, CrimeIcon, RoadIcon, PoliceIcon, TransportIcon, LogisticsIcon, UsersIcon, ReportsIcon, LogoutIcon, ChevronLeftIcon, ChevronRightIcon, DatabaseIcon, DocumentIcon, FolderIcon } from './icons/Icon';
+import { DashboardIcon, CrimeIcon, SinistralidadeIcon, PoliceIcon, TransportIcon, LogisticsIcon, UsersIcon, ReportsIcon, LogoutIcon, ChevronLeftIcon, ChevronRightIcon, DatabaseIcon, DocumentIcon, FolderIcon, AddIcon } from './icons/Icon';
 
 interface SidebarProps {
   user: User;
@@ -16,19 +16,27 @@ interface SidebarProps {
 
 const iconMap: { [key in View]?: React.ReactElement } = {
     'Dashboard': <DashboardIcon />,
+    'Registar Ocorrência': <AddIcon />,
+    'Consultar Ocorrências': <ReportsIcon />,
     'Criminalidade': <CrimeIcon />,
-    'Sinistralidade Rodoviária': <RoadIcon />,
-    'Resultados Operacionais': <PoliceIcon />,
+    'Sinistralidade Rodoviária': <SinistralidadeIcon />,
+    'Enfrentamento Policial': <PoliceIcon />,
     'Transportes': <TransportIcon />,
     'Logística': <LogisticsIcon />,
-    'Autos de Expediente': <DocumentIcon />,
-    'Processos': <FolderIcon />,
     'Gerir Usuários': <UsersIcon />,
     'Relatórios': <ReportsIcon />,
     'Database Setup': <DatabaseIcon />,
+    // Icons for Autos
+    'Auto de Queixa': <DocumentIcon />,
+    'Auto de Apreensão': <DocumentIcon />,
+    'Auto de Notícia': <DocumentIcon />,
+    'Aviso de Notificação': <DocumentIcon />,
+    'Informação': <DocumentIcon />,
+    'Participação': <DocumentIcon />,
+    'Apresentação': <DocumentIcon />,
 };
 
-const formViews: View[] = ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Transportes', 'Logística', 'Autos de Expediente', 'Processos'];
+const formViews: View[] = ['Transportes', 'Logística'];
 
 
 const Sidebar: React.FC<SidebarProps> = React.memo(({ user, subsystem, isCollapsed, setCurrentView, openActionMenu, currentView, onToggleSidebar }) => {

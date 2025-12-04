@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import FormWrapper from './FormWrapper';
 import { Label, Input, Select, Textarea } from '../../components/common/FormElements';
-import { MUNICIPIOS_HUILA, UNIDADES_ESQUADRAS, PERIODOS, TIPOS_ACIDENTE } from '../../constants';
+import { MUNICIPIOS_HUILA, PERIODOS, TIPOS_ACIDENTE, CAUSAS_ACIDENTE } from '../../constants';
 import { api } from '../../services/api';
 import { useToast } from '../../contexts/ToastContext';
 import { useDataRefresh } from '../../contexts/DataRefreshContext';
 import { SinistralidadeRecord } from '../../types';
 import CollapsibleSection from '../../components/common/CollapsibleSection';
+import EditableSelect from '../../components/common/EditableSelect';
 
 const initialFormData: Partial<SinistralidadeRecord> = {
-    data: '',
+    dataAcidente: '',
     periodo: '',
     municipio: '',
-    unidadeEsquadra: '',
     tipoAcidente: '',
+    causaPresumivel: '',
+    numeroVeiculos: 1,
+    numeroVitimas: 0,
+    numeroMortos: 0,
+    numeroFeridosGraves: 0,
+    numeroFeridosLigeiros: 0,
 };
 
 interface SinistralidadeFormProps {
@@ -37,8 +43,9 @@ const SinistralidadeForm: React.FC<SinistralidadeFormProps> = React.memo(({ edit
     }, [editingRecord]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const { name, value, type } = e.target;
+        const finalValue = type === 'number' ? parseInt(value, 10) || 0 : value;
+        setFormData(prev => ({ ...prev, [name]: finalValue }));
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -64,52 +71,40 @@ const SinistralidadeForm: React.FC<SinistralidadeFormProps> = React.memo(({ edit
     return (
         <FormWrapper
             title={editingRecord ? "Editar Registo de Sinistralidade" : "Registo de Sinistralidade Rodoviária"}
-            description="Preencha os detalhes abaixo para registar uma nova ocorrência de sinistralidade."
+            description="Preencha os detalhes do acidente de viação."
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
             onCancel={onCancel}
             submitButtonText={editingRecord ? "Guardar Alterações" : "Inserir"}
         >
             <div className="space-y-6">
-                <CollapsibleSection title="Localização e Tempo" defaultOpen>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-                        <div><Label htmlFor="data">Data</Label><Input id="data" name="data" type="datetime-local" value={formData.data || ''} onChange={handleChange} required /></div>
-                        <div><Label htmlFor="periodo">Período</Label><Select id="periodo" name="periodo" value={formData.periodo || ''} onChange={handleChange} required><option value="">Selecione o Período</option>{PERIODOS.map(p => <option key={p} value={p}>{p}</option>)}</Select></div>
-                        <div><Label htmlFor="municipio">Município</Label><Select id="municipio" name="municipio" value={formData.municipio || ''} onChange={handleChange} required><option value="">Selecione o Município</option>{MUNICIPIOS_HUILA.map(m => <option key={m} value={m}>{m}</option>)}</Select></div>
-                        <div><Label htmlFor="unidadeEsquadra">Unidade/Esquadra</Label><Select id="unidadeEsquadra" name="unidadeEsquadra" value={formData.unidadeEsquadra || ''} onChange={handleChange} required><option value="">Selecione a Unidade</option>{UNIDADES_ESQUADRAS.map(u => <option key={u} value={u}>{u}</option>)}</Select></div>
-                        <div><Label htmlFor="comuna">Comuna</Label><Input id="comuna" name="comuna" type="text" value={formData.comuna || ''} onChange={handleChange}/></div>
-                        <div><Label htmlFor="bairro">Bairro</Label><Input id="bairro" name="bairro" type="text" value={formData.bairro || ''} onChange={handleChange}/></div>
-                        <div><Label htmlFor="rua">Rua</Label><Input id="rua" name="rua" type="text" value={formData.rua || ''} onChange={handleChange}/></div>
+                <CollapsibleSection title="Dados Gerais do Acidente" defaultOpen>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+                        <div><Label htmlFor="dataAcidente">Data e Hora</Label><Input id="dataAcidente" name="dataAcidente" type="datetime-local" value={formData.dataAcidente || ''} onChange={handleChange} required /></div>
+                        <div><Label htmlFor="periodo">Período</Label><Select id="periodo" name="periodo" value={formData.periodo || ''} onChange={handleChange}><option value="">Selecione</option>{PERIODOS.map(p => <option key={p} value={p}>{p}</option>)}</Select></div>
+                        <EditableSelect label="Município" id="municipio" name="municipio" value={formData.municipio || ''} onChange={handleChange} options={MUNICIPIOS_HUILA} storageKey="sccphl_custom_municipios" required />
                         <div><Label htmlFor="local">Local</Label><Input id="local" name="local" type="text" value={formData.local || ''} onChange={handleChange}/></div>
-                        <div><Label htmlFor="pontoReferencia">Ponto de Referência</Label><Input id="pontoReferencia" name="pontoReferencia" type="text" value={formData.pontoReferencia || ''} onChange={handleChange}/></div>
                     </div>
                 </CollapsibleSection>
-                <CollapsibleSection title="Detalhes do Acidente">
-                    <div className="grid grid-cols-1 gap-6 mt-4">
-                        <div><Label htmlFor="tipoAcidente">Tipo de Acidente</Label><Select id="tipoAcidente" name="tipoAcidente" value={formData.tipoAcidente || ''} onChange={handleChange} required><option value="">Selecione o tipo de acidente</option>{TIPOS_ACIDENTE.map(a => <option key={a} value={a}>{a}</option>)}</Select></div>
+                <CollapsibleSection title="Tipologia e Causas" defaultOpen>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                         <EditableSelect label="Tipo de Acidente" id="tipoAcidente" name="tipoAcidente" value={formData.tipoAcidente || ''} onChange={handleChange} options={TIPOS_ACIDENTE} storageKey="sccphl_custom_tipos_acidente" required />
+                         <EditableSelect label="Causa Presumível" id="causaPresumivel" name="causaPresumivel" value={formData.causaPresumivel || ''} onChange={handleChange} options={CAUSAS_ACIDENTE} storageKey="sccphl_custom_causas_acidente" required />
                     </div>
                 </CollapsibleSection>
-                <CollapsibleSection title="Dados das Vítimas">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-4">
-                        <div><Label htmlFor="vitimaNome">Nome</Label><Input id="vitimaNome" name="vitimaNome" type="text" value={formData.vitimaNome || ''} onChange={handleChange}/></div>
-                        <div><Label htmlFor="vitimaIdade">Idade</Label><Input id="vitimaIdade" name="vitimaIdade" type="number" value={formData.vitimaIdade || ''} onChange={handleChange}/></div>
-                         <div>
-                            <Label htmlFor="vitimaEstado">Estado</Label>
-                            <Select id="vitimaEstado" name="vitimaEstado" value={formData.vitimaEstado || ''} onChange={handleChange}>
-                                <option value="">Selecione o estado</option>
-                                <option value="Fatal">Fatal</option>
-                                <option value="Grave">Grave</option>
-                                <option value="Ligeiro">Ligeiro</option>
-                                <option value="Ileso">Ileso</option>
-                            </Select>
-                        </div>
-                        <div><Label htmlFor="vitimaVeiculo">Veículo</Label><Input id="vitimaVeiculo" name="vitimaVeiculo" type="text" value={formData.vitimaVeiculo || ''} onChange={handleChange}/></div>
+                <CollapsibleSection title="Balanço de Vítimas e Veículos" defaultOpen>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-4">
+                        <div><Label htmlFor="numeroVeiculos">Veículos</Label><Input id="numeroVeiculos" name="numeroVeiculos" type="number" value={formData.numeroVeiculos || ''} onChange={handleChange}/></div>
+                        <div><Label htmlFor="numeroVitimas">Total Vítimas</Label><Input id="numeroVitimas" name="numeroVitimas" type="number" value={formData.numeroVitimas || ''} onChange={handleChange}/></div>
+                        <div><Label htmlFor="numeroMortos">Mortos</Label><Input id="numeroMortos" name="numeroMortos" type="number" value={formData.numeroMortos || ''} onChange={handleChange} className="border-red-500" /></div>
+                        <div><Label htmlFor="numeroFeridosGraves">Feridos Graves</Label><Input id="numeroFeridosGraves" name="numeroFeridosGraves" type="number" value={formData.numeroFeridosGraves || ''} onChange={handleChange} className="border-orange-500"/></div>
+                        <div><Label htmlFor="numeroFeridosLigeiros">Feridos Ligeiros</Label><Input id="numeroFeridosLigeiros" name="numeroFeridosLigeiros" type="number" value={formData.numeroFeridosLigeiros || ''} onChange={handleChange} className="border-yellow-500"/></div>
                     </div>
                 </CollapsibleSection>
-                <CollapsibleSection title="Observações">
-                   <div className="mt-4">
-                       <Label htmlFor="observacoes" className="sr-only">Observações</Label>
-                       <Textarea id="observacoes" name="observacoes" value={formData.observacoes || ''} onChange={handleChange} placeholder="Adicione quaisquer observações ou detalhes adicionais..." />
+                <CollapsibleSection title="Danos e Observações">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                       <div className="md:col-span-1"><Label htmlFor="danosMateriais">Danos Materiais</Label><Textarea id="danosMateriais" name="danosMateriais" value={formData.danosMateriais || ''} onChange={handleChange} placeholder="Descreva os danos materiais..." /></div>
+                       <div className="md:col-span-1"><Label htmlFor="descricao">Descrição Adicional</Label><Textarea id="descricao" name="descricao" value={formData.descricao || ''} onChange={handleChange} placeholder="Adicione quaisquer observações ou detalhes adicionais..." /></div>
                    </div>
                </CollapsibleSection>
             </div>

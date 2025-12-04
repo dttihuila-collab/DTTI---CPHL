@@ -8,6 +8,7 @@ import { AddIcon, EditIcon, DeleteIcon } from '../components/icons/Icon';
 import { useToast } from '../contexts/ToastContext';
 import { DataTable, ColumnDef } from '../components/common/DataTable';
 import { AuthContext } from '../contexts/AuthContext';
+import EditableSelect from '../components/common/EditableSelect';
 
 const GerirUsuarios: React.FC = React.memo(() => {
     const { user } = useContext(AuthContext);
@@ -188,24 +189,14 @@ const GerirUsuarios: React.FC = React.memo(() => {
                         <FormError message={formErrors.name} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                           <Label htmlFor="patente">Patente</Label>
-                           <Select id="patente" name="patente" value={currentUser?.patente || ''} onChange={handleFormChange}>
-                                <option value="">Selecione a Patente</option>
-                                {PATENTES.map(p => <option key={p} value={p}>{p}</option>)}
-                           </Select>
-                        </div>
+                        <EditableSelect label="Patente" id="patente" name="patente" value={currentUser?.patente || ''} onChange={handleFormChange} options={PATENTES} storageKey="sccphl_custom_patentes" />
                         <div>
                             <Label htmlFor="funcao">Função</Label>
                             <Input id="funcao" name="funcao" type="text" value={currentUser?.funcao || ''} onChange={handleFormChange} />
                         </div>
                     </div>
                     <div>
-                        <Label htmlFor="orgaoUnidade">Orgão/Unidade</Label>
-                        <Select id="orgaoUnidade" name="orgaoUnidade" value={currentUser?.orgaoUnidade || ''} onChange={handleFormChange}>
-                            <option value="">Selecione o Orgão/Unidade</option>
-                            {ORGAOS_UNIDADES.map(o => <option key={o} value={o}>{o}</option>)}
-                        </Select>
+                        <EditableSelect label="Orgão/Unidade" id="orgaoUnidade" name="orgaoUnidade" value={currentUser?.orgaoUnidade || ''} onChange={handleFormChange} options={ORGAOS_UNIDADES} storageKey="sccphl_custom_orgaos_unidades" />
                     </div>
                     <div>
                         <Label htmlFor="password">Palavra-passe</Label>

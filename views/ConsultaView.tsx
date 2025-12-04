@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { DashboardCategory, DataRecord, ApiKey, CriminalidadeRecord, FamíliaCriminal, LogisticaRecord } from '../types';
 import { api } from '../services/api';
@@ -19,11 +20,11 @@ const categoryToApiKey = (category: DashboardCategory): ApiKey => {
     switch (category) {
         case 'Criminalidade': return 'criminalidade';
         case 'Sinistralidade Rodoviária': return 'sinistralidade';
-        case 'Resultados Operacionais': return 'resultados';
+        // FIX: Replaced 'Resultados Operacionais' with 'Enfrentamento Policial' and 'resultados' with 'enfrentamento' to match type definitions.
+        case 'Enfrentamento Policial': return 'enfrentamento';
         case 'Transportes': return 'transportes';
         case 'Logística': return 'logistica';
         case 'Autos de Expediente': return 'autosExpediente';
-        case 'Processos': return 'processos';
         default: return 'criminalidade';
     }
 }
@@ -147,15 +148,14 @@ const ConsultaView: React.FC<ConsultaViewProps> = ({ category, onBack, onRegiste
                 };
                 switch (category) {
                     case 'Criminalidade': return checkMatch(['municipio', 'crime', 'vitimaNome', 'acusadoNome', 'familiaCriminal']);
-                    case 'Sinistralidade Rodoviária': return checkMatch(['municipio', 'tipoAcidente', 'vitimaNome', 'vitimaEstado']);
-                    case 'Resultados Operacionais': return checkMatch(['tipoOperacao', 'municipio', 'local', 'detidoNome', 'motivoDetencao']);
+                    case 'Sinistralidade Rodoviária': return checkMatch(['municipio', 'tipoAcidente', 'causaPresumivel', 'local']);
+                    case 'Enfrentamento Policial': return checkMatch(['tipoOperacao', 'municipio', 'local', 'detidoNome', 'motivoDetencao']);
                     case 'Transportes': return checkMatch(['combustivel', 'municipio', 'nome', 'patente', 'viaturaMatricula']);
                     case 'Logística':
                         const r = record as LogisticaRecord;
-                        const fieldsToSearch = r.categoriaLogistica === 'Armamento' ? ['nip', 'nomeCompleto', 'patente', 'numFicha', 'orgaoUnidade'] : ['numRegisto', 'efectivoId', 'tipoFardamento', 'atendente'];
-                        return checkMatch(fieldsToSearch);
+                        const fieldsToSearch = 'nip' in r ? ['nip', 'nomeCompleto', 'patente', 'orgaoUnidade'] : ['tipoMaterial', 'descricaoItem', 'nipEfetivoResponsavel'];
+                        return checkMatch(fieldsToSearch as (keyof DataRecord)[]);
                     case 'Autos de Expediente': return checkMatch(['numeroAuto', 'tipoAuto', 'noticianteNomeCompleto', 'queixadoNomeCompleto', 'descricaoFactos', 'esquadra']);
-                    case 'Processos': return checkMatch(['numeroProcesso', 'tipoProcesso', 'arguido', 'vitima', 'estado']);
                     default: return Object.values(record).some(value => String(value).toLowerCase().includes(lowercasedFilter));
                 }
             }

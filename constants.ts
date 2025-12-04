@@ -14,19 +14,26 @@ export const ALL_VIEWS: { [key in View]?: { roles: Role[] } } = {
     'Dashboard': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
     'Criminalidade': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
     'Sinistralidade Rodoviária': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
-    'Resultados Operacionais': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Enfrentamento Policial': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
     'Transportes': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
     'Logística': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
-    'Autos de Expediente': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
-    'Processos': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
     'Gerir Usuários': { roles: [Role.Admin] },
     'Relatórios': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
     'Database Setup': { roles: [Role.Admin] },
+    'Registar Ocorrência': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Consultar Ocorrências': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Auto de Queixa': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Auto de Apreensão': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Auto de Notícia': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Aviso de Notificação': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Informação': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Participação': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Apresentação': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
 };
 
 export const SUBSYSTEMS: Record<Subsystem, { views: View[], roles: Role[] }> = {
     'Ocorrências Policiais': {
-        views: ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais', 'Relatórios'],
+        views: ['Dashboard', 'Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial', 'Consultar Ocorrências'],
         roles: [Role.Admin, Role.Padrao, Role.Supervisor],
     },
     'Transportes': {
@@ -38,7 +45,7 @@ export const SUBSYSTEMS: Record<Subsystem, { views: View[], roles: Role[] }> = {
         roles: [Role.Admin, Role.Padrao, Role.Supervisor],
     },
     'Autos de Expedientes': {
-        views: ['Dashboard', 'Autos de Expediente', 'Processos', 'Relatórios'],
+        views: ['Dashboard', 'Auto de Queixa', 'Auto de Apreensão', 'Auto de Notícia', 'Aviso de Notificação', 'Informação', 'Participação', 'Apresentação', 'Relatórios'],
         roles: [Role.Admin, Role.Padrao, Role.Supervisor],
     },
     'Administração do Sistema': {
@@ -77,8 +84,7 @@ export const MUNICIPIOS_HUILA: string[] = [
 export const UNIDADES_ESQUADRAS: string[] = [
     "Comando Municipal", "1ª Esquadra", "2ª Esquadra", "3ª Esquadra", 
     "4ª Esquadra", "5ª Esquadra", "6ª Esquadra", "7ª Esquadra", 
-    "8ª Esquadra", "9ª Esquadra", "10ª Esquadra", "11ª Esquadra", "12ª Esquadra",
-    "Outra"
+    "8ª Esquadra", "9ª Esquadra", "10ª Esquadra", "11ª Esquadra", "12ª Esquadra"
 ];
 
 export const ORGAOS_UNIDADES: string[] = [
@@ -117,36 +123,36 @@ export const FAMILIAS_CRIMINAIS: string[] = [
 ];
 
 export const CRIMES_POR_FAMILIA: CrimeData = {
-    'Crimes Contra Pessoa': ['Homicídio', 'Ofensa a Integridade Física', 'Ameaça', 'Sequestro', 'Rapto', 'Abuso Sexual', 'Agressão Sexual', 'Outros'],
+    'Crimes Contra Pessoa': ['Homicídio', 'Ofensa a Integridade Física', 'Ameaça', 'Sequestro', 'Rapto', 'Abuso Sexual', 'Agressão Sexual'],
     'Crimes Contra o Património': ['Roubo', 'Furto', 'Danos', 'Burla', 'Abuso de Confiança', 'Uso e Abuso de cartão de Crédito, Debito ou Garantia', 'Incêndio'],
-    'Crimes Contra Ambiente': ['Agressão Ambiental', 'Outros'],
-    'Crimes Contra Autoridade': ['Desobediência', 'Resistência', 'Libertação de Recluso', 'Usurpação de Funções', 'Outros'],
-    'Crimes Contra Ordem e Tranquilidade Pública': ['Participação em motim', 'Associação Criminosa', 'Posse Ilegal de arma de fogo', 'Posse e consumo de Cannabis', 'Exercício Ilegal Profissão', 'Outros'],
-    'Crimes Contra Mercado e Economia': ['Corrupção', 'Exploração e Trafico Ilegal Minerais', 'Especulação', 'Outros'],
+    'Crimes Contra Ambiente': ['Agressão Ambiental'],
+    'Crimes Contra Autoridade': ['Desobediência', 'Resistência', 'Libertação de Recluso', 'Usurpação de Funções'],
+    'Crimes Contra Ordem e Tranquilidade Pública': ['Participação em motim', 'Associação Criminosa', 'Posse Ilegal de arma de fogo', 'Posse e consumo de Cannabis', 'Exercício Ilegal Profissão'],
+    'Crimes Contra Mercado e Economia': ['Corrupção', 'Exploração e Trafico Ilegal Minerais', 'Especulação'],
     'Outros': ['Não especificado']
 };
 
 export const TODOS_OS_CRIMES: string[] = [...new Set(Object.values(CRIMES_POR_FAMILIA).flat())].sort();
 
 export const TIPOS_ACIDENTE: string[] = [
-    "Colisão",
+    "Colisão entre veículos",
+    "Colisão com obstáculo fixo",
     "Atropelamento",
+    "Despiste seguido de capotamento",
     "Despiste",
     "Capotamento",
-    "Abalroamento",
-    "Choque com obstáculo fixo",
-    "Incêndio de veículo",
-    "Outro"
+    "Incêndio de veículo"
 ];
 
-export const TIPOS_VEICULO: string[] = ["Ligeiro", "Pesado", "Motociclo", "Outro"];
-export const ESTADO_MEIOS: string[] = ["Operacional", "Em Manutenção", "Inoperacional", "Outro"];
-export const TIPOS_EQUIPAMENTO_COMUNICACAO: string[] = ["Rádio HT", "Rádio de Viatura", "Telefone Satélite", "Outro"];
-export const ITENS_ESCRITORIO: string[] = ["Resma de Papel A4", "Toner de Impressora", "Canetas", "Cadernos", "Outro"];
-
-export const TIPOS_ARMAMENTO: string[] = ["Pistola", "AKM", "G3", "Outro"];
-export const CALIBRES: string[] = ["9mm", "7.62mm", "5.56mm", "Outro"];
-export const TIPOS_VESTUARIO: string[] = ["Farda de Gala", "Farda de Saída", "Farda de Trabalho", "Botas", "Cobertura (Boné/Boina)", "Outro"];
+export const CAUSAS_ACIDENTE: string[] = [
+    "Excesso de velocidade",
+    "Não cedência de prioridade",
+    "Condução sob efeito de álcool",
+    "Uso do telemóvel",
+    "Cansaço ou sonolência",
+    "Más condições da via",
+    "Avaria mecânica"
+];
 
 export const TIPOS_AUTO_EXPEDIENTE: string[] = [
     'Auto de Queixa',
@@ -158,19 +164,18 @@ export const TIPOS_AUTO_EXPEDIENTE: string[] = [
     'Apresentação'
 ];
 
-export const SERVICOS_ATENDIMENTO: string[] = ["Atendimento a vítima", "Piquete", "Investigação"];
-export const ESTADOS_CIVIS: string[] = ["Solteiro(a)", "Casado(a)", "Divorciado(a)", "Viúvo(a)"];
-export const GENEROS: string[] = ["Masculino", "Feminino"];
-export const NACIONALIDADES: string[] = ["Angolana", "Portuguesa", "Brasileira", "Outra"];
-export const PROFISSOES: string[] = ["Estudante", "Professor", "Polícia", "Pedreiro", "Doméstica", "Outra"];
+// FIX: Added constants for the new ProcessosForm.
+export const TIPOS_PROCESSO: string[] = [
+    'Processo-Crime Comum',
+    'Processo de Querela',
+    'Processo Sumário',
+    'Processo de Transgressão'
+];
 
-// FIX: Added DIAS_DA_SEMANA constant to be used in the AutosExpedienteForm.
-export const DIAS_DA_SEMANA: string[] = [
-    "Segunda-feira",
-    "Terça-feira",
-    "Quarta-feira",
-    "Quinta-feira",
-    "Sexta-feira",
-    "Sábado",
-    "Domingo",
+export const FASES_PROCESSO: string[] = [
+    'Instrução Preparatória',
+    'Acusação',
+    'Julgamento',
+    'Recurso',
+    'Concluído'
 ];

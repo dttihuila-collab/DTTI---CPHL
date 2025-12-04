@@ -1,12 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { DataRecord } from '../../types';
-import { Input, Label, Button } from '../../components/common/FormElements';
+import { DataRecord, CriminalidadeRecord } from '../../types';
 import { useTheme } from '../../contexts/ThemeContext';
 
 const COLORS = ['#3b82f6', '#16a34a', '#f97316', '#ef4444', '#8b5cf6', '#fde047'];
 
-const countByKey = (records: DataRecord[], key: string): { name: string; value: number }[] => {
+const countByKey = (records: DataRecord[], key: keyof CriminalidadeRecord): { name: string; value: number }[] => {
     const counts = records.reduce((acc, record) => {
         const value = record[key] as string;
         if (value) {
@@ -18,153 +17,70 @@ const countByKey = (records: DataRecord[], key: string): { name: string; value: 
     return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
 };
 
-type CrimeSubCategory = 'Crimes Contra o Património' | 'Crimes Contra Pessoa' | 'Outros';
-
-const CriminalidadeDetailsView: React.FC<{ records: DataRecord[] }> = React.memo(({ records }) => {
+const CriminalidadeDetailsView: React.FC<{ records: CriminalidadeRecord[] }> = React.memo(({ records }) => {
     const { theme } = useTheme();
-    const [activeSubCategory, setActiveSubCategory] = useState<CrimeSubCategory>('Crimes Contra o Património');
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCrime, setSelectedCrime] = useState<string | null>(null);
 
-    const recordsByFamily = useMemo(() => {
-        const families: Record<string, DataRecord[]> = {
-            'Crimes Contra Pessoa': [],
-            'Crimes Contra o Património': [],
-            'Outros': [],
-        };
-        records.forEach(r => {
-            if (r.familiaCriminal === 'Crimes Contra Pessoa') {
-                families['Crimes Contra Pessoa'].push(r);
-            } else if (r.familiaCriminal === 'Crimes Contra o Património') {
-                families['Crimes Contra o Património'].push(r);
-            } else {
-                families['Outros'].push(r);
-            }
-        });
-        return families;
-    }, [records]);
-
-    const filteredRecords = useMemo(() => {
-        let recordsToFilter = recordsByFamily[activeSubCategory] || [];
-        
-        if (selectedCrime) {
-             recordsToFilter = recordsToFilter.filter(r => r.crime === selectedCrime);
-        }
-
-        if (!searchTerm) return recordsToFilter;
-        const lowercasedFilter = searchTerm.toLowerCase();
-        return recordsToFilter.filter(r =>
-            Object.values(r).some(val => String(val).toLowerCase().includes(lowercasedFilter))
-        );
-    }, [recordsByFamily, activeSubCategory, searchTerm, selectedCrime]);
-    
-    const chartDataCrimeType = useMemo(() => countByKey(recordsByFamily[activeSubCategory] || [], 'crime'), [recordsByFamily, activeSubCategory]);
-    const chartDataMunicipality = useMemo(() => countByKey(recordsByFamily[activeSubCategory] || [], 'municipio'), [recordsByFamily, activeSubCategory]);
-
-    const handlePieClick = (data: any) => {
-        setSelectedCrime(prev => prev === data.name ? null : data.name);
-    }
-
-    const renderContent = () => {
-        return (
-            <div className="space-y-6">
-                 {filteredRecords.length === 0 ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Nenhum registo encontrado para os filtros selecionados.</p> : (
-                    <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                            <div className="h-72">
-                                <h4 className="text-md font-semibold text-center text-gray-700 dark:text-gray-300 mb-2">Distribuição por Crime</h4>
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie data={chartDataCrimeType} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} fill="#8884d8" labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-                                            if (percent < 0.05) return null;
-                                            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                                            const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
-                                            const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
-                                            return <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central">{(percent * 100).toFixed(0)}%</text>;
-                                        }}>
-                                            {chartDataCrimeType.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} onClick={() => handlePieClick(entry)} className="cursor-pointer" />)}
-                                        </Pie>
-                                        <Tooltip contentStyle={{ backgroundColor: theme === 'dark' ? '#334155' : '#fff', border: 'none', borderRadius: '0.5rem' }} itemStyle={{ color: theme === 'dark' ? '#cbd5e1' : '#000' }} />
-                                        <Legend formatter={(value) => <span className="text-gray-800 dark:text-gray-300">{value}</span>}/>
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
-                             <div className="h-72">
-                                <h4 className="text-md font-semibold text-center text-gray-700 dark:text-gray-300 mb-2">Crimes por Município</h4>
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={chartDataMunicipality} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke={theme === 'dark' ? '#4a5568' : '#e2e8f0'} />
-                                        <XAxis type="number" stroke={theme === 'dark' ? '#a0aec0' : '#4a5568'} />
-                                        <YAxis type="category" dataKey="name" width={80} stroke={theme === 'dark' ? '#a0aec0' : '#4a5568'} />
-                                        <Tooltip cursor={{fill: 'rgba(128,128,128,0.1)'}} contentStyle={{ backgroundColor: theme === 'dark' ? '#334155' : '#fff', border: 'none', borderRadius: '0.5rem' }} itemStyle={{ color: theme === 'dark' ? '#cbd5e1' : '#000' }} />
-                                        <Bar dataKey="value" name="N.º de Crimes" fill="#3b82f6" />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
-                        <div className="md:col-span-2">
-                            <div className="flex justify-between items-center mb-2">
-                                <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">
-                                    {selectedCrime ? `Registos de "${selectedCrime}"` : 'Últimos Registos'}
-                                </h4>
-                                {selectedCrime && <Button variant="secondary" onClick={() => setSelectedCrime(null)}>Limpar Filtro</Button>}
-                            </div>
-                            <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                                <table className="w-full text-sm">
-                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                        <tr>
-                                            <th className="px-6 py-3 text-left">Data</th><th className="px-6 py-3 text-left">Município</th><th className="px-6 py-3 text-left">Crime</th><th className="px-6 py-3 text-left">Vítima</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                                        {filteredRecords.slice(0, 10).map(r => (
-                                            <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                <td className="px-6 py-4 whitespace-nowrap">{new Date(r.data).toLocaleDateString()}</td><td className="px-6 py-4 whitespace-nowrap">{r.municipio}</td><td className="px-6 py-4 whitespace-nowrap">{r.crime}</td><td className="px-6 py-4 whitespace-nowrap">{r.vitimaNome}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </>
-                )}
-            </div>
-        );
-    }
-
-    const subCategories: CrimeSubCategory[] = ['Crimes Contra o Património', 'Crimes Contra Pessoa', 'Outros'];
+    const chartDataByFamily = useMemo(() => countByKey(records, 'familiaCriminal'), [records]);
+    const chartDataByMunicipality = useMemo(() => countByKey(records, 'municipio'), [records]);
 
     return (
-        <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {subCategories.map(cat => {
-                    const isActive = activeSubCategory === cat;
-                    const total = (recordsByFamily[cat] || []).length;
-                    return (
-                        <button
-                            key={cat}
-                            onClick={() => { setActiveSubCategory(cat); setSelectedCrime(null); }}
-                            className={`p-4 rounded-lg text-left transition-all duration-300 transform hover:scale-105 ${isActive ? 'bg-custom-blue-600 text-white shadow-lg' : 'bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
-                        >
-                            <h4 className={`font-semibold ${isActive ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`}>{cat}</h4>
-                            <p className={`text-3xl font-bold ${isActive ? 'text-white' : 'text-gray-800 dark:text-gray-100'}`}>{total}</p>
-                        </button>
-                    );
-                })}
+        <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div className="h-80">
+                    <h4 className="text-md font-semibold text-center text-gray-700 dark:text-gray-300 mb-2">Crimes por Família</h4>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie data={chartDataByFamily} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={110} fill="#8884d8" labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                                if (percent < 0.05) return null;
+                                const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                                const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
+                                const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
+                                return <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central">{(percent * 100).toFixed(0)}%</text>;
+                            }}>
+                                {chartDataByFamily.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
+                            </Pie>
+                            <Tooltip contentStyle={{ backgroundColor: theme === 'dark' ? '#334155' : '#fff', border: 'none', borderRadius: '0.5rem' }} itemStyle={{ color: theme === 'dark' ? '#cbd5e1' : '#000' }} />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+                 <div className="h-80">
+                    <h4 className="text-md font-semibold text-center text-gray-700 dark:text-gray-300 mb-2">Crimes por Município</h4>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={chartDataByMunicipality.slice(0, 5)} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke={theme === 'dark' ? '#4a5568' : '#e2e8f0'} />
+                            <XAxis type="number" stroke={theme === 'dark' ? '#a0aec0' : '#4a5568'} />
+                            <YAxis type="category" dataKey="name" width={80} stroke={theme === 'dark' ? '#a0aec0' : '#4a5568'} />
+                            <Tooltip cursor={{fill: 'rgba(128,128,128,0.1)'}} contentStyle={{ backgroundColor: theme === 'dark' ? '#334155' : '#fff', border: 'none', borderRadius: '0.5rem' }} itemStyle={{ color: theme === 'dark' ? '#cbd5e1' : '#000' }} />
+                            <Bar dataKey="value" name="N.º de Crimes" fill="#3b82f6" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
             </div>
-
-            <div className="my-4">
-                <Label htmlFor="criminalidade-search">Pesquisar em {activeSubCategory}</Label>
-                <Input
-                    id="criminalidade-search"
-                    type="text"
-                    placeholder="Digite para pesquisar..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+            <div>
+                <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-2">Últimos Registos</h4>
+                <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                    <table className="w-full text-sm">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
+                            <tr>
+                                <th className="px-6 py-3 text-left">Data</th>
+                                <th className="px-6 py-3 text-left">Município</th>
+                                <th className="px-6 py-3 text-left">Crime</th>
+                                <th className="px-6 py-3 text-left">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                            {records.slice(0, 10).map(r => (
+                                <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td className="px-6 py-4 whitespace-nowrap">{new Date(r.dataOcorrencia).toLocaleDateString()}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{r.municipio}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{r.crime}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{r.estadoProcesso}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            
-            {renderContent()}
         </div>
     );
 });

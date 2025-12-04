@@ -40,6 +40,7 @@ export const DocumentIcon: React.FC<IconProps> = ({ className }) => <Icon path="
 export const FolderIcon: React.FC<IconProps> = ({ className }) => <Icon path="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" className={className} />;
 export const HomeIcon: React.FC<IconProps> = ({ className }) => <Icon path="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" className={className} />;
 export const UserCircleIcon: React.FC<IconProps> = ({ className }) => <Icon path="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-4-9c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm8 5c-1.6-1.5-4.4-2-6-2s-4.4.5-6 2v1h12v-1z" className={className} />;
+export const SinistralidadeIcon: React.FC<IconProps> = ({ className }) => <Icon path="M6 5h3v14H6zm4.5 0h3v6h-3zm0 8h3v6h-3zm4.5-8h3v14h-3z" className={className} />;
 
 
 // New Icons for Form Tabs

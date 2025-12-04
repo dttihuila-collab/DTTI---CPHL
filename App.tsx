@@ -6,13 +6,12 @@ import Header from './components/Header';
 import Dashboard from './views/Dashboard';
 import CriminalidadeForm from './views/forms/CriminalidadeForm';
 import SinistralidadeForm from './views/forms/SinistralidadeForm';
-import ResultadosForm from './views/forms/ResultadosForm';
+import EnfrentamentoForm from './views/forms/ResultadosForm';
 import TransportesForm from './views/forms/TransportesForm';
 import LogisticaForm from './views/forms/LogisticaForm';
 import AutosExpedienteForm from './views/forms/AutosExpedienteForm';
-import ProcessosForm from './views/forms/ProcessosForm';
 import GerirUsuarios from './views/GerirUsuarios';
-import Relatorios from './views/Relatorios';
+import ConsultaOcorrencias from './views/Relatorios';
 import DatabaseSetup from './views/DatabaseSetup';
 import ActionMenuView from './views/ActionMenuView';
 import ConsultaView from './views/ConsultaView';
@@ -23,6 +22,37 @@ import ToastContainer from './components/ToastContainer';
 import { DataRefreshProvider } from './contexts/DataRefreshContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import SubsystemSelection from './views/SubsystemSelection';
+import { CrimeIcon, SinistralidadeIcon, PoliceIcon } from './components/icons/Icon';
+
+// Nova Vista para o menu de registo de ocorrências
+const RegistarOcorrenciaView: React.FC<{ onNavigateToForm: (view: View) => void }> = ({ onNavigateToForm }) => (
+    <div className="max-w-4xl mx-auto animate-fade-in">
+        <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">Registar Nova Ocorrência</h2>
+            <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">Selecione o tipo de ocorrência que pretende registar.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {(['Criminalidade', 'Sinistralidade Rodoviária', 'Enfrentamento Policial'] as const).map(type => {
+                const icon = {
+                    'Criminalidade': <CrimeIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>,
+                    'Sinistralidade Rodoviária': <SinistralidadeIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>,
+                    'Enfrentamento Policial': <PoliceIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>,
+                }[type];
+
+                return (
+                    <button
+                        key={type}
+                        onClick={() => onNavigateToForm(type)}
+                        className="p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center space-y-4"
+                    >
+                        {icon}
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{type}</h3>
+                    </button>
+                );
+            })}
+        </div>
+    </div>
+);
 
 const AppContent: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -73,7 +103,7 @@ const AppContent: React.FC = () => {
     setActionMenuCategory(null);
     setConsultaCategory(null);
     setInitialFormData(null);
-    if (view !== 'Relatórios') {
+    if (view !== 'Relatórios' && view !== 'Consultar Ocorrências') {
         setActiveReportTab(null);
     }
   }, []);
@@ -112,6 +142,8 @@ const AppContent: React.FC = () => {
   const renderCurrentView = () => {
     switch (currentView) {
         case 'Dashboard': return <Dashboard subsystem={selectedSubsystem} />;
+        case 'Registar Ocorrência': return <RegistarOcorrenciaView onNavigateToForm={handleSetCurrentView} />;
+        case 'Consultar Ocorrências': return <ConsultaOcorrencias />;
         case 'ActionMenu': 
             if (actionMenuCategory) {
                 return <ActionMenuView 
@@ -131,15 +163,27 @@ const AppContent: React.FC = () => {
                        />;
             }
              return <Dashboard subsystem={selectedSubsystem} />; // Fallback if no category
-        case 'Criminalidade': return <CriminalidadeForm onCancel={() => handleOpenActionMenu('Criminalidade')} />;
-        case 'Sinistralidade Rodoviária': return <SinistralidadeForm onCancel={() => handleOpenActionMenu('Sinistralidade Rodoviária')} />;
-        case 'Resultados Operacionais': return <ResultadosForm onCancel={() => handleOpenActionMenu('Resultados Operacionais')} />;
+        case 'Criminalidade': return <CriminalidadeForm onCancel={() => handleSetCurrentView('Dashboard')} />;
+        case 'Sinistralidade Rodoviária': return <SinistralidadeForm onCancel={() => handleSetCurrentView('Dashboard')} />;
+        case 'Enfrentamento Policial': return <EnfrentamentoForm onCancel={() => handleSetCurrentView('Dashboard')} />;
         case 'Transportes': return <TransportesForm onCancel={() => handleOpenActionMenu('Transportes')} />;
         case 'Logística': return <LogisticaForm onCancel={() => handleOpenActionMenu('Logística')} />;
-        case 'Autos de Expediente': return <AutosExpedienteForm initialData={initialFormData} onCancel={() => handleOpenActionMenu('Autos de Expediente')} />;
-        case 'Processos': return <ProcessosForm onCancel={() => handleOpenActionMenu('Processos')} />;
+        
+        // Autos de Expediente direct navigation
+        case 'Auto de Queixa': return <AutosExpedienteForm initialData={{ tipoAuto: 'Auto de Queixa' }} onCancel={() => handleSetCurrentView('Dashboard')} />;
+        case 'Auto de Apreensão': return <AutosExpedienteForm initialData={{ tipoAuto: 'Auto de Apreensão' }} onCancel={() => handleSetCurrentView('Dashboard')} />;
+        case 'Auto de Notícia': return <AutosExpedienteForm initialData={{ tipoAuto: 'Auto de Notícia' }} onCancel={() => handleSetCurrentView('Dashboard')} />;
+        case 'Aviso de Notificação': return <AutosExpedienteForm initialData={{ tipoAuto: 'Aviso de Notificação' }} onCancel={() => handleSetCurrentView('Dashboard')} />;
+        case 'Informação': return <AutosExpedienteForm initialData={{ tipoAuto: 'Informação' }} onCancel={() => handleSetCurrentView('Dashboard')} />;
+        case 'Participação': return <AutosExpedienteForm initialData={{ tipoAuto: 'Participação' }} onCancel={() => handleSetCurrentView('Dashboard')} />;
+        case 'Apresentação': return <AutosExpedienteForm initialData={{ tipoAuto: 'Apresentação' }} onCancel={() => handleSetCurrentView('Dashboard')} />;
+        
         case 'Gerir Usuários': return <GerirUsuarios />;
-        case 'Relatórios': return <Relatorios initialTab={activeReportTab} />;
+        case 'Relatórios': 
+            if (selectedSubsystem === 'Autos de Expedientes') {
+                return <ConsultaView category="Autos de Expediente" onBack={() => handleSetCurrentView('Dashboard')} onRegisterNew={() => handleSetCurrentView('Auto de Queixa')} />;
+            }
+            return <ConsultaOcorrencias />; // Temporarily pointing to new one, can be improved later
         case 'Database Setup': return <DatabaseSetup />;
         default: return <Dashboard subsystem={selectedSubsystem} />;
     }

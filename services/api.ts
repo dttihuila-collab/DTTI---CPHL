@@ -109,12 +109,24 @@ export const api = {
     getRecords: async (key: ApiKey): Promise<DataRecord[]> => {
         await delay(250);
         const db = loadDatabase();
+        // Support for new Logistica structure
+        if (key === 'logistica') {
+            return [...(db.efetivo || []), ...(db.material || [])];
+        }
         return db[key] || [];
     },
 
     addRecord: async (key: ApiKey, data: any): Promise<DataRecord> => {
         await delay(350);
         const db = loadDatabase();
+        
+// FIX: Changed tableKey type from ApiKey to string to allow 'efetivo' or 'material' values.
+        let tableKey: string = key;
+        // Support for new Logistica structure
+        if (key === 'logistica') {
+            tableKey = data.nip ? 'efetivo' : 'material';
+        }
+
         const newRecord: any = { 
             ...data, 
             id: new Date().getTime(),
@@ -132,8 +144,11 @@ export const api = {
             const count = records.filter((r: any) => r.numeroAuto && r.numeroAuto.startsWith(`${sigla}${ano}`)).length + 1;
             newRecord.numeroAuto = `${sigla}${ano}/${String(count).padStart(3, '0')}`;
         }
-
-        db[key].push(newRecord);
+        
+        if (!db[tableKey]) {
+            db[tableKey] = [];
+        }
+        db[tableKey].push(newRecord);
         saveDatabase(db);
         return newRecord;
     },
@@ -141,9 +156,16 @@ export const api = {
     updateRecord: async (key: ApiKey, updatedRecord: DataRecord): Promise<DataRecord | null> => {
         await delay(300);
         const db = loadDatabase();
-        const recordIndex = db[key].findIndex((r: DataRecord) => r.id === updatedRecord.id);
+        
+// FIX: Changed tableKey type from ApiKey to string to allow 'efetivo' or 'material' values.
+        let tableKey: string = key;
+        if (key === 'logistica') {
+            tableKey = (updatedRecord as any).nip ? 'efetivo' : 'material';
+        }
+
+        const recordIndex = db[tableKey].findIndex((r: DataRecord) => r.id === updatedRecord.id);
         if (recordIndex > -1) {
-            db[key][recordIndex] = updatedRecord;
+            db[tableKey][recordIndex] = updatedRecord;
             saveDatabase(db);
             return updatedRecord;
         }
@@ -153,9 +175,24 @@ export const api = {
     deleteRecord: async (key: ApiKey, recordId: number): Promise<boolean> => {
         await delay(400);
         const db = loadDatabase();
-        const initialLength = db[key].length;
-        db[key] = db[key].filter((r: DataRecord) => r.id !== recordId);
-        saveDatabase(db);
-        return db[key].length < initialLength;
+
+        const keysToSearch = key === 'logistica' ? ['efetivo', 'material'] : [key];
+        let foundAndDeleted = false;
+
+        for (const tableKey of keysToSearch) {
+             const initialLength = db[tableKey]?.length || 0;
+             if (initialLength > 0) {
+                db[tableKey] = db[tableKey].filter((r: DataRecord) => r.id !== recordId);
+                if (db[tableKey].length < initialLength) {
+                    foundAndDeleted = true;
+                    break;
+                }
+             }
+        }
+        
+        if(foundAndDeleted) {
+            saveDatabase(db);
+        }
+        return foundAndDeleted;
     }
 };

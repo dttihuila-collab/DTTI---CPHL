@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import FormWrapper from './FormWrapper';
 import { Label, Input, Select, Textarea } from '../../components/common/FormElements';
-import { MUNICIPIOS_HUILA, PATENTES } from '../../constants';
 import { api } from '../../services/api';
 import { useToast } from '../../contexts/ToastContext';
 import { useDataRefresh } from '../../contexts/DataRefreshContext';
 import { TransportesRecord } from '../../types';
 import CollapsibleSection from '../../components/common/CollapsibleSection';
 
-const initialFormData: Partial<TransportesRecord> = {};
+const initialFormData: Partial<TransportesRecord> = {
+    tipoRegisto: 'Abastecimento',
+    data: '',
+};
 
 interface TransportesFormProps {
     editingRecord?: TransportesRecord | null;
@@ -31,8 +33,17 @@ const TransportesForm: React.FC<TransportesFormProps> = React.memo(({ editingRec
     }, [editingRecord]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const { name, value, type } = e.target;
+        const finalValue = type === 'number' ? parseFloat(value) || '' : value;
+        
+        const updatedState = { ...formData, [name]: finalValue };
+
+        if (name === 'tipoRegisto') {
+            const commonFields = { tipoRegisto: finalValue as any, data: updatedState.data };
+            setFormData(commonFields);
+        } else {
+            setFormData(updatedState);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -43,7 +54,7 @@ const TransportesForm: React.FC<TransportesFormProps> = React.memo(({ editingRec
                 onSave(formData as TransportesRecord);
             } else {
                 await api.addRecord('transportes', formData);
-                addToast('Dados de transportes submetidos com sucesso!', 'success');
+                addToast('Registo de transportes submetido com sucesso!', 'success');
                 triggerRefresh();
                 setFormData(initialFormData);
             }
@@ -55,62 +66,59 @@ const TransportesForm: React.FC<TransportesFormProps> = React.memo(({ editingRec
         }
     };
 
+    const renderDynamicFields = () => {
+        switch(formData.tipoRegisto) {
+            case 'Abastecimento':
+                return (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div><Label htmlFor="viaturaMatricula">Matrícula da Viatura</Label><Input id="viaturaMatricula" name="viaturaMatricula" type="text" value={formData.viaturaMatricula || ''} onChange={handleChange} /></div>
+                        <div><Label htmlFor="combustivel">Combustível</Label><Select id="combustivel" name="combustivel" value={formData.combustivel || ''} onChange={handleChange}><option value="">Selecione</option><option value="Gasolina">Gasolina</option><option value="Gasóleo">Gasóleo</option></Select></div>
+                        <div><Label htmlFor="quantidadeLitros">Quantidade (Litros)</Label><Input id="quantidadeLitros" name="quantidadeLitros" type="number" value={formData.quantidadeLitros || ''} onChange={handleChange}/></div>
+                        <div><Label htmlFor="bombaCombustivel">Bomba de Combustível</Label><Input id="bombaCombustivel" name="bombaCombustivel" type="text" value={formData.bombaCombustivel || ''} onChange={handleChange} /></div>
+                    </div>
+                );
+            case 'Manutenção':
+                return (
+                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div><Label htmlFor="viaturaMatricula">Matrícula da Viatura</Label><Input id="viaturaMatricula" name="viaturaMatricula" type="text" value={formData.viaturaMatricula || ''} onChange={handleChange} /></div>
+                        <div><Label htmlFor="tipoManutencao">Tipo de Manutenção</Label><Select id="tipoManutencao" name="tipoManutencao" value={formData.tipoManutencao || ''} onChange={handleChange}><option value="">Selecione</option><option value="Preventiva">Preventiva</option><option value="Corretiva">Corretiva</option></Select></div>
+                        <div><Label htmlFor="custoManutencao">Custo (AOA)</Label><Input id="custoManutencao" name="custoManutencao" type="number" value={formData.custoManutencao || ''} onChange={handleChange}/></div>
+                        <div className="md:col-span-3"><Label htmlFor="descricaoServico">Descrição do Serviço</Label><Textarea id="descricaoServico" name="descricaoServico" value={formData.descricaoServico || ''} onChange={handleChange}/></div>
+                    </div>
+                );
+            case 'Movimento de Pessoal':
+                return (
+                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div><Label htmlFor="nipEfetivo">NIP do Efetivo</Label><Input id="nipEfetivo" name="nipEfetivo" type="text" value={formData.nipEfetivo || ''} onChange={handleChange} /></div>
+                        <div className="lg:col-span-3"><Label htmlFor="nomeEfetivo">Nome do Efetivo</Label><Input id="nomeEfetivo" name="nomeEfetivo" type="text" value={formData.nomeEfetivo || ''} onChange={handleChange} /></div>
+                        <div><Label htmlFor="tipoMovimento">Tipo de Movimento</Label><Select id="tipoMovimento" name="tipoMovimento" value={formData.tipoMovimento || ''} onChange={handleChange}><option value="">Selecione</option><option value="Transferência">Transferência</option><option value="Férias">Férias</option><option value="Baixa Médica">Baixa Médica</option></Select></div>
+                        <div><Label htmlFor="origem">Origem</Label><Input id="origem" name="origem" type="text" value={formData.origem || ''} onChange={handleChange}/></div>
+                        <div className="lg:col-span-2"><Label htmlFor="destino">Destino</Label><Input id="destino" name="destino" type="text" value={formData.destino || ''} onChange={handleChange}/></div>
+                    </div>
+                );
+            default: return null;
+        }
+    };
+
     return (
         <FormWrapper
             title={editingRecord ? "Editar Registo de Transportes" : "Registo de Transportes"}
-            description="Registe informações sobre combustíveis, pessoal e manutenções."
+            description="Selecione o tipo de registo e preencha os detalhes."
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
             onCancel={onCancel}
             submitButtonText={editingRecord ? "Guardar Alterações" : "Inserir"}
         >
             <div className="space-y-6">
-                <CollapsibleSection title="Plano de Distribuição de Combustível" defaultOpen>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                        <div>
-                            <Label htmlFor="combustivel">Combustível</Label>
-                            <Select id="combustivel" name="combustivel" value={formData.combustivel || ''} onChange={handleChange}><option value="">Selecione o Combustível</option><option value="Gasolina">Gasolina</option><option value="Gasóleo">Gasóleo</option></Select>
-                        </div>
-                        <div><Label htmlFor="quantidade">Quantidade Total (Litros)</Label><Input id="quantidade" name="quantidade" type="number" value={formData.quantidade || ''} onChange={handleChange}/></div>
-                    </div>
-                    <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div><Label htmlFor="municipio">Município</Label><Select id="municipio" name="municipio" value={formData.municipio || ''} onChange={handleChange}><option value="">Selecione o Município</option>{MUNICIPIOS_HUILA.map(m => <option key={m} value={m}>{m}</option>)}</Select></div>
-                        <div><Label htmlFor="quantidadeRecebida">Quantidade Distribuída</Label><Input id="quantidadeRecebida" name="quantidadeRecebida" type="number" value={formData.quantidadeRecebida || ''} onChange={handleChange}/></div>
-                        <div><Label htmlFor="existencia">Existência Atual</Label><Input id="existencia" name="existencia" type="number" value={formData.existencia || ''} onChange={handleChange}/></div>
-                    </div>
-                </CollapsibleSection>
-                
-                <CollapsibleSection title="Registo de Pessoal (Membros)">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-4">
-                        <div><Label htmlFor="nome">Nome</Label><Input id="nome" name="nome" type="text" value={formData.nome || ''} onChange={handleChange}/></div>
-                        <div>
-                            <Label htmlFor="patente">Patente</Label>
-                            <Select id="patente" name="patente" value={formData.patente || ''} onChange={handleChange}>
-                                <option value="">Selecione a Patente</option>
-                                {PATENTES.map(p => <option key={p} value={p}>{p}</option>)}
-                            </Select>
-                        </div>
-                        <div><Label htmlFor="area">Área</Label><Input id="area" name="area" type="text" value={formData.area || ''} onChange={handleChange}/></div>
-                        <div><Label htmlFor="quantidadeRecebidaPessoal">Quantidade Recebida</Label><Input id="quantidadeRecebidaPessoal" name="quantidadeRecebidaPessoal" type="number" value={formData.quantidadeRecebidaPessoal || ''} onChange={handleChange}/></div>
-                    </div>
-                </CollapsibleSection>
-
-                <CollapsibleSection title="Registo de Manutenção de Viaturas">
+                 <CollapsibleSection title="Tipo de Registo e Data" defaultOpen>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-                        <div><Label htmlFor="viaturaMatricula">Viatura (Matrícula)</Label><Input id="viaturaMatricula" name="viaturaMatricula" type="text" value={formData.viaturaMatricula || ''} onChange={handleChange}/></div>
-                        <div>
-                            <Label htmlFor="tipoManutencao">Tipo de Manutenção</Label>
-                            <Select id="tipoManutencao" name="tipoManutencao" value={formData.tipoManutencao || ''} onChange={handleChange}><option value="">Selecione o tipo</option><option value="Preventiva">Preventiva</option><option value="Corretiva">Corretiva</option></Select>
-                        </div>
-                        <div><Label htmlFor="custoManutencao">Custo (AOA)</Label><Input id="custoManutencao" name="custoManutencao" type="number" value={formData.custoManutencao || ''} onChange={handleChange}/></div>
-                        <div className="md:col-span-3"><Label htmlFor="descManutencao">Descrição do Serviço</Label><Textarea id="descManutencao" name="descManutencao" value={formData.descManutencao || ''} onChange={handleChange}/></div>
+                        <div className="md:col-span-1"><Label htmlFor="tipoRegisto">Tipo de Registo</Label><Select id="tipoRegisto" name="tipoRegisto" value={formData.tipoRegisto || ''} onChange={handleChange} required><option value="Abastecimento">Abastecimento</option><option value="Manutenção">Manutenção</option><option value="Movimento de Pessoal">Movimento de Pessoal</option></Select></div>
+                        <div className="md:col-span-2"><Label htmlFor="data">Data do Registo</Label><Input id="data" name="data" type="datetime-local" value={formData.data || ''} onChange={handleChange} required /></div>
                     </div>
                 </CollapsibleSection>
-
-                <CollapsibleSection title="Observações Gerais">
-                     <div className="mt-4">
-                        <Label htmlFor="obsGerais" className="sr-only">Observações Gerais</Label>
-                        <Textarea id="obsGerais" name="obsGerais" value={formData.obsGerais || ''} onChange={handleChange} placeholder="Adicione aqui outras informações relevantes..." />
+                <CollapsibleSection title="Detalhes do Registo" defaultOpen>
+                    <div className="mt-4">
+                      {renderDynamicFields()}
                     </div>
                 </CollapsibleSection>
             </div>

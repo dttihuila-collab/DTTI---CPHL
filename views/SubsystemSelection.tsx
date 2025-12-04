@@ -1,32 +1,9 @@
-import React, { useContext, useMemo, useState, useEffect } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { Subsystem, Role, ApiKey, DashboardCategory } from '../types';
+import { Subsystem, Role } from '../types';
 import { SUBSYSTEMS } from '../constants';
 import { SecurityIcon, TransportIcon, LogisticsIcon, DocumentIcon, UsersIcon, LogoutIcon, UserCircleIcon } from '../components/icons/Icon';
-import { api } from '../services/api';
-
-// Helper functions and constants
-const categoryToApiKey = (category: DashboardCategory): ApiKey => {
-    switch (category) {
-        case 'Criminalidade': return 'criminalidade';
-        case 'Sinistralidade Rodoviária': return 'sinistralidade';
-        case 'Resultados Operacionais': return 'resultados';
-        case 'Transportes': return 'transportes';
-        case 'Logística': return 'logistica';
-        case 'Autos de Expediente': return 'autosExpediente';
-        case 'Processos': return 'processos';
-        default: return 'criminalidade';
-    }
-}
-
-const subsystemCategories: Record<Subsystem, DashboardCategory[]> = {
-    'Ocorrências Policiais': ['Criminalidade', 'Sinistralidade Rodoviária', 'Resultados Operacionais'],
-    'Transportes': ['Transportes'],
-    'Logística': ['Logística'],
-    'Autos de Expedientes': ['Autos de Expediente', 'Processos'],
-    'Administração do Sistema': [],
-};
-
+import SupervisorDashboard from './dashboard/SupervisorDashboard';
 
 interface SubsystemSelectionProps {
     onSelectSubsystem: (subsystem: Subsystem) => void;
@@ -40,25 +17,8 @@ const subsystemIcons: Record<Subsystem, React.ReactElement> = {
     'Administração do Sistema': <UsersIcon className="w-16 h-16" />,
 };
 
-const SummarySkeleton: React.FC = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 animate-pulse">
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
-                <div className="space-y-3">
-                    <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-                    <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
-                </div>
-            </div>
-        ))}
-    </div>
-);
-
-
 const SubsystemSelection: React.FC<SubsystemSelectionProps> = ({ onSelectSubsystem }) => {
     const { user, logout } = useContext(AuthContext);
-    const [summaryData, setSummaryData] = useState<Record<string, Record<string, number>>>({});
-    const [isLoadingSummary, setIsLoadingSummary] = useState(true);
 
     const availableSubsystems = useMemo(() => {
         if (!user) return [];
@@ -76,51 +36,6 @@ const SubsystemSelection: React.FC<SubsystemSelectionProps> = ({ onSelectSubsyst
             return false;
         });
     }, [user]);
-
-    useEffect(() => {
-        const fetchSummaries = async () => {
-            if (!availableSubsystems.length) {
-                setIsLoadingSummary(false);
-                return;
-            }
-            
-            setIsLoadingSummary(true);
-            try {
-                const summaries: Record<string, Record<string, number>> = {};
-                
-                const subsystemsToFetch = availableSubsystems.filter(s => s !== 'Administração do Sistema');
-
-                const promises = subsystemsToFetch.map(async (subsystemName) => {
-                    const categories = subsystemCategories[subsystemName];
-                    const categoryData = await Promise.all(
-                        categories.map(async (categoryName) => {
-                            const apiKey = categoryToApiKey(categoryName);
-                            const records = await api.getRecords(apiKey);
-                            return { categoryName, count: records.length };
-                        })
-                    );
-                    return { subsystemName, categoryData };
-                });
-
-                const results = await Promise.all(promises);
-
-                results.forEach(result => {
-                    summaries[result.subsystemName] = {};
-                    result.categoryData.forEach(cat => {
-                        summaries[result.subsystemName][cat.categoryName] = cat.count;
-                    });
-                });
-
-                setSummaryData(summaries);
-            } catch (error) {
-                console.error("Failed to fetch summaries:", error);
-            } finally {
-                setIsLoadingSummary(false);
-            }
-        };
-
-        fetchSummaries();
-    }, [availableSubsystems]);
 
     if (!user) return null;
 
@@ -161,32 +76,11 @@ const SubsystemSelection: React.FC<SubsystemSelectionProps> = ({ onSelectSubsyst
                     ))}
                 </div>
 
-                <div className="mt-20 w-full mb-8">
-                    <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">Resumo Geral</h2>
-                    {isLoadingSummary ? (
-                        <SummarySkeleton />
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {Object.entries(summaryData).map(([subsystemName, categories]) => (
-                                <div key={subsystemName} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-l-4 border-custom-blue-500">
-                                    <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">{subsystemName}</h3>
-                                    <ul className="space-y-3">
-                                        {Object.entries(categories).length > 0 ? (
-                                            Object.entries(categories).map(([categoryName, count]) => (
-                                                <li key={categoryName} className="flex justify-between items-center text-gray-700 dark:text-gray-300">
-                                                    <span>{categoryName}</span>
-                                                    <span className="font-semibold bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-sm text-gray-800 dark:text-gray-200">{count}</span>
-                                                </li>
-                                            ))
-                                        ) : (
-                                            <li className="text-gray-500 dark:text-gray-400">Nenhum dado a apresentar.</li>
-                                        )}
-                                    </ul>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                {user.role === Role.Supervisor && (
+                    <div className="mt-20 w-full mb-8">
+                        <SupervisorDashboard />
+                    </div>
+                )}
             </div>
         </div>
     );
