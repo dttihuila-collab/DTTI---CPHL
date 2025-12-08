@@ -26,9 +26,18 @@ const initialDb: { [key: string]: any[] } = {
         { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Detenção', data: randomDate(oneYearAgo, now).toISOString(), unidadeResponsavel: 'Investigação Criminal', municipio: 'Matala', nomeDetido: 'José Firmino', idadeDetido: 28, motivoDetencao: 'Furto qualificado' },
     ],
     transportes: [
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Abastecimento', data: randomDate(oneYearAgo, now).toISOString(), viaturaMatricula: 'LD-01-02-AA', combustivel: 'Gasolina', quantidadeLitros: 50, bombaCombustivel: 'Pumangol' },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Manutenção', data: randomDate(oneYearAgo, now).toISOString(), viaturaMatricula: 'HL-25-18-BB', tipoManutencao: 'Corretiva', descricaoServico: 'Reparação do sistema de travagem', custoManutencao: 80000 },
-        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Movimento de Pessoal', data: randomDate(oneYearAgo, now).toISOString(), nipEfetivo: '112233', nomeEfetivo: 'Ana Paula dos Santos', tipoMovimento: 'Transferência', origem: '1ª Esquadra', destino: 'Comando Municipal de Matala' },
+        // Cadastro de Meios
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Cadastro de Meio', data: randomDate(oneYearAgo, now).toISOString(), matricula: 'HL-01-01-AA', marca: 'Toyota', modelo: 'Land Cruiser', tipoViatura: 'Ligeiro de Passageiros', estadoViatura: 'Operacional' },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Cadastro de Meio', data: randomDate(oneYearAgo, now).toISOString(), matricula: 'HL-02-02-BB', marca: 'Nissan', modelo: 'Hardbody', tipoViatura: 'Ligeiro de Mercadorias', estadoViatura: 'Em Manutenção' },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Cadastro de Meio', data: randomDate(oneYearAgo, now).toISOString(), matricula: 'HL-03-03-CC', marca: 'Hyundai', modelo: 'i10', tipoViatura: 'Ligeiro de Passageiros', estadoViatura: 'Inoperacional' },
+    
+        // Manutenções
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Manutenção', data: randomDate(oneYearAgo, now).toISOString(), viaturaMatricula: 'HL-02-02-BB', tipoManutencao: 'Corretiva', descricaoServico: 'Troca de pneus', custoManutencao: 150000 },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Manutenção', data: randomDate(oneYearAgo, now).toISOString(), viaturaMatricula: 'HL-01-01-AA', tipoManutencao: 'Preventiva', descricaoServico: 'Revisão dos 50.000km', custoManutencao: 75000 },
+        
+        // Abastecimentos
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Abastecimento', data: randomDate(oneYearAgo, now).toISOString(), viaturaMatricula: 'HL-01-01-AA', combustivel: 'Gasóleo', quantidadeLitros: 70, bombaCombustivel: 'Sonangol' },
+        { id: generateId(), createdAt: randomDate(oneYearAgo, now).toISOString(), tipoRegisto: 'Abastecimento', data: randomDate(oneYearAgo, now).toISOString(), viaturaMatricula: 'HL-02-02-BB', combustivel: 'Gasóleo', quantidadeLitros: 65, bombaCombustivel: 'Pumangol' },
     ],
     // LOGÍSTICA FOI DIVIDIDA EM DUAS "TABELAS"
     efetivo: [

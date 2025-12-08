@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { DashboardCategory, DataRecord, ApiKey, CriminalidadeRecord, FamíliaCriminal, LogisticaRecord } from '../types';
 import { api } from '../services/api';
@@ -149,7 +150,7 @@ const ConsultaView: React.FC<ConsultaViewProps> = ({ category, onBack, onRegiste
                 switch (category) {
                     case 'Criminalidade': return checkMatch(['municipio', 'crime', 'vitimaNome', 'acusadoNome', 'familiaCriminal']);
                     case 'Sinistralidade Rodoviária': return checkMatch(['municipio', 'tipoAcidente', 'causaPresumivel', 'local']);
-                    case 'Enfrentamento Policial': return checkMatch(['tipoOperacao', 'municipio', 'local', 'detidoNome', 'motivoDetencao']);
+                    case 'Enfrentamento Policial': return checkMatch(['tipoRegisto', 'unidadeResponsavel', 'municipio', 'nomeOperacao', 'areaPatrulhada', 'nomeDetido', 'motivoDetencao']);
                     case 'Transportes': return checkMatch(['combustivel', 'municipio', 'nome', 'patente', 'viaturaMatricula']);
                     case 'Logística':
                         const r = record as LogisticaRecord;

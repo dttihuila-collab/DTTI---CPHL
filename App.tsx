@@ -10,6 +10,7 @@ import EnfrentamentoForm from './views/forms/ResultadosForm';
 import TransportesForm from './views/forms/TransportesForm';
 import LogisticaForm from './views/forms/LogisticaForm';
 import AutosExpedienteForm from './views/forms/AutosExpedienteForm';
+import ProcessosForm from './views/forms/ProcessosForm';
 import GerirUsuarios from './views/GerirUsuarios';
 import ConsultaOcorrencias from './views/Relatorios';
 import DatabaseSetup from './views/DatabaseSetup';
@@ -166,7 +167,7 @@ const AppContent: React.FC = () => {
         case 'Criminalidade': return <CriminalidadeForm onCancel={() => handleSetCurrentView('Dashboard')} />;
         case 'Sinistralidade Rodoviária': return <SinistralidadeForm onCancel={() => handleSetCurrentView('Dashboard')} />;
         case 'Enfrentamento Policial': return <EnfrentamentoForm onCancel={() => handleSetCurrentView('Dashboard')} />;
-        case 'Transportes': return <TransportesForm onCancel={() => handleOpenActionMenu('Transportes')} />;
+        case 'Transportes': return <TransportesForm initialData={initialFormData} onCancel={() => handleOpenActionMenu('Transportes')} />;
         case 'Logística': return <LogisticaForm onCancel={() => handleOpenActionMenu('Logística')} />;
         
         // Autos de Expediente direct navigation
@@ -177,6 +178,7 @@ const AppContent: React.FC = () => {
         case 'Informação': return <AutosExpedienteForm initialData={{ tipoAuto: 'Informação' }} onCancel={() => handleSetCurrentView('Dashboard')} />;
         case 'Participação': return <AutosExpedienteForm initialData={{ tipoAuto: 'Participação' }} onCancel={() => handleSetCurrentView('Dashboard')} />;
         case 'Apresentação': return <AutosExpedienteForm initialData={{ tipoAuto: 'Apresentação' }} onCancel={() => handleSetCurrentView('Dashboard')} />;
+        case 'Processos': return <ProcessosForm onCancel={() => handleSetCurrentView('Dashboard')} />;
         
         case 'Gerir Usuários': return <GerirUsuarios />;
         case 'Relatórios': 

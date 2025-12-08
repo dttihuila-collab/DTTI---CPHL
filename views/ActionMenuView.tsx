@@ -1,7 +1,6 @@
 import React from 'react';
 import { DashboardCategory, View } from '../types';
-import { AddIcon, ReportsIcon, MembersIcon, MunicipalityIcon, MaintenanceIcon, DocumentIcon, ArmamentIcon, ClothingIcon } from '../components/icons/Icon';
-import { TIPOS_AUTO_EXPEDIENTE } from '../constants';
+import { AddIcon, ReportsIcon, MaintenanceIcon, TransportIcon } from '../components/icons/Icon';
 
 interface ActionMenuViewProps {
   category: DashboardCategory;
@@ -83,6 +82,32 @@ const ActionMenuView: React.FC<ActionMenuViewProps> = ({ category, onNavigateToF
     
     const renderMenu = () => {
         switch(category) {
+            case 'Transportes':
+                return (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <ActionCard
+                            title="Cadastrar Meios"
+                            icon={<AddIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
+                            onClick={() => onNavigateToFormWithData('Transportes', { tipoRegisto: 'Cadastro de Meio' })}
+                        />
+                        <ActionCard
+                            title="Registar Manutenção"
+                            icon={<MaintenanceIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
+                            onClick={() => onNavigateToFormWithData('Transportes', { tipoRegisto: 'Manutenção' })}
+                        />
+                        <ActionCard
+                            title="Registar Abastecimento"
+                            icon={<TransportIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
+                            onClick={() => onNavigateToFormWithData('Transportes', { tipoRegisto: 'Abastecimento' })}
+                        />
+                        <ActionCard
+                            title="Consultas"
+                            icon={<ReportsIcon className="w-12 h-12 text-custom-blue-600 dark:text-custom-blue-400"/>}
+                            onClick={() => onNavigateToConsulta('Transportes')}
+                            variant="primary"
+                        />
+                    </div>
+                );
             default:
                 return renderDefaultMenu();
         }

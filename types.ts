@@ -41,7 +41,8 @@ export type View =
   | 'Aviso de Notificação'
   | 'Informação'
   | 'Participação'
-  | 'Apresentação';
+  | 'Apresentação'
+  | 'Processos';
 
 
 export interface NavItem {
@@ -140,27 +141,28 @@ export interface EnfrentamentoRecord extends DataRecord {
 
 // Transportes
 export interface TransportesRecord extends DataRecord {
-    tipoRegisto: 'Abastecimento' | 'Manutenção' | 'Movimento de Pessoal';
+    tipoRegisto: 'Cadastro de Meio' | 'Manutenção' | 'Abastecimento';
     data: string;
 
+    // Cadastro de Meio
+    matricula?: string;
+    marca?: string;
+    modelo?: string;
+    tipoViatura?: string;
+    estadoViatura?: 'Operacional' | 'Inoperacional' | 'Em Manutenção';
+
+    // Abastecimento & Manutenção
+    viaturaMatricula?: string; // Ligação a um Meio
+
     // Abastecimento
-    viaturaMatricula?: string;
     combustivel?: 'Gasolina' | 'Gasóleo';
     quantidadeLitros?: number;
     bombaCombustivel?: string;
 
     // Manutenção
-    // viaturaMatricula is shared
     tipoManutencao?: 'Preventiva' | 'Corretiva';
     descricaoServico?: string;
     custoManutencao?: number;
-
-    // Movimento de Pessoal
-    nipEfetivo?: string; // Ligação a Efetivo (Logística)
-    nomeEfetivo?: string;
-    tipoMovimento?: 'Transferência' | 'Férias' | 'Baixa Médica';
-    origem?: string;
-    destino?: string;
 }
 
 // Logística

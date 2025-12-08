@@ -29,6 +29,7 @@ export const ALL_VIEWS: { [key in View]?: { roles: Role[] } } = {
     'Informação': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
     'Participação': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
     'Apresentação': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
+    'Processos': { roles: [Role.Admin, Role.Padrao, Role.Supervisor] },
 };
 
 export const SUBSYSTEMS: Record<Subsystem, { views: View[], roles: Role[] }> = {
@@ -45,7 +46,7 @@ export const SUBSYSTEMS: Record<Subsystem, { views: View[], roles: Role[] }> = {
         roles: [Role.Admin, Role.Padrao, Role.Supervisor],
     },
     'Autos de Expedientes': {
-        views: ['Dashboard', 'Auto de Queixa', 'Auto de Apreensão', 'Auto de Notícia', 'Aviso de Notificação', 'Informação', 'Participação', 'Apresentação', 'Relatórios'],
+        views: ['Dashboard', 'Auto de Queixa', 'Auto de Apreensão', 'Auto de Notícia', 'Aviso de Notificação', 'Informação', 'Participação', 'Apresentação', 'Processos', 'Relatórios'],
         roles: [Role.Admin, Role.Padrao, Role.Supervisor],
     },
     'Administração do Sistema': {
@@ -162,6 +163,20 @@ export const TIPOS_AUTO_EXPEDIENTE: string[] = [
     'Informação',
     'Participação',
     'Apresentação'
+];
+
+export const TIPOS_VIATURA: string[] = [
+    'Ligeiro de Passageiros',
+    'Ligeiro de Mercadorias',
+    'Pesado de Passageiros',
+    'Pesado de Mercadorias',
+    'Motociclo',
+];
+
+export const ESTADOS_VIATURA: string[] = [
+    'Operacional',
+    'Inoperacional',
+    'Em Manutenção',
 ];
 
 // FIX: Added constants for the new ProcessosForm.

@@ -34,6 +34,7 @@ const iconMap: { [key in View]?: React.ReactElement } = {
     'Informação': <DocumentIcon />,
     'Participação': <DocumentIcon />,
     'Apresentação': <DocumentIcon />,
+    'Processos': <FolderIcon />,
 };
 
 const formViews: View[] = ['Transportes', 'Logística'];
